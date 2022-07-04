@@ -23,8 +23,12 @@
 
 <body>
 
-        <div id="content">
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header}"></div>
 
+        <div id="content">
 
             <!--
                 START banner
@@ -190,16 +194,49 @@
 
                 </div>
             </div>
+            <!--
+                END section3
+            -->
+
+
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+
         </div>
-        <!--
-            END section3
-        -->
 
 
-        <script src="/edu/assets/jquery/jquery-1.11.3.js"></script>
+        <script src="/js/jquery-1.11.3.js"></script>
         <script src="/js/header.js"></script>
         <script src="/js/manipulation.js"></script>
 
 
 </body>
+
+
+<script>
+
+    const header_buttons = document.getElementById("header_buttons");
+    const myNav          = document.getElementById("header");
+
+    window.onscroll = function () {
+        if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
+            myNav.classList.add("nav_active");
+
+            header_buttons.classList.remove("hidden");
+            header_buttons.classList.add("visible");
+
+        } else {
+            myNav.classList.remove("nav_active");
+
+            header_buttons.classList.remove("visible");
+            header_buttons.classList.add("hidden");
+        }
+    };
+
+</script>
+
+
 </html>

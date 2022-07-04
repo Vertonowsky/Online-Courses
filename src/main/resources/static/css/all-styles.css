@@ -1,0 +1,46 @@
+/* Variable declarations */
+:root {
+    --color-white: #fff;
+    --color-default: #666666;
+    --color-title: #595959;
+    --color-light-blue: #03A7DC;
+    --color-blue: #2BA8D6;
+    --color-blue-hover: #1C9AC9;
+    --color-light-red: #DE5450;
+    --color-button-white: #F0F0F0;
+
+
+
+    --font-size-big: 22px;
+    --font-size-title: 17px;
+    --font-size-normal: 15px;
+    --font-size-smaller: 14px;
+    --font-size-phone: 13px;
+
+
+    
+}
+
+
+* {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.2;
+}
+
+
+b {
+    color: #03A7DC;
+    font-weight: normal;
+}
+
+
+
+
+body {
+    color: var(--color-default);
+}
+
+
+.bold {
+    font-weight: bold;
+}
