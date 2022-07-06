@@ -178,11 +178,3 @@ function openFilters() {
  * openFilters() function 
  * 
  */
-
-
-
-
-
-function openCourseDisplay(courseId) {
-    window.location = "/edu/wyswietl.php?id=" + courseId;
-}

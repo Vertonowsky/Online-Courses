@@ -16,11 +16,45 @@ public class CourseController {
 
     @PostMapping("/add2")
     public String addCourse() {
-        Course course = new Course("Egzamin Ósmoklasisty", "Kurs", "Multimedialny kurs", Category.Matematyka, "Brak korzyści", 200.0, 0.0);
-        Course course2 = new Course("Egzamin Maturalny", "Kurs 2", "2222222 kurs", Category.Informatyka, "Super fajne korzyści", 17.0, 0.0);
+        Course course = new Course("Egzamin Ósmoklasisty",
+                "Kurs Ósmoklasisty Matematyka",
+                "Zawiera wiedzę potrzebną, żeby napisać egzamin nawet na 100%! Obejmuje nie tylko zagadnienia z klasy 8 ale z całej szkoły podstawowej – tłumaczy od podstaw działania na ułamkach, jednostki, i wiele innych rzeczy.",
+                Category.MATEMATYKA,
+                "Brak korzyści",
+                249.0,
+                120.0);
+
+
+        Course course2 = new Course("Egzamin Maturalny Podstawa",
+                "Kurs Maturalny - Matematyka PODSTAWA",
+                "Matura podstawowa z wynikiem 100% to nie problem! Dokładnie zrozumiesz zagadnienia wymagane na maturze. Nawet najtrudniejsze tematy staną się dla Ciebie proste i zrozumiałe.",
+                Category.MATEMATYKA,
+                "<li>Ponad 70 godzin materiałów wideo</li>\n" +
+                        "            <li>110 zadań do samodzielnego rozwiązania + odpowiedzi</li>\n" +
+                        "            <li>3-miesięczny dostęp do kursu</li>\n" +
+                        "            <li>starannie wyselekcjonowane zadania</li>\n" +
+                        "            <li>swobodę uczenia się o dowolnej porze</li>\n" +
+                        "            <li>tłumaczenie od doświadczonego korepetytora</li>",
+                289.0,
+                0.0);
+
+        Course course3 = new Course("Egzamin Maturalny Rozszerzenie",
+                "Kurs Maturalny - Matematyka ROZ",
+                "Rozszerzona matematyka wcale nie jest taka ciężka! Przekonaj się o tym na własne oczy i zaskocz wszystkich niedowiarków.",
+                Category.MATEMATYKA,
+                "<li>Ponad 70 godzin materiałów wideo</li>\n" +
+                        "            <li>110 zadań do samodzielnego rozwiązania + odpowiedzi</li>\n" +
+                        "            <li>3-miesięczny dostęp do kursu</li>\n" +
+                        "            <li>starannie wyselekcjonowane zadania</li>\n" +
+                        "            <li>swobodę uczenia się o dowolnej porze</li>\n" +
+                        "            <li>tłumaczenie od doświadczonego korepetytora</li>",
+                329.0,
+                0.0);
+
         courseRepository.save(course);
         courseRepository.save(course2);
-        return "Added new course to repository!";
+        courseRepository.save(course3);
+        return "Added 3 courses to repository.";
     }
 
 

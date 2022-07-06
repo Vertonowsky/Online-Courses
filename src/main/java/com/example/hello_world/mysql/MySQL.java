@@ -20,7 +20,7 @@ public class MySQL {
 
                 conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + database + "?useUnicode=yes&characterEncoding=UTF-8", user, password);
 
-                System.out.println("Połączono!");
+                System.out.println("Polaczono!");
 
             } catch(SQLException e) {
                 e.printStackTrace();
