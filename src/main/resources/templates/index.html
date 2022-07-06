@@ -170,7 +170,7 @@
             <div id="section3">
                 <div class="inner">
                     <h1 class="introduction">Nasze kursy:</h1>
-                    <div id="courses_list">
+                    <div id="courses_list" th:fragment="coursesList">
 
                         <div th:if="${courses.empty}" id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>
 

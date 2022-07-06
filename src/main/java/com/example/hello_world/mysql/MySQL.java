@@ -2,19 +2,23 @@ package com.example.hello_world.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySQL {
 
     public static Connection conn;
 
+    private static String user = "notatest";
+    private static String password = "Karaoke321.";
+    private static String database = "spring";
+
+
 
     public static synchronized void openConnection(){
         if (!isConnected()) {
-
-            String user = "notatest";
-            String password = "Karaoke321.";
-            String database = "spring";
 
             try {
 
@@ -60,7 +64,7 @@ public class MySQL {
     public static void verifyDatabase() {
         try {
 
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "notatest", "Karaoke321.");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/", user, password);
             con.createStatement().executeUpdate("CREATE DATABASE IF NOT EXISTS spring");
             con.close();
 
@@ -68,4 +72,27 @@ public class MySQL {
             e.printStackTrace();
         }
     }
+
+
+
+    public static List<String> getSingleFilter(String query) {
+        openConnection();
+        List<String> collection = new ArrayList<>();
+
+        try {
+
+            ResultSet result = conn.createStatement().executeQuery(query);
+
+            while (result.next())
+                collection.add(result.getString(1));
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        closeConnection();
+        return collection;
+    }
+
 }

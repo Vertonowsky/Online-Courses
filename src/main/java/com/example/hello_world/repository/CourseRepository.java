@@ -6,6 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface CourseRepository extends CrudRepository<Course, Integer> {
 
 
+    //Iterable<Course> findAllWithCondition(String categoryFilters, String subjectFilters);
+
     Course findCourseById(Integer id);
 
 }

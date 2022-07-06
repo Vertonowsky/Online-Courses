@@ -2,13 +2,16 @@ package com.example.hello_world.controller;
 
 import com.example.hello_world.Category;
 import com.example.hello_world.entity.Course;
+import com.example.hello_world.mysql.MySQL;
 import com.example.hello_world.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
+@Controller
 public class CourseController {
 
     @Autowired
@@ -61,6 +64,17 @@ public class CourseController {
     @GetMapping("/list2")
     public Iterable<Course> getCourses() {
         return courseRepository.findAll();
+    }
+
+
+
+
+    @RequestMapping("/lista-kursow")
+    public String courseListView(Model model) {
+        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("subjects", MySQL.getSingleFilter("SELECT DISTINCT type FROM courses"));
+        model.addAttribute("categories", MySQL.getSingleFilter("SELECT DISTINCT category FROM courses"));
+        return "lista-kursow";
     }
 
 }
