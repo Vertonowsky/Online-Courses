@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <meta charset="UTF-8">
+
     <title>Title</title>
+    <meta charset="UTF-8">
+
 </head>
 <body>
 
 <div id="header" th:fragment="header">
 
-    <a href="/edu" id="nav_logo"><img src="/images/logo3.png"/></a>
+    <a th:href="@{/}" id="nav_logo"><img alt="" src="/images/logo3.png"/></a>
 
     <div id="navPanel">
         <div id="header_buttons" class="visible">
-            <a class="header_button" href="/courses-list.php">Nasze kursy</a>
+            <a class="header_button" th:href="@{/lista-kursow}">Nasze kursy</a>
             <a class="header_button" href="">Kontakt</a>
         </div>
 
@@ -22,8 +24,8 @@
                 CHECK IF USER IS LOOGED IN - IF HE IS THEN SHOW LOGOUT BUTTON
             -->
 
-            <a href="/logowanie.php" class="button_transparent_underline" id="login_button">Zaloguj</a>
-            <a href="/rejestracja.php" class="button_white" id="register_button">Zarejestruj<i class="fas fa-arrow-circle-right"></i></a>';
+            <a th:href="@{/logowanie}" class="button_transparent_underline" id="login_button">Zaloguj</a>
+            <a th:href="@{/rejestracja}" class="button_white" id="register_button">Zarejestruj<i class="fas fa-arrow-circle-right"></i></a>';
 
         </div>
     </div>

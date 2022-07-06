@@ -38,6 +38,7 @@ public class Course {
     Double pricePromotion;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "course")
+    @OrderBy("index ASC, title ASC")
     Set<Chapter> chapters;
 
 

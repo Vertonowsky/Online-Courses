@@ -30,6 +30,7 @@ public class Chapter {
 
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "chapter")
+    @OrderBy("index ASC, title ASC")
     Set<Topic> topics;
 
 

@@ -1,0 +1,454 @@
+#auth_content {
+    position: absolute;  
+    width: 100%;
+    height: 100%;
+    font-size: 0px;
+}
+
+
+#auth_container {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    width: 600px;
+    padding: 50px 30px 30px 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10%;
+    text-align: left;
+}
+
+
+        #auth_content .left {
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(43,46,51,1) 0%, rgba(54,57,64,1) 100%);
+            text-align: center;
+        }
+
+
+                #auth_content .left #nav_logo {
+                    position: absolute;
+                    box-sizing: border-box;
+                    cursor: pointer;
+                    top: 40px;
+                    left: 20px;
+                    font-size: 18px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    color: #fff;
+                    transition: all 0.3s;
+                }
+
+                #left_title {
+                    margin: 150px 0px 0px 0px;
+                    font-size: 24px;
+                    color: #E6E6E6;
+                    font-weight: bold;
+                }
+
+                #left_desc {
+                    font-size: var(--font-size-normal);
+                    width: 80%;
+                    line-height: 22px;
+                    color: #ccc;
+                    margin: 3px auto 0px auto;
+                }
+
+                .left .button_blue {
+                    position: relative;
+                    box-sizing: border-box;
+                    display: block;
+                    width: 200px;
+                    margin: 20px auto 0px auto;
+                    padding: 13px 10px;
+                    outline: 0;
+                    border: 0;
+                }
+
+
+
+
+
+
+
+
+
+
+        #auth_content .right {
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            box-sizing: border-box;
+            width: 70%;
+            height: 100%;
+            background: #fff;
+        }
+
+                #auth_container .title_with_shadow {
+                    position: relative;
+                    margin: 0px;
+                    width: 280px;
+                }
+
+                        #auth_container .tit_text {
+                            position: relative;
+                            margin: 0px;
+                            color: var(--color-title);
+                            font-size: var(--font-size-big);
+                            font-weight: bold;
+                            z-index: 10;
+                        }
+
+                        .tit_bck {
+                            position: absolute;
+                            width: 50%;
+                            height: 100%;
+                            left: -10px;
+                            top: 0px;
+                            background: linear-gradient(90deg, rgba(240,240,240,1) 20%, rgba(235,235,235,0) 100%);
+                            z-index: 0;
+                        }
+
+
+                #auth_container .desc {
+                    color: var(--color-default);
+                    margin: 10px 0px 30px 0px;
+                    font-size: var(--font-size-normal);
+                }
+
+                #auth_container .input_group {
+                    width: 100%;
+                    display: block;
+                    margin: 0px 0px 20px 0px;
+                }
+
+                #auth_container .input_group:last-of-type {
+                    margin-bottom: 15px;
+                }
+
+                #under_inputs {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                        #auth_container .href {
+                            font-size: var(--font-size-normal);
+                            left: 0px;
+                            width: 190px;
+                            padding-left: 10px;
+                            text-align: center;
+                        }
+
+                        #auth_container .button_blue {
+                            padding: 14px 0px;
+                            width: 180px;
+                            border: 2px solid #F0F0F0;
+                            outline: 0;
+                            border: 0;
+                            right: 0px;
+                        }
+
+                        /*#login_page input:-webkit-autofill {
+                            -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+                        }*/
+
+
+                        #password_strength {
+                            margin: 10px auto 10px auto;
+                            width: 320px;
+                            height: 4px;
+                            background: #D1D1D1;
+                            visibility: hidden;
+                        }
+                        
+                            #password_strength_inside {
+                                height: 100%;
+                                position: relative;
+                                width: 0%;
+                                transition: all 0.3s;
+                            }
+
+
+
+
+
+
+
+
+
+
+                #other_login_methods {
+                    position: relative;
+                    box-sizing: border-box;
+                    height: auto;
+                    width: 100%;
+                    margin-top: 100px;
+                }
+
+                        .other_login_button {
+                            display: flex;
+                            align-items: center;
+                            min-height: 50px;
+                            height: auto;
+                            width: calc(100% - 4px);
+                            background: transparent;
+                            border: 2px solid #E6E6E6;
+                            border-radius: 10px;
+                            margin-bottom: 10px;
+                            cursor: pointer;
+                            text-align: center;
+                            transition: all 0.3s;
+                        }
+
+                            .other_login_button:last-child {
+                                margin-bottom: 0px;
+                            }
+
+                            .other_login_button:hover {
+                                background: #F5F5F5;
+                            }
+
+
+                        .other_login_button .text {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: var(--font-size-normal);
+                            color: var(--color-title);
+                            width: 100%;
+                        }
+
+                            .other_login_button .text .img {
+                                height: 30px;
+                                width: 30px;
+                                margin-right: 8px;
+                            }
+
+
+                #auth_container .checkbox_body {
+                    position: relative;
+                    width: 240px;
+                }
+
+
+                    #auth_container .tooltip:nth-of-type(3) {
+                        left: 10px;
+                        right: auto;
+                    }
+
+
+                #button_go_back {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    font-size: var(--font-size-normal);
+                    color: var(--color-title);
+                    padding: 6px 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+
+                #button_go_next {
+                    position: absolute;
+                    top: 20px;
+                    left: 20px;
+                    font-size: var(--font-size-normal);
+                    color: var(--color-title);
+                    padding: 6px 10px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    display: none;
+                }
+
+
+
+
+
+
+
+
+
+
+        @media screen and (max-width: 1100px) {
+
+            #auth_content .left {
+                display: none;
+            }
+
+            #auth_content .right {
+                width: 100%;
+            }
+
+                    #auth_container {
+                        left: 0;
+                        right: 0;
+                        margin: auto;
+                        padding: 40px;
+                        top: 60px;
+                        transform: translateY(0%);
+                    }
+
+                        #button_go_next {
+                            display: block;
+                        }
+
+        }
+
+
+
+
+
+
+
+
+
+
+        @media screen and (max-width: 768px) {
+
+            #auth_container {
+                top: 30px;
+                width: 80%;
+            }
+
+                #auth_container .tit_text {
+                    font-size: var(--font-size-title);
+                }
+
+                #auth_container .desc {
+                    font-size: var(--font-size-smaller);
+                }
+
+                #auth_container .href {
+                    font-size: var(--font-size-smaller);
+                }
+
+
+            #other_login_methods {
+                margin-top: 80px;
+            }
+
+                .other_login_button .text {
+                    font-size: var(--font-size-smaller);
+                }
+
+                .other_login_button .text .img {
+                    height: 25px;
+                    width: 25px;
+                }
+
+
+            #button_go_back {
+                top: 10px;
+                right: 10px;
+                font-size: var(--font-size-smaller);
+            }
+
+            #button_go_next {
+                top: 10px;
+                left: 10px;
+                font-size: var(--font-size-smaller);
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+        @media screen and (max-width: 580px) {
+
+            #auth_container {
+                width: 90%;
+            }
+
+                #auth_container .button_blue {
+                    position: relative;
+                    padding: 14px 0px;
+                    width: 80%;
+                    margin-top: 20px;
+                }
+
+                #password_strength {
+                    width: 100%;
+                }
+
+
+            #under_inputs {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+        @media screen and (max-width: 480px) {
+
+            #auth_container {
+                width: 100%;
+                padding: 80px 40px 25px 40px;
+                transform: translateY(0%);
+                top: 0px;
+            }
+
+                #auth_container .tit_text {
+                    font-size: 16px;
+                }
+    
+                #auth_container .desc {
+                    font-size: var(--font-size-phone);
+                }
+    
+                #auth_container .href {
+                    font-size: var(--font-size-phone);
+                }
+
+                #auth_container .button_blue {
+                    width: 90%;
+                }
+
+
+            #other_login_methods {
+                margin-top: 70px;
+            }
+
+                .other_login_button {
+                    height: 46px;
+                }
+
+                .other_login_button .text {
+                    font-size: var(--font-size-phone);
+                }
+
+
+            #button_go_back {
+                top: 10px;
+                right: 10px;
+                font-size: var(--font-size-phone);
+            }
+
+        }
