@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <title>Kursowo.pl | Nasze kursy</title>
+
+    <link rel="stylesheet" href="/css/main.css"></link>
+    <link rel="stylesheet" href="/css/course_container.css"></link>
+
+    <div th:insert="~{dependencies :: dependencies}"></div>
+
+</head>
+<body>
+
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header}"></div>
+
+        <div id="content">
+
+            <!-- 
+                START section courses
+            -->
+            <div id="courses">
+                <div class="inner">
+
+                    <div class="left_panel">
+                        <div id="top_panel">
+                            <div id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>
+                        </div>
+                        <div th:insert="~{index :: coursesList}"></div>
+                    </div>
+
+
+                    <div id="right_panel">
+
+                        <ul id="filters_ul">
+                            <h1 class="title">Rodzaj</h1>
+                            <li th:each="subject : ${subjects}">
+                                <!-- CHECKBOX- custom checkbox input -->
+                                <div class="checkbox_body">
+                                    <div style="display: block;" class="standard-checkbox">
+                                        <label class="checkbox-border">
+                                            <input th:data-name="${subject}" type="checkbox" class="checkbox_category invisible"/>
+                                            <div class="checkbox">
+                                                <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                                    <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
+                                                    <polyline points="4 11 8 15 16 6"></polyline>
+                                                </svg>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <span class="checkbox-label" th:text="${subject}"></span>
+                                </div>
+                            </li>
+
+
+                            <h1 class="title">Kategoria</h1>
+                            <li th:each="category : ${categories}">
+                                <!-- CHECKBOX- custom checkbox input -->
+                                <div class="checkbox_body">
+                                    <div style="display: block;" class="standard-checkbox">
+                                        <label class="checkbox-border">
+                                            <input th:data-name="${#strings.capitalize(#strings.toLowerCase(category))}" type="checkbox" class="checkbox_subject invisible"></input>
+                                            <div class="checkbox">
+                                                <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                                    <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
+                                                    <polyline points="4 11 8 15 16 6"></polyline>
+                                                </svg>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <span class="checkbox-label" th:text="${#strings.capitalize(#strings.toLowerCase(category))}"></span>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--
+                END section3
+            -->
+
+
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+
+
+        </div>
+
+
+
+
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/manipulation.js"></script>
+        <script src="/js/header.js"></script>
+
+    
+
+
+</body>
+    <script>
+
+        const myNav = document.getElementById("header");
+        window.onload = function () { 
+            myNav.classList.add("nav_active");
+        };
+
+
+
+        /* START CheckBox backend */
+        $("input:checkbox").on('click', function() {
+			let $box = $(this);
+			
+            let className = $box.attr("class").replace(" invisible", "");
+            let name = $box.attr("data-name");
+
+            //update array depending of the clicked checkbox
+            if (className === "checkbox_category") $box.is(":checked") ? category_filters.push(name) : category_filters.splice(category_filters.indexOf(name), 1);
+            if (className === "checkbox_subject") $box.is(":checked") ? subject_filters.push(name) : subject_filters.splice(subject_filters.indexOf(name), 1);
+
+            loadCourses(category_filters, subject_filters);
+			
+		});
+		/* END CheckBox backend */
+
+        window.onresize = function(event) {
+            let button     = document.getElementById("filtersToggle");
+            let top_panel  = document.getElementById("top_panel");
+            let filters_ul = document.getElementById("filters_ul");
+
+            if (button.classList.contains("active")) 
+                top_panel.style.paddingBottom = (filters_ul.offsetHeight + 30) + "px";
+        };
+
+    </script>
+</html>
