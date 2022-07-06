@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.util.Set;
 
 @Entity
 @Table(name = "chapters")
@@ -17,23 +18,27 @@ public class Chapter {
 
     @Column(name = "chapter_index")
     @Min(0)
-    Integer chapterIndex;
+    Integer index;
 
     @Column(length = 100)
     String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id_conn")
+    @JoinColumn(name = "course_id")
     @JsonIgnore
     Course course;
+
+
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "chapter")
+    Set<Topic> topics;
 
 
     public Chapter() {
 
     }
 
-    public Chapter(Integer chapterIndex, String title) {
-        this.chapterIndex = chapterIndex;
+    public Chapter(Integer index, String title) {
+        this.index = index;
         this.title = title;
     }
 
@@ -42,12 +47,12 @@ public class Chapter {
         return id;
     }
 
-    public Integer getChapterIndex() {
-        return chapterIndex;
+    public Integer getIndex() {
+        return index;
     }
 
-    public void setChapterIndex(Integer chapterIndex) {
-        this.chapterIndex = chapterIndex;
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public String getTitle() {
@@ -65,4 +70,14 @@ public class Chapter {
     public void setCourse(Course course) {
         this.course = course;
     }
+
+    public Set<Topic> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(Set<Topic> topics) {
+        this.topics = topics;
+    }
+
+
 }

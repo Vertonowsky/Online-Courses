@@ -38,7 +38,6 @@ public class Course {
     Double pricePromotion;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "course")
-    //@JsonIgnore
     Set<Chapter> chapters;
 
 
