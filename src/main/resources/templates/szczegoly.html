@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <title th:text="${course.name}"></title>
+
+    <link rel="stylesheet" href="/css/main.css"></link>
+    <link rel="stylesheet" href="/css/course_container.css"></link>
+    <link rel="stylesheet" href="/css/display.css"></link>
+
+    <div th:insert="~{dependencies :: dependencies}"></div>
+
+</head>
+<body>
+
+
+<!--
+
+DODAĆ!!!!!!!!!!
+
+Czy id jest prawidłowe? Czy zostało uzupełnione?
+Czy ziomal jest zalogowany? - obsługa informacji na temat tego, czy kurs jest dostępny dla danego użytkownika
+
+Wczytanie kursu - o ile istnieje w bazie danych
+
+-->
+
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header}"></div>
+
+        <div id="course_display">
+
+            <div id="banner">
+
+                <div class="inner">
+
+                    <div class="photo">
+                        <img alt="" th:src="@{'/images/course_photo_' + ${course.id} + '.png'}"/>
+                    </div>
+
+
+                    <div class="description">
+
+                        <div class="title" th:text="${course.name}"></div>
+
+                        <div id="all_stars">
+                            <div class="stars_section">
+                                <div class="stars">
+                                    <p class="stars_info">Wykonane zadania: 55/84</p>
+                                    <div class="star"><i class="fas fa-star"></i></div>
+                                    <div class="star"><i class="fas fa-star"></i></div>
+                                    <div class="star"><i class="fas fa-star"></i></div>
+                                    <div class="star"><i class="fas fa-star-half-alt"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                </div>
+                            </div>
+
+
+                            <div class="stars_section">
+                                <div class="stars">
+                                    <p class="stars_info">Ukończone tematy: 4/18</p>
+                                    <div class="star"><i class="fas fa-star"></i></div>
+                                    <div class="star"><i class="fas fa-star"></i></div>
+                                    <div class="star"><i class="fas fa-star-half-alt"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div id="progress">
+
+                        <!--
+                            s
+                            s
+                            s
+                            s
+                            s
+                            s
+                            s
+                            s
+                            s
+                            ss
+                            Course progress left to implement
+                            s
+                            s
+                            s
+                            s
+                            ss
+                            s
+                            s
+                            s
+                            s
+                            s
+                            s
+
+
+                            <?php
+
+                                $topics_status = loadTopicsCompletionStatus($conn, $courseId, $isLoggedIn);
+
+                                $percent = ceil(($topics_status['finished']/$topics_status['topics_count'])*100); //round up to integer
+
+                                echo '
+                                    <div class="radial">
+                                        <svg class="radial-progress" data-percentage="'.$percent.'" viewBox="0 0 80 80">
+
+                                            <circle class="incomplete" cx="40" cy="40" r="35"></circle>
+                                            <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
+
+                                        </svg>
+
+                                        <div class="radial-progress-text bold">'.$percent.'%</div>
+                                    </div>
+                                ';
+
+                            ?>
+
+                            -->
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="inner" id="bottom_content">
+
+                <div id="all_topics">
+
+                    <!--<?php
+
+                        loadWholePage($conn, $courseId, $isLoggedIn);
+
+                    ?>-->
+
+                </div>
+
+
+                <div id="left_topics">
+
+                    <div id="sticky_panel">
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+
+        </div>
+
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/header.js"></script>
+
+</body>
+
+
+
+
+
+<script>
+
+    const myNav          = document.getElementById("header");
+    const sticky_panel   = document.getElementById("sticky_panel");
+    const progress       = document.getElementById("progress");
+    const all_topics     = document.getElementById("all_topics");
+    const left_topics    = document.getElementById("left_topics");
+    const clone          = progress.cloneNode(true);
+    clone.id = "progress_mini";
+    sticky_panel.appendChild(clone);
+
+    const all_stars      = document.getElementById("all_stars");
+    const clone_stars    = all_stars.cloneNode(true);
+    clone_stars.id = "all_stars_mini";
+    sticky_panel.appendChild(clone_stars);
+
+
+    window.onload = function () {
+        myNav.classList.add("nav_active");
+
+        left_topics.style.height = all_topics.offsetHeight + "px"; //load height of all_topics and change left_topics depending on it
+    };
+
+
+
+    $('svg.radial-progress').each(function( index, value ) {
+        $(this).find($('circle.complete')).removeAttr( 'style' );
+
+        // Get percentage of progress
+        percent = $(value).data('percentage');
+        // Get radius of the svg's circle.complete
+        radius = $(this).find($('circle.complete')).attr('r');
+        // Get circumference (2πr)
+        circumference = 2 * Math.PI * radius;
+        // Get stroke-dashoffset value based on the percentage of the circumference
+        strokeDashOffset = circumference - ((percent * circumference) / 100);
+        // Transition progress for 1.25 seconds
+        $(this).find($('circle.complete')).animate({'stroke-dashoffset': strokeDashOffset}, 1250);
+    });
+
+
+    function openNextTopic(topic_id) {
+        var element = document.getElementById("topics_list");
+
+        window.location.href = "/edu/kurs.php?id=<?php echo $_GET['id']; ?>&topic=" + topic_id + "&p=0";
+    }
+
+
+
+
+
+    window.onscroll = function () {
+        if (window.innerWidth > 1024) {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+
+                if (all_topics.classList.contains("active")) return;
+
+                all_topics.classList.add("active");
+                left_topics.classList.add("active");
+                sticky_panel.classList.add("active");
+
+                clone_stars.classList.remove("unactive");
+
+
+            } else {
+
+                if (!all_topics.classList.contains("active")) return;
+
+                all_topics.classList.remove("active");
+                left_topics.classList.remove("active");
+                sticky_panel.classList.remove("active");
+
+                clone_stars.classList.add("unactive");
+
+            }
+        }
+    };
+
+
+</script>
+
+</html>

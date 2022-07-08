@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <title th:text="${course.name}"></title>
+
+    <link rel="stylesheet" href="/css/main.css"></link>
+    <link rel="stylesheet" href="/css/course_container.css"></link>
+    <link rel="stylesheet" href="/css/display.css"></link>
+    <link rel="stylesheet" href="/css/popup.css"></link>
+
+    <div th:insert="~{dependencies :: dependencies}"></div>
+
+</head>
+<body>
+
+<!--
+
+DODAĆ!!!!!!!!!!
+
+Czy id jest prawidłowe? Czy zostało uzupełnione?
+Czy ziomal jest zalogowany? - obsługa informacji na temat tego, czy kurs jest dostępny dla danego użytkownika
+
+Wczytanie kursu - o ile istnieje w bazie danych
+
+Wczytanie price, price_promotion i advantages
+
+-->
+
+
+        <!--
+        START header
+        -->
+        <div th:insert="~{header :: header}"></div>
+
+        <!-- Trzeba dodać tutaj usuwanie kodu promocyjnego ze zmiennej typu $_SESSION -->
+
+        <div id="display_content">
+
+            <div id="banner">
+                <div class="inner">
+
+                    <div class="description">
+
+                        <div class="title" th:text="${course.name}"></div>
+                        <div class="desc" th:text="${course.description}"></div>
+
+                        <!--<ul class="advantages"></*?php echo $advantages; ?></ul>-->
+
+                        <table id="table">
+                            <tr>
+                                <th>Kurs gwrantuje:</th>
+                                <th>Darmowy</th>
+                                <th><i class="fas fa-star"></i> Premium <i class="fas fa-star"></i></th>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>Tłumaczenie od doświadczonego korepetytora</td>
+                                <td><i class='fas fa-check'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>Swobodę uczenia się o dowolnej porze</td>
+                                <td><i class='fas fa-check'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>Starannie wyselekcjonowane zadania</td>
+                                <td><i class='fas fa-check'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>Ponad 70 godzin materiałów wideo</td>
+                                <td><i class='fas fa-times'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>110 zadań do samodzielnego rozwiązania + odpowiedzi</td>
+                                <td><i class='fas fa-times'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-star-of-life"></i>3-miesięczny dostęp do kursu</td>
+                                <td><i class='fas fa-times'></i></td>
+                                <td><i class='fas fa-check'></i></td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="content">
+
+                <div id="sticky">
+                    <div class="photo">
+                        <img alt="" th:src="@{'/images/course_photo_' + ${course.id} + '.png'}"/>
+                    </div>
+
+                    <p class="desc">Przed dokonaniem zakupu, przetestuj nasz kurs korzystając z <span class="bold">darmowej wersji</span>!</p>
+
+                    <div class="prices">
+                        <div class="price_block"> 0 zł</div>
+
+                        <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.price} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.pricePromotion} + ' zł'"> --- </span></div>
+
+                        <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.price} + ' zł'"> --- </div>';
+                    </div>
+
+
+                    <div class="buttons">
+                        <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wersja próbna<i class="fas fa-arrow-circle-right"></i></a>
+                        <a class="button_gray" id="button_buy">Pełny dostęp<i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+
+                <div id="all_topics">
+
+                    <!--<?php
+                    
+                        loadWholePage($conn, $courseId, $isLoggedIn);
+
+                    ?>-->
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="modal_buy" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal_content active">
+
+                <span class="close"><i class="fas fa-times"></i></span>
+                
+            
+                <div class="top">
+
+                    <?php 
+                        if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
+                            echo '<h1 id="main_title" class="title">Sprawdź poprawność danych i dokonaj płatności</h1>';
+                        } else {
+                            echo '<h1 id="main_title" class="title">Do korzystania z pełnej wersji kursu wymagane jest konto</h1>';
+                        }
+                    ?>
+
+                    <div class="step_progress_bar">
+                        <ul class="progressbar">
+
+                            <?php 
+                                if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
+                                    echo '<li class="progress_item complete">Logowanie</li>
+                                        <li class="progress_item active">Płatność</li>';
+                                } else {
+                                    echo '<li class="progress_item active">Logowanie</li>
+                                        <li class="progress_item">Płatność</li>';
+                                    
+                                }
+                            ?>
+
+                            <li class="progress_item">Gotowe</li>
+                        </ul>
+                    </div>
+
+                </div>
+                
+
+
+
+
+
+
+
+                
+                <div class="bottom">
+                    <?php 
+                        if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
+                            echo '<div class="tab_section active">';
+                        } else {
+                            echo '<div class="tab_section">';
+                        }
+                    ?>
+
+                        <div id="payment_container">
+                            <div class="content">
+                                <table id="payment_table">
+                                    <tr>
+                                        <td><p class="course_title"><?php echo $row['name']; ?></p><p class="category">Kategoria: <span class="cat">[<?php echo $row['category']; ?>]</span></p></td>
+                                        
+                                        <?php
+
+                                            $price = $row['price'];
+                                            $price_promotion = $row['price_promotion'];
+
+                                            $final_price = $price;
+                                            if ($price_promotion > 0) $final_price = $price_promotion;
+
+                                            echo '<td>'.number_format((float)$final_price, 2, ',', '').' zł</td>';
+
+                                        ?>
+                                    </tr>
+
+                                    <!--<tr>
+                                        <td>KOD RABATOWY</td>
+                                        <td>-74,99 zł</td>
+                                    </tr>-->
+                                </table>
+
+                                <div id="final_price"><?php echo number_format((float)$final_price, 2, ',', '').' zł'; ?></div>
+
+                                <!--
+                                    INPUT GROUP - Input with its elements
+                                -->
+                                <div class="buttons">
+
+                                    <!--
+                                        CHECKBOX- custom checkbox input
+                                    -->
+                                    <div class="checkbox_body">
+                                        <div style="display: block;" class="standard-checkbox">
+                                            <label class="checkbox-border">
+                                                <input name="terms" type="checkbox" class="invisible" id="terms_input"></input>
+                                                <div class="checkbox">
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                                        <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
+                                                        <polyline points="4 11 8 15 16 6"></polyline>
+                                                    </svg>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <span class="checkbox-label">Akceptuję regulamin</span>
+                                    </div>
+
+
+                                    <div class="input_group">
+                                        <input id="discount_code_input" class="input" type="text" placeholder="...">
+                                        <label>Kod rabatowy: </label>
+                                        <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i>
+                                    </div>
+
+
+                                    <div onclick="verifyPayment()" class="button_gray">Przejdź do płatności <i class="fas fa-arrow-circle-right"></i></div>
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <?php 
+                        if (!(isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn'])) {
+                            echo '<div class="tab_section active">';
+                        } else {
+                            echo '<div class="tab_section">';
+                        }
+                    ?>
+
+                        <i class="modal_center_icon fas fa-user-circle"></i>
+
+                        <h1 class="subtitle">Zaloguj się aby móc kontynuować</h1>
+                        <h2 class="desc">Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.</h2>
+
+                        <div class="buttons">
+                            <?php 
+                                echo '
+                                    <a href="/edu/rejestracja.php" class="button_gray">Stwórz nowe konto <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="/edu/logowanie.php?id='.$_GET['id'].'&buy=1" class="button_gray">Zaloguj <i class="fas fa-arrow-circle-right"></i></a>';
+
+                            ?>
+                        </div>
+                    </div>
+
+
+
+                    <div class="tab_section">
+                        <i class="modal_center_icon fas fa-check-circle"></i>
+
+                        <h1 class="subtitle">Pomyślnie dokonano zakupu.</h1>
+                        <h2 class="desc">Wszystkie zakupione kursy dostępne są w
+                        <ul class="href">
+                            <li><a class="list_link" href="/edu/profil.php"><span class="bold">panelu użytkownika</span></a></li>
+                        </ul>.</h2>
+
+                        <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
+                        <a href="/edu/kurs.php?id=<?php echo $_GET['id']; ?>" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+
+        </div>
+
+
+        <!--
+            START popup
+        -->
+        <div th:insert="~{popup :: popup}"></div>
+
+
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/header.js"></script>
+        <script src="/js/manipulation.js"></script>
+        <script src="/js/popup.js"></script>
+
+    
+</body>
+
+
+<script th:inline="javascript">
+
+    let myNav      = document.getElementById("header");
+    let main_title = document.getElementById("main_title");
+
+
+    window.onload = function (){
+        myNav.classList.add("nav_active");
+    };
+
+
+
+    function openNextTopic(topic_id) {
+        let element  = document.getElementById("topics_list");
+
+        window.location.href = "/edu/kurs.php?id=<?php echo $_GET['id']; ?>&topic=" + topic_id + "&p=0";
+    }
+
+
+
+
+
+
+    // Get the button that opens the modal
+    let button_buy = document.getElementById("button_buy");
+
+    let modal_buy = document.getElementById('modal_buy');
+
+    // Get the <span> element that closes the modal
+    let close_btn = document.getElementsByClassName("close")[0];
+    let modal_content = document.getElementsByClassName("modal_content")[0];
+
+    // When the user clicks the button, open the modal
+    button_buy.onclick = function() {
+        modal_buy.classList.add("active");
+        modal_content.classList.add("active");
+    }
+
+
+
+    function closeModal() {
+        modal_buy.classList.remove("active");
+        modal_content.classList.remove("active");
+    }
+
+
+
+
+    // When the user clicks on <span> (x), close the modal
+    close_btn.onclick = function() {
+        closeModal();
+    }
+
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target === modal_buy) {
+            closeModal();
+        }
+    }
+
+
+
+
+
+    // When the user clicks enter while using discount code
+    $('#discount_code_input').keypress(function(e) {
+        if(e.keyCode === 13) $('#discount_icon').click();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function verifyPayment() {
+        if (document.getElementById("terms_input").checked) {
+
+            $.ajax({
+                type:"POST",
+                dataType:"json",
+                data: { course_id: /*[[${course.id}]]*/ "", code_name: document.getElementById('discount_code_input').value},
+                url:"php/purchase/verifyPayment.php",
+                success: function(data) {
+
+                    if (data.response) {
+
+                        let progress_item = document.getElementsByClassName('progress_item');
+                        progress_item[0].classList.add('complete');
+                        progress_item[1].classList.add('complete');
+                        progress_item[2].classList.add('complete');
+
+
+                        let tab_section = document.getElementsByClassName('tab_section');
+
+                        for (let i=0; i < tab_section.length; i++) {
+                            tab_section[i].classList.remove("active");
+                        }
+
+                        tab_section[tab_section.length-1].classList.add("active");
+
+                        document.getElementById("main_title").innerHTML = "Przejdź do swojego profilu aby skorzystać z kursu";
+
+                    }
+
+                    console.log(data.response);
+                    showPopup(data.message, data.response);
+
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.warn(xhr.responseText);
+                }
+            });
+
+
+        } else {
+            showPopup("Błąd: Upewnij się, że zaznaczyłeś wszystkie obowiązkowe pola.", false);
+            return;
+        }
+    }
+
+
+
+
+
+
+    function useDiscountCode() {
+        if (!(document.getElementById('discount_icon').className === "fas fa-times-circle")) {
+
+            let discount_input = document.getElementById('discount_code_input');
+            let code_name      = discount_input.value;
+
+            if (code_name === "" || code_name == null) {
+                showPopup("Błąd: Pole z kodem rabatowym nie może być puste.", false);
+                return;
+            }
+
+            $.ajax({
+                type:"POST",
+                dataType:"json",
+                data: { course_id: /*[[${course.id}]]*/ "", code_name: code_name },
+                url:"php/purchase/useDiscountCode.php",
+                success: function(data) {
+
+                    if (data.response) {
+
+                        let text = '<tr>'+
+                                        '<td>' + data.lista.title + '</td>' +
+                                        '<td>-' + data.lista.discount + ' zł</td>' +
+                                    '</tr>';
+
+
+                        $("#payment_table").append(text);
+
+
+                        document.getElementById("discount_icon").className = "fas fa-times-circle";
+                        discount_input.disabled = true;
+                        discount_input.classList.add("disabled");
+
+                        document.getElementById('final_price').innerHTML = data.price + " zł";
+                    }
+
+                    showPopup(data.message, data.response);
+
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.warn(xhr.responseText);
+                }
+            });
+        }
+    }
+
+
+
+
+
+
+
+
+    function getUrlParam(name) {
+        let results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return (results && results[1]) || undefined;
+    }
+
+
+    let sortType = 3;
+    if (getUrlParam("s") != null) {
+        sortType = getUrlParam("s");
+    }
+
+</script>
+
+
+
+</html>

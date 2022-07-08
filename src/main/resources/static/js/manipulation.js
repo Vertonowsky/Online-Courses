@@ -42,7 +42,7 @@ function loadCourses(typeFilters, categoryFilters) {
                                         '<div class="photo">' +
                                             '<img src="/images/course_photo_' + element.id + '.png" />' +
                                         '</div>' +
-                                        '<p class="category">[' + element.category + ']</p>' +
+                                        '<p class="category">[' + element.category.charAt(0) + ((element.category).slice(1)).toLowerCase() + ']</p>' +
                                     '</div>' +
 
                                     '<div class="right">' +
