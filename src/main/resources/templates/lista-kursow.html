@@ -37,10 +37,10 @@
                     <div id="right_panel">
 
                         <ul id="filters_ul">
-                            <h1 class="title">Rodzaj</h1>
-                            <li th:each="type : ${subjects}">
+                            <li>
+                                <h1 class="title">Rodzaj</h1>
                                 <!-- CHECKBOX- custom checkbox input -->
-                                <div class="checkbox_body">
+                                <div class="checkbox_body" th:each="type : ${subjects}">
                                     <div style="display: block;" class="standard-checkbox">
                                         <label class="checkbox-border">
                                             <input th:data-name="${type}" type="checkbox" class="checkbox_type invisible"/>
@@ -57,10 +57,10 @@
                             </li>
 
 
-                            <h1 class="title">Kategoria</h1>
-                            <li th:each="category : ${categories}">
+                            <li>
+                                <h1 class="title">Kategoria</h1>
                                 <!-- CHECKBOX- custom checkbox input -->
-                                <div class="checkbox_body">
+                                <div class="checkbox_body" th:each="category : ${categories}">
                                     <div style="display: block;" class="standard-checkbox">
                                         <label class="checkbox-border">
                                             <input th:data-name="${#strings.capitalize(#strings.toLowerCase(category))}" type="checkbox" class="checkbox_category invisible"></input>
@@ -75,7 +75,6 @@
                                     <span class="checkbox-label" th:text="${#strings.capitalize(#strings.toLowerCase(category))}"></span>
                                 </div>
                             </li>
-
                         </ul>
                     </div>
                 </div>
@@ -107,11 +106,15 @@
 </body>
     <script>
 
+        $(function() {
+            loadCourses(typeFilters, categoryFilters);
+        })
+
+
         const myNav = document.getElementById("header");
         window.onload = function () { 
             myNav.classList.add("nav_active");
         };
-
 
 
         /* START CheckBox backend */
@@ -135,8 +138,15 @@
             let top_panel  = document.getElementById("top_panel");
             let filters_ul = document.getElementById("filters_ul");
 
-            if (button.classList.contains("active")) 
-                top_panel.style.paddingBottom = (filters_ul.offsetHeight + 30) + "px";
+            if (button.classList.contains("active")) {
+                if (window.innerWidth >= 1200)
+                    top_panel.style.paddingBottom = "30px";
+
+                else
+                    top_panel.style.paddingBottom = (filters_ul.offsetHeight + 30) + "px";
+
+            }
+
         };
 
     </script>

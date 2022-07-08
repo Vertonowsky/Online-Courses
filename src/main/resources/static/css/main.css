@@ -857,7 +857,7 @@
 
 
             #courses #right_panel li {
-                margin-bottom: 20px;
+                margin-bottom: 10px;
             }
 
             #courses #right_panel li:last-child {
@@ -942,6 +942,8 @@
                 cursor: pointer;
                 font-size: 20px;
             }
+
+
 
 
 

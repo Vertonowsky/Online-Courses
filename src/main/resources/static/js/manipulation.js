@@ -4,14 +4,6 @@ let typeFilters      = [];
 
 
 
-
-/*$(function() {
-    loadCourses(category_filters, subject_filters);
-});*/
-
-
-
-
 /**
  * 
  *           --[ START ]--
@@ -61,7 +53,7 @@ function loadCourses(typeFilters, categoryFilters) {
                                             '</div>' +
                                             '<p class="desc ">' + element.description + '</p>' +
 
-                                            '<div class="button_green" onclick="openCourseDisplay(' + element.course_id + ')">Sprawdź <i class="fas fa-arrow-circle-right"></i></div>' +
+                                            '<a class="button_green" href="/wyswietl/' + element.id + '">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>' +
 
                                         '</div>' +
                                     '</div>' + 
@@ -73,7 +65,7 @@ function loadCourses(typeFilters, categoryFilters) {
             if (lista.length > 0) document.getElementById("courses_list").innerHTML = text;
 
             //show heading above all courses list
-            if (document.getElementById('top_panel') != null) updateCoursesHeading(lista.length, typeFilters);
+            if (document.getElementById('top_panel') != null) updateCoursesHeading(lista.length, categoryFilters);
 
             
         },
@@ -112,19 +104,19 @@ function loadCourses(typeFilters, categoryFilters) {
  *  subject_filters -> filters describing course subject
  * 
  */
-function updateCoursesHeading(size, subject_filters) {
+function updateCoursesHeading(size, categoryFilters) {
     let top_panel = document.getElementById('top_panel');
-    let prefix = " kursów";
+    let prefix = " kurs";
     if (size > 0 && size <= 4) prefix = " kursy";
     if (size >= 5) prefix = " kursów";
 
     let cat = "";
-    let filters_size = subject_filters.length;
-    if (filters_size == 1) cat = "Wszystko";
+    let filters_size = categoryFilters.length;
+    if (filters_size === 0) cat = "Wszystko";
     if (filters_size > 0) {
-        for (let i=1; i < filters_size; i++) {
-            cat = cat + subject_filters[i];
-            if (i < filters_size-1) cat = cat + ", ";
+        for (let i = 0; i < filters_size; i++) {
+            cat = cat + categoryFilters[i];
+            if (i < filters_size -1) cat = cat + ", ";
         }
 
     }
