@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 public class CourseController {
 
@@ -71,10 +73,30 @@ public class CourseController {
 
     @RequestMapping("/lista-kursow")
     public String courseListView(Model model) {
-        model.addAttribute("courses", courseRepository.findAll());
-        model.addAttribute("subjects", MySQL.getSingleFilter("SELECT DISTINCT type FROM courses"));
-        model.addAttribute("categories", MySQL.getSingleFilter("SELECT DISTINCT category FROM courses"));
+        List<String> subjects = MySQL.getSingleFilter("SELECT DISTINCT type FROM courses");
+        List<String> categories = MySQL.getSingleFilter("SELECT DISTINCT category FROM courses");
+
+        StringBuilder sb = new StringBuilder();
+
+        int i = 0;
+        for (String sub : subjects) {
+            sb.append("'");
+            sb.append(sub);
+            sb.append("'");
+            i++;
+
+            if (i < subjects.size()) sb.append(", ");
+        }
+
+        System.out.println(sb);
+
+        model.addAttribute("subjects", subjects);
+        model.addAttribute("categories", categories);
+        //model.addAttribute("courses", courseRepository.findAllWithCondition(sb.toString()));
         return "lista-kursow";
     }
+
+
+
 
 }

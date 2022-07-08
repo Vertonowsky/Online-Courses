@@ -1,6 +1,6 @@
 
-const category_filters = ["null"];
-const subject_filters  = ["null"];
+let categoryFilters  = [];
+let typeFilters      = [];
 
 
 
@@ -25,16 +25,18 @@ const subject_filters  = ["null"];
  *  subject_filters  -> filters describing course subject
  * 
  */
-function loadCourses(category_filters, subject_filters) {
+function loadCourses(typeFilters, categoryFilters) {
             
     $.ajax({
-        type:"POST",
+        type:"GET",
         dataType:"json",
-        data: { "category_filters":JSON.stringify(category_filters), "subject_filters":JSON.stringify(subject_filters) },
-        url:"php/manipulation/loadCourses.php", 
+        data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters) },
+        url:"/manipulation/loadCourses",
         success: function(data) {
 
-            let lista = data.lista;
+            console.log(data);
+
+            let lista = data;
             if (lista.length == 0) {
                 document.getElementById("courses_list").innerHTML = "<div id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>";  
             }
@@ -46,7 +48,7 @@ function loadCourses(category_filters, subject_filters) {
                 text = text + '<div class="course_container">'+
                                     '<div class="left">' +
                                         '<div class="photo">' +
-                                            '<img src="/edu/images/course_photo_' + element.course_id + '.png" />' +
+                                            '<img src="/images/course_photo_' + element.id + '.png" />' +
                                         '</div>' +
                                         '<p class="category">[' + element.category + ']</p>' +
                                     '</div>' +
@@ -71,7 +73,8 @@ function loadCourses(category_filters, subject_filters) {
             if (lista.length > 0) document.getElementById("courses_list").innerHTML = text;
 
             //show heading above all courses list
-            if (document.getElementById('top_panel') != null) updateCoursesHeading(lista.length, subject_filters);
+            if (document.getElementById('top_panel') != null) updateCoursesHeading(lista.length, typeFilters);
+
             
         },
         error: function(xhr, status, error) {

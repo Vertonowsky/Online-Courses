@@ -39,6 +39,8 @@ public class MySQL {
 
                 conn.close();
 
+                System.out.println("Rozlaczono!");
+
             } catch(SQLException e) {
                 e.printStackTrace();
             }
