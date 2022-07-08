@@ -15,6 +15,12 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
     Iterable<Course> findAllWithCondition(@Param("tp") List<String> types, @Param("ctg") List<Category> categories);
 
 
+    @Query("SELECT DISTINCT c.type FROM Course c ORDER BY c.type ASC")
+    Iterable<String> findAllTypes();
+
+    @Query("SELECT DISTINCT c.category FROM Course c ORDER BY c.category ASC")
+    Iterable<String> findAllCategories();
+
     Course findCourseById(Integer id);
 
 }

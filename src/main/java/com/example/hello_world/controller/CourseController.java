@@ -2,7 +2,6 @@ package com.example.hello_world.controller;
 
 import com.example.hello_world.Category;
 import com.example.hello_world.entity.Course;
-import com.example.hello_world.mysql.MySQL;
 import com.example.hello_world.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 public class CourseController {
@@ -73,30 +70,9 @@ public class CourseController {
 
     @RequestMapping("/lista-kursow")
     public String courseListView(Model model) {
-        List<String> subjects = MySQL.getSingleFilter("SELECT DISTINCT type FROM courses");
-        List<String> categories = MySQL.getSingleFilter("SELECT DISTINCT category FROM courses");
-
-        StringBuilder sb = new StringBuilder();
-
-        int i = 0;
-        for (String sub : subjects) {
-            sb.append("'");
-            sb.append(sub);
-            sb.append("'");
-            i++;
-
-            if (i < subjects.size()) sb.append(", ");
-        }
-
-        System.out.println(sb);
-
-        model.addAttribute("subjects", subjects);
-        model.addAttribute("categories", categories);
-        //model.addAttribute("courses", courseRepository.findAllWithCondition(sb.toString()));
+        model.addAttribute("subjects", courseRepository.findAllTypes());
+        model.addAttribute("categories", courseRepository.findAllCategories());
         return "lista-kursow";
     }
-
-
-
 
 }

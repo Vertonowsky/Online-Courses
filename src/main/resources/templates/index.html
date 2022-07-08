@@ -170,32 +170,7 @@
             <div id="section3">
                 <div class="inner">
                     <h1 class="introduction">Nasze kursy:</h1>
-                    <div id="courses_list" th:fragment="coursesList">
-
-                        <div th:if="${courses.empty}" id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>
-
-                        <div th:each="course : ${courses}" class="course_container">
-                            <div class="left">
-                                <div class="photo">
-                                    <img alt="" th:src="@{'/images/course_photo_' + ${course.id} + '.png'}" />-->
-                                </div>
-                                <p class="category" th:text="'[' + ${#strings.capitalize(#strings.toLowerCase(course.category))} + ']'"></p>
-                            </div>
-
-                            <div class="right">
-                                <div class="description">
-
-                                    <div class="title_with_shadow">
-                                        <span class="tit_text" th:text="${course.name}"><div class="tit_bck"></div></span>
-                                        </div>
-                                    <p class="desc" th:text="${course.description}"></p>
-
-                                    <a class="button_green" th:href="@{'/wyswietl/' + ${course.id}}">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-
+                    <div id="courses_list">
                     </div>
 
                     <div class="dots">
@@ -230,6 +205,10 @@
 
 
 <script>
+
+    $(function() {
+        loadCourses(typeFilters, categoryFilters);
+    })
 
     const header_buttons = document.getElementById("header_buttons");
     const myNav          = document.getElementById("header");
