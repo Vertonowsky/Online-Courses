@@ -25,7 +25,7 @@ public class RegistrationController {
     private IUserService userService;
 
 
-    @GetMapping("/user/registration")
+    @GetMapping("/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
         UserDto userDto = new UserDto();
         model.addAttribute("user", userDto);
@@ -33,7 +33,7 @@ public class RegistrationController {
     }
 
 
-    @PostMapping("/user/registration")
+    @PostMapping("/registration")
     public ModelAndView registerUserAccount (
             @ModelAttribute("user") @Valid UserDto userDto,
             HttpServletRequest request,

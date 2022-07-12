@@ -26,12 +26,16 @@ public class UserService implements IUserService {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
+        user.setActive(true);
+        user.setRoles("ROLE_USER");
 
         return userRepository.save(user);
     }
 
     private boolean emailExists(String email) {
-        return userRepository.findByEmail(email) != null;
+        boolean present = userRepository.findByEmail(email).isPresent();
+        System.out.println("hahahahaha" + present);
+        return present;
     }
 }
 

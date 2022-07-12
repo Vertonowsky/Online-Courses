@@ -7,7 +7,7 @@
 <body>
 <h1 th:text="'Rejestracja'">form</h1>
 <p th:text="${message}"> </p>
-<form action="/user/registration" th:object="${user}" method="POST" enctype="utf8">
+<form th:action="@{/registration}" th:object="${user}" method="POST">
     <div>
         <label th:text="'Adres email'">email</label>
         <input type="email" th:field="${user.email}"/>

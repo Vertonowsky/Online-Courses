@@ -19,8 +19,15 @@ public class User {
     @Column(nullable = false, length = 60)
     private String email;
 
+
     @Column(nullable = false, length = 64)
     private String password;
+
+
+    private boolean active;
+
+
+    private String roles;
 
     //@Column(nullable = false, length = 32)
     //Rank rank;
@@ -29,16 +36,15 @@ public class User {
     //Date registrationDate;
 
 
+
     public User() {
 
     }
 
 
-    public User(String salt, String email, String password, Rank rank) {
-        //this.salt = salt;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
-        //this.rank = rank;
     }
 
     public Integer getId() {
@@ -60,6 +66,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
 
     <title>Title</title>
@@ -18,14 +18,32 @@
             <a class="header_button" href="">Kontakt</a>
         </div>
 
-        <div id="buttons">';
+        <div id="buttons">
 
             <!--
                 CHECK IF USER IS LOOGED IN - IF HE IS THEN SHOW LOGOUT BUTTON
             -->
 
-            <a th:href="@{/logowanie}" class="button_transparent_underline" id="login_button">Zaloguj</a>
-            <a th:href="@{/rejestracja}" class="button_white" id="register_button">Zarejestruj<i class="fas fa-arrow-circle-right"></i></a>';
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/logowanie}" class="button_transparent_underline" id="login_button">Zaloguj</a>
+                <a th:href="@{/rejestracja}" class="button_white" id="register_button">Zarejestruj<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+
+
+            <div sec:authorize="isAuthenticated()">
+                <div class="dropdown">
+                    <a class="dropbtn" th:href="@{/profil}"><div th:text="${#authentication.getPrincipal().getUsername()}"><i class="fas fa-caret-down"></i></div></a>
+
+                    <div class="dropdown_content">
+
+                        <!--<a href="admin.php" class="dropdown_link"><i class="fas fa-tools"></i> Panel administracyjny </a>-->
+
+                        <a class="dropdown_link" th:href="@{/profil}"><i class="fas fa-user-circle"></i> Moje konto</a>
+                        <a class="dropdown_link" th:href="@{/kontynnuj_kurs}"><i class="fas fa-file-video"></i> Kontynuuj kurs</a>
+                        <a class="dropdown_link" th:href="@{/logout}"><i class="far fa-arrow-alt-circle-left"></i> Wyloguj się</a>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>

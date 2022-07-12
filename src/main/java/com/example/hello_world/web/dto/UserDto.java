@@ -56,8 +56,4 @@ public class UserDto {
         this.password = password;
         this.matchingPassword = matchingPassword;
     }
-
-
-
-
 }
