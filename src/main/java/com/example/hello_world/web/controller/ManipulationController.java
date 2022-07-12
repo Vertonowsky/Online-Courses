@@ -1,8 +1,8 @@
-package com.example.hello_world.controller;
+package com.example.hello_world.web.controller;
 
 import com.example.hello_world.Category;
-import com.example.hello_world.entity.Course;
-import com.example.hello_world.repository.CourseRepository;
+import com.example.hello_world.persistence.model.Course;
+import com.example.hello_world.persistence.repository.CourseRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

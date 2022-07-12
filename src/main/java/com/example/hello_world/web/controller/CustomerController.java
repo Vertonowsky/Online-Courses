@@ -1,7 +1,7 @@
-package com.example.hello_world.controller;
+package com.example.hello_world.web.controller;
 
-import com.example.hello_world.entity.Customer;
-import com.example.hello_world.repository.CustomerRepository;
+import com.example.hello_world.persistence.model.Customer;
+import com.example.hello_world.persistence.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

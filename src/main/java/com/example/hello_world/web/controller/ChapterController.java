@@ -1,9 +1,9 @@
-package com.example.hello_world.controller;
+package com.example.hello_world.web.controller;
 
-import com.example.hello_world.entity.Chapter;
-import com.example.hello_world.entity.Course;
-import com.example.hello_world.repository.ChapterRepository;
-import com.example.hello_world.repository.CourseRepository;
+import com.example.hello_world.persistence.model.Chapter;
+import com.example.hello_world.persistence.model.Course;
+import com.example.hello_world.persistence.repository.ChapterRepository;
+import com.example.hello_world.persistence.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

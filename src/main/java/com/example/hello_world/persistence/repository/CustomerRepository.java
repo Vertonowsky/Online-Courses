@@ -1,6 +1,6 @@
-package com.example.hello_world.repository;
+package com.example.hello_world.persistence.repository;
 
-import com.example.hello_world.entity.Customer;
+import com.example.hello_world.persistence.model.Customer;
 import org.springframework.data.repository.CrudRepository;
 
 public interface CustomerRepository extends CrudRepository<Customer, Integer> {

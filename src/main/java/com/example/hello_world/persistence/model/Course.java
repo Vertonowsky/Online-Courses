@@ -1,4 +1,4 @@
-package com.example.hello_world.entity;
+package com.example.hello_world.persistence.model;
 
 
 import com.example.hello_world.Category;

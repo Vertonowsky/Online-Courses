@@ -1,6 +1,6 @@
-package com.example.hello_world.repository;
+package com.example.hello_world.persistence.repository;
 
-import com.example.hello_world.entity.Topic;
+import com.example.hello_world.persistence.model.Topic;
 import org.springframework.data.repository.CrudRepository;
 
 public interface TopicRepository extends CrudRepository<Topic, Integer> {

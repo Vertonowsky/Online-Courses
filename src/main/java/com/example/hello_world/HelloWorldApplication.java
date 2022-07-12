@@ -1,7 +1,7 @@
 package com.example.hello_world;
 
 import com.example.hello_world.mysql.MySQL;
-import com.example.hello_world.repository.CourseRepository;
+import com.example.hello_world.persistence.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

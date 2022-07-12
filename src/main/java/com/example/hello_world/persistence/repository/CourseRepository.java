@@ -1,7 +1,7 @@
-package com.example.hello_world.repository;
+package com.example.hello_world.persistence.repository;
 
 import com.example.hello_world.Category;
-import com.example.hello_world.entity.Course;
+import com.example.hello_world.persistence.model.Course;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +20,8 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     @Query("SELECT DISTINCT c.category FROM Course c ORDER BY c.category ASC")
     Iterable<String> findAllCategories();
+
+
 
     Course findCourseById(Integer id);
 
