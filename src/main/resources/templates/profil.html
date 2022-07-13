@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+    <title>Panel użytkownika</title>
+
+    <link rel="stylesheet" href="/css/profil.css"/>
+    <link rel="stylesheet" href="/css/course_container.css">
+
+    <div th:insert="~{dependencies :: dependencies}"></div>
+
+</head>
+
+<body>
+
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header}"></div>
+
+        <div id="profile_content">
+
+            <div id="content_left">
+                <div id="courses_list">
+                    <h1 class="heading">Kursy</h1>
+
+
+                    <?php
+
+						require_once($_SERVER['DOCUMENT_ROOT'] . "/edu/php/database/MysqlConnection.php");
+						$mysqlConnection = new MysqlConnection();
+						$conn = $mysqlConnection->open();
+
+                    $sql = "SELECT course_id FROM owned_courses WHERE user_id = (SELECT user_id FROM users WHERE BINARY email='".$_SESSION['email']."')";
+
+                    $ownedCourses = array();
+                    $today        = 0;
+                    $lastWeek     = 0;
+                    $lastMonth    = 0;
+
+
+                    if ($result=$conn->query($sql)) {
+                    if ($result->num_rows > 0) {
+                    while($row = $result->fetch_assoc()) {
+                    $ownedCourses[] = intval($row['course_id']);
+                    }
+                    }
+                    }
+
+                    $now = new DateTime();
+                    $now = $now->setTime(24, 00, 00);
+
+                    $nowDate = new DateTime();
+                    $nowDate = $nowDate->format('Y-m-d H:i:s');
+
+
+                    if (sizeof($ownedCourses) <= 0) {
+                    echo '<div id="no_courses_found" class="window">
+                    <i class="center_icon fas fa-exclamation-circle"></i>
+
+                    <h1 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h1>
+                    <h2 class="desc">Zobacz naszą pełną ofertę i sam zdecyduj co Cię interesuje!
+
+                        <a href="/edu/courses-list.php" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
+
+                </div>
+                    ';
+                    }
+
+
+
+                    else {
+                    foreach ($ownedCourses as $courseId) {
+
+                    $sql2 = "SELECT course_complete_$courseId.*, courses.name, courses.category, owned_courses.expiry_date FROM courses, owned_courses, course_complete_$courseId WHERE course_complete_$courseId.user_id = (SELECT user_id FROM users WHERE BINARY email='".$_SESSION['email']."') AND courses.course_id=$courseId AND owned_courses.course_id=$courseId AND owned_courses.user_id = (SELECT user_id FROM users WHERE BINARY email='".$_SESSION['email']."') LIMIT 1";
+
+                    if ($result=$conn->query($sql2)) {
+                    if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+
+                    //array_slice() removes first element from array which is user_id
+                    $row = array_slice($row, 2);
+                    $size = sizeof($row) -3;
+                    $finished = 0;
+
+                    foreach ($row as $key => $value) {
+                    if ($key != "name" && $key != "category" && $key != "expiry_date") {
+                    $topicId = str_replace("topic_", "", $key);
+                    if ($value != null) {
+                    $finished++;
+
+                    $finishDate = date_create($value);
+
+                    $interval = $finishDate->diff($now);
+                    $days     = $interval->format('%r%a');    // %r (negative [-], positive [blank]), %a total difference in days
+
+                    if ($days == 0) $today++;
+                    if ($days >= 0 && $days <= 7) $lastWeek++;
+                    if ($days >= 0 && $days <= 30) $lastMonth++;
+                    }
+                    }
+                    }
+
+                    $sizeHelp = $size;
+                    if ($sizeHelp == 0) $sizeHelp = 1;
+
+                    $percent = ceil(($finished/$sizeHelp)*100); //round up to integer
+
+                    $expiry = date_create($row["expiry_date"]);
+                    $expiry = $expiry->format("d.m.Y");
+
+
+                    //<p class="title">'.$row['name'].'</p>
+
+                    echo '<div class="course_container">
+
+                    <div class="left">
+                        <div class="photo">
+                            <img src="/edu/images/course_photo_'.$courseId.'.png" />
+                        </div>
+                        <p class="category">['.$row['category'].']</p>
+
+                    </div>
+
+                    <div class="right">
+                        <div class="description">
+
+
+                            <div class="title_with_shadow">
+                                <span class="tit_text"><div class="tit_bck"></div>'.$row['name'].'</span>
+                            </div>
+
+
+                            <div class="linear_buttons">
+                                <div class="progress_background">
+                                    <div class="progress_fill" data-done="'.$percent.'"></div>
+                                    <span class="progresss_info">Ukończono '.$percent.' %</span>
+                                </div>
+
+                                <div class="button_green" onclick="openCourse('.$courseId.')">Kontynuuj <i class="fas fa-arrow-circle-right"></i></div>
+                            </div>
+
+                        </div>
+
+                    </div>';
+
+
+                    if ($nowDate > date_create($row["expiry_date"])->format('Y-m-d H:i:s')) {
+
+                    echo '
+
+                    <div class="expires expired"> <i class="expired_icon fas fa-exclamation-triangle"></i> Ważny do: '.$expiry.'r</div>
+
+                    ';
+
+
+                    } else {
+
+                    echo '<div class="expires">Ważny do: '.$expiry.'r</div>';
+
+                    }
+
+                    echo '</div>';
+
+                    }
+                    }
+                    }
+                    }
+
+
+
+
+
+                    //let it be percentage instead of days number
+                    $todayP     = ($today/1)*100;
+                    $lastWeekP  = ($lastWeek/7)*100;
+                    $lastMonthP = ($lastMonth/30)*100;
+
+                    if ($todayP > 100)     $todayP = 100;
+                    if ($lastWeekP > 100)  $lastWeekP = 100;
+                    if ($lastMonthP > 100) $lastMonthP = 100;
+
+
+                    ?>
+                </div>
+            </div>
+
+
+            <div id="content_right">
+                <div id="statistics" class="window">
+                    <div class="section">
+                        <h1 class="heading">Osiągnięte cele</h1>
+
+                        <div class="progress_background">
+                            <div class="progress_fill" data-done="<?php echo $todayP ?>"></div>
+                            <span class="progresss_info">Dzisiejszy cel [<?php echo $today ?>]</span>
+                            <span class="progresss_target">1 kurs</span>
+                        </div>
+
+
+                        <div class="progress_background">
+                            <div class="progress_fill" data-done="<?php echo $lastWeekP ?>"></div>
+                            <span class="progresss_info">Ostatni tydzień [<?php echo $lastWeek ?>]</span>
+                            <span class="progresss_target">7 kursów</span>
+                        </div>
+
+
+                        <div class="progress_background">
+                            <div class="progress_fill" data-done="<?php echo $lastMonthP ?>"></div>
+                            <span class="progresss_info">Ostatni miesiąc [<?php echo $lastMonth ?>]</span>
+                            <span class="progresss_target">30 kursów</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div id="payment_history" class="window">
+                    <h1 class="heading">Historia transakcji</h1>
+                    <div class="activity_section">
+
+
+                        <?php
+
+							$sql = "SELECT date_proceed, amount, course_id AS dd, (SELECT name FROM courses WHERE course_id=dd) AS name FROM payment_history";
+
+							if ($result=$conn->query($sql)) {
+                        while($row = $result->fetch_assoc()) {
+
+                        $now = date_create($row["date_proceed"])->format('d.m.Y');
+
+                        echo '
+
+                        <div class="activity">
+                            <div class="date circular">'.$now.'</div>
+                            <div class="price circular">'.number_format($row['amount'], 2).'zł</div>
+
+                            <div class="title circular">'.$row['name'].'</div>
+                        </div>
+
+                        ';
+                        }
+                        }
+
+                        $mysqlConnection->close();
+                        ?>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--
+            IMPORT FOOTER FROM EXTERNAL FILE
+        -->
+        <?php
+            $path = "content/footer.php";
+            include_once($path);
+        ?>
+
+
+
+
+        <script src="/edu/assets/jquery/jquery-1.11.3.js"></script>
+        <script src="/edu/js/header.js"></script>
+
+
+
+
+        <script>
+
+            var myNav = document.getElementById("header");
+            window.onload = function () {
+                myNav.classList.add("nav_active");
+                animateProgress();
+            };
+
+
+
+            function animateProgress() {
+                var progress_fill = document.getElementsByClassName("progress_fill");
+
+                for (var i=0; i< progress_fill.length; i++) {
+                    progress_fill[i].style.width = progress_fill[i].dataset.done + "%";
+                }
+            }
+
+
+            function openCourse(courseId) {
+                window.location = "/edu/szczegoly.php?id=" + courseId;
+            }
+
+        </script>
+
+</body>
+</html>

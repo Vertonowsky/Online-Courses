@@ -1,24 +1,16 @@
 package com.example.hello_world.web.dto;
 
-import com.example.hello_world.validation.PasswordMatches;
-import com.example.hello_world.validation.ValidEmail;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-@PasswordMatches
 public class UserDto {
 
-    @ValidEmail
-    @NotNull
-    @NotEmpty
-    @Size(min = 1)
+    private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[ąĄćĆśŚęĘóÓłŁńŃżŻźŹ$&+,:;=?@#|<>.^*()%!-]).{8,32}$";
+
+
+
     private String email;
-
-
-    @NotNull
-    @NotEmpty
     private String password;
     private String matchingPassword;
 
@@ -55,5 +47,29 @@ public class UserDto {
         this.email = email;
         this.password = password;
         this.matchingPassword = matchingPassword;
+    }
+
+
+
+    public boolean isPasswordValid() {
+        if (password == null || password.equals("") || password.isEmpty()) return false;
+        if (password.length() < 8 || password.length() > 32) return false;
+
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+    public boolean isEmailValid() {
+        if (email == null || email.equals("") || email.isEmpty()) return false;
+        if (email.length() > 64) return false;
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public boolean arePasswordsEqual() {
+        return password.equals(matchingPassword);
     }
 }

@@ -4,13 +4,13 @@
             IF INSERTED DATA MATCHES REGEXP
         */
         function checkInputData(index, type, data) {
-            updateSucces = (typeof updateSucces === 'undefined') ? true : updateSucces;
-            var complete = false;
-            var n        = 0;
+            let complete = false;
+            let msg = [];
+            let n   = 0;
 
 
-            var passStrength = document.getElementById("password_strength");
-            var passInside = document.getElementById("password_strength_inside");
+            let passStrength = document.getElementById("password_strength");
+            let passInside   = document.getElementById("password_strength_inside");
             
 
             /**
@@ -23,10 +23,10 @@
              * [!! IMPORTANT !!]
              *  Only very strong password is considered as valid
              */
-            if (type == "password" || type == "passwordRepeat") {
-                n         = 4;
-                var width = 100;
-                var msg   = [];
+            if (type === "password" || type === "passwordRepeat") {
+                let width = 100;
+                n   = 4;
+                msg = Array(n);
                 
                 msg[0] = "<i class='fas fa-check ok'></i> Minimum 8 znaków<br>";
                 msg[1] = "<i class='fas fa-check ok'></i> Duża litera<br>";
@@ -58,7 +58,7 @@
                 }
 
 
-                if (type == "password") {
+                if (type === "password") {
                     passStrength.style.visibility = "visible";
                     passInside.style.width = width + "%";
                     
@@ -77,9 +77,9 @@
             /**
              * Email REGEXP
              */
-            if (type == "email") {
-                var n   = 1;
-                var msg = Array(n);
+            if (type === "email") {
+                n   = 1;
+                msg = Array(n);
                 msg[0]  = "<i class='fas fa-times error'></i> Błędny format<br>";
                 
                 if (data.match(/^[a-z\d]+[\w\d.-]*@(?:[a-z\d]+[a-z\d-]+\.){1,5}[a-z]{2,6}$/i)) {
@@ -92,9 +92,9 @@
             /**
              * Password REGEXP - considered when user logs into account
              */
-            if (type == "passwordLogin") {
-                var n   = 1;
-                var msg = Array(n);
+            if (type === "passwordLogin") {
+                n   = 1;
+                msg = Array(n);
                 msg[0]  = "<i class='fas fa-times error'></i> Niedozwolone znaki<br>";
                 
                 if (data.match(/^[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ$&+,:;=?@#|<>.^*()%!-]+$/)) {
@@ -107,9 +107,9 @@
             /**
              * Check if user accepted terms of use
              */
-            if (type == "terms") {
-                var n   = 1;
-                var msg = Array(n);
+            if (type === "terms") {
+                n   = 1;
+                msg = Array(n);
                 msg[0]  = "<i class='fas fa-times error'></i> Pole obowiązkowe<br>";
                 
                 if (data) {
@@ -152,9 +152,9 @@
          * 
          */
         function sendAuthenticationData(type, form, email, password, passwordRepeat, terms) {
-            var correctData = 0; // Count correct data
+            let correctData = 0; // Count correct data
 
-            if (type == "login") {
+            if (type === "login") {
                 if (checkInputData(0, "email", email)) correctData++;
                 if (checkInputData(1, "passwordLogin", password))  correctData++;
                     
@@ -162,7 +162,7 @@
                 if (correctData != 2) return; // Value '2' means all data is correct
             
             
-            } else if (type == "register") {
+            } else if (type === "register") {
                 if (checkInputData(0, "email", email)) correctData++;
                 if (checkInputData(1, "password", password))  correctData++;
                 if (checkInputData(2, "passwordRepeat", passwordRepeat))  correctData++;
@@ -170,51 +170,24 @@
 
                 if (correctData != 4) return; // Value '4' means all data is correct
             }
-            
 
 
-            var url = form.attr('action');
+            console.log("ok");
+
+
+            let url = form.attr('action');
             
             $.ajax({
                 data: form.serialize(), // Serializes the form's elements
                 type: "POST",
                 dataType:"json",
-                url: url, 
+                url: url,
                 success: function(data) {
-                    var loginForward = 0;
-                    var idForward = 1;
-
-                    if (type == "login") {
-                        if (getUrlParam("id") != null) {
-                            idForward = parseInt(getUrlParam("id"));
-                            if (!Number.isInteger(idForward)) {
-                                idForward = 0;
-                            }
-                        }
-
-                        if (getUrlParam("buy") != null) {
-                            loginForward = parseInt(getUrlParam("buy"));
-                            if (!Number.isInteger(loginForward)) {
-                                loginForward = 0;
-                            }
-                        }
-                    }
-
-                    if (data.response) {
-                        if (loginForward == 1) {
-                            window.location.href = "/edu/wyswietl.php?id=" + idForward + "&active=1";
-
-                        } else {
-                            window.location.href = "/edu/profil.php";
-                        }
-                    } else {
-                        showPopup(data.message, 0);
-                    }
-
+                    window.location.href = "/profil";
                 }, 
                 error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
+                    let data = xhr.responseJSON;
+                    showPopup(data.message, 0);
                 }
             });
         }

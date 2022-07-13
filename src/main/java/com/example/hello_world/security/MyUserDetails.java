@@ -4,7 +4,6 @@ import com.example.hello_world.persistence.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,7 +50,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return new BCryptPasswordEncoder().encode(password);
+        return password;
     }
 
     @Override

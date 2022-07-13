@@ -40,7 +40,10 @@
 
                         <a class="dropdown_link" th:href="@{/profil}"><i class="fas fa-user-circle"></i> Moje konto</a>
                         <a class="dropdown_link" th:href="@{/kontynnuj_kurs}"><i class="fas fa-file-video"></i> Kontynuuj kurs</a>
-                        <a class="dropdown_link" th:href="@{/logout}"><i class="far fa-arrow-alt-circle-left"></i> Wyloguj się</a>
+                        <form th:action="@{/logout}" method="POST" modelAttribute="_csrf">
+                            <!--<button type="submit"> Logout </button>-->
+                            <button class="dropdown_link" type="submit"><i class="far fa-arrow-alt-circle-left"></i> Wyloguj się</button>
+                        </form>
                     </div>
                 </div>
             </div>

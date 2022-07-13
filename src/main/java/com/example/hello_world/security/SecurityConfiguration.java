@@ -13,7 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
-    
+    @Autowired
+    MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
+    @Autowired
+    MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+
     @Autowired
     MyUserDetailsService userDetailsService;
 
@@ -27,11 +32,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/logowanie2").permitAll()
                 .antMatchers("/registration").permitAll()
                 .antMatchers("/successRegister").permitAll()
                 .antMatchers("/").permitAll()
-                .and().formLogin();
-    }
+                .and()
+                    .formLogin()
+                    .loginPage("/logowanie")
+                    .usernameParameter("email")
+                    .passwordParameter("password")
+                    .loginProcessingUrl("/logowanie2").permitAll()
+                    .successHandler(myAuthenticationSuccessHandler)
+                    .failureHandler(myAuthenticationFailureHandler)
+                    .permitAll()
+                .and()
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll();
+        }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {

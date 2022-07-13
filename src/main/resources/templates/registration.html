@@ -10,19 +10,15 @@
 <form th:action="@{/registration}" th:object="${user}" method="POST">
     <div>
         <label th:text="'Adres email'">email</label>
-        <input type="email" th:field="${user.email}"/>
-        <p th:each="error : ${#fields.errors('email')}"
-           th:text="${error}">Validation error</p>
+        <input type="text" name="email"/>
     </div>
     <div>
         <label th:text="'Podaj hasło'">password</label>
-        <input type="password" th:field="${user.password}"/>
-        <p th:each="error : ${#fields.errors('password')}"
-           th:text="${error}">Validation error</p>
+        <input type="password" name="password"/>
     </div>
     <div>
         <label th:text="'Powtorz hasło'">confirm</label>
-        <input type="password" th:field="${user.matchingPassword}"/>
+        <input type="password" name="matchingPassword"/>
     </div>
     <button type="submit" th:text="'Wyślij'">submit</button>
 </form>

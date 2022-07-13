@@ -2,6 +2,7 @@ package com.example.hello_world.persistence.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -32,8 +33,8 @@ public class User {
     //@Column(nullable = false, length = 32)
     //Rank rank;
 
-    //@Column(name="registration_date", nullable = false)
-    //Date registrationDate;
+    @Column(name="registration_date", nullable = false)
+    Date registrationDate;
 
 
 
@@ -84,4 +85,11 @@ public class User {
         this.active = active;
     }
 
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
 }

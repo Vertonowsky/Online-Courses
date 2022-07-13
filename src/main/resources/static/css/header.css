@@ -236,12 +236,20 @@
             box-sizing: border-box;
             display: block;
             color: #4D4D4D;
-            background: #fff;
             background: transparent;
             font-size: 15px;
             padding: 14px 12px;
             text-decoration: none;
             transition: all 0.3s;
+        }
+
+        .dropdown_content button {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            text-align: left;
         }
 
         .dropdown_content .dropdown_link i {

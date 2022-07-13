@@ -49,14 +49,23 @@
                     <div class="desc">Zaloguj się, aby mieć dostęp do posiadanych kursów</div>
 
 
-                    <form id="login_form" action="php/auth/login.php" method="POST">
+
+                    <div th:if="${param.error}">
+                        Invalid username and password.
+                    </div>
+                    <div th:if="${param.logout}">
+                        You have been logged out.
+                    </div>
+
+
+                    <form id="login_form" th:action="@{/logowanie2}" method="POST">
 
                         <!--
                             INPUT GROUP - Input with its elements
                         -->
                         <div class="input_group">
                             <input value="" id="login_data_email" class="input" type="text" name="email" autofocus oninput="checkInputData(0, 'email', this.value)">
-                            <label>Email: </label>
+                            <label> Email: </label>
 
                             <!--
                                 TOOLTIP - Information about corectness of data
@@ -74,7 +83,7 @@
                         -->
                         <div class="input_group">
                             <input value="" id="login_data_password" class="input" type="password" name="password" oninput="checkInputData(1, 'passwordLogin', this.value)">
-                            <label>Hasło: </label>
+                            <label> Hasło: </label>
 
                             <!--
                                 TOOLTIP - Information about corectness of data
