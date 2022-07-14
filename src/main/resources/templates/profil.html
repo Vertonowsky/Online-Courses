@@ -263,15 +263,15 @@
 
 
 
-        <script src="/edu/assets/jquery/jquery-1.11.3.js"></script>
-        <script src="/edu/js/header.js"></script>
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/header.js"></script>
 
 
 
 
         <script>
 
-            var myNav = document.getElementById("header");
+            let myNav = document.getElementById("header");
             window.onload = function () {
                 myNav.classList.add("nav_active");
                 animateProgress();
@@ -280,9 +280,9 @@
 
 
             function animateProgress() {
-                var progress_fill = document.getElementsByClassName("progress_fill");
+                let progress_fill = document.getElementsByClassName("progress_fill");
 
-                for (var i=0; i< progress_fill.length; i++) {
+                for (let i=0; i < progress_fill.length; i++) {
                     progress_fill[i].style.width = progress_fill[i].dataset.done + "%";
                 }
             }

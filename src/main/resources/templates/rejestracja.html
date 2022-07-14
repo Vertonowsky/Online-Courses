@@ -50,14 +50,14 @@
 
 
                     <div id="register_square" class="tab_content">
-                        <form id="register_form" action="php/auth/register.php" method="POST">
+                        <form id="register_form" th:action="@{/auth/register}"  th:object="${user}" method="POST">
 
                             <!--
                                 INPUT GROUP - Input with its elements
                             -->
                             <div class="input_group">
-                                <input value="" id="register_data_email" class="input" type="text" name="email" autofocus oninput="checkInputData(0, 'email', this.value)">
-                                <label>Email: </label>
+                                <input value="" id="register_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, 'email', this.value)">
+                                <label> Email: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -74,8 +74,8 @@
                                 INPUT GROUP - Input with its elements
                             -->
                             <div class="input_group">
-                                <input value="" id="register_data_password" class="input" type="password" name="password" oninput="checkInputData(1, 'password', this.value)">
-                                <label>Hasło: </label>
+                                <input value="" id="register_data_password" class="input" type="password" name="password" autocomplete="new-password" oninput="checkInputData(1, 'password', this.value)">
+                                <label> Hasło: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -92,8 +92,8 @@
                                 INPUT GROUP - Input with its elements
                             -->
                             <div class="input_group" style="margin-bottom: 0px;">
-                                <input value="" id="register_data_password_repeat" class="input" type="password" name="passwordRepeat" oninput="checkInputData(2, 'passwordRepeat', this.value)">
-                                <label>Powtórz hasło: </label>
+                                <input value="" id="register_data_password_repeat" class="input" type="password" name="passwordRepeat" autocomplete="new-password" oninput="checkInputData(2, 'passwordRepeat', this.value)">
+                                <label> Powtórz hasło: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -195,9 +195,9 @@
 
 <script>
 
-    $("#login_form").submit(function(e) {
+    $("#register_form").submit(function(e) {
         e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-        sendAuthenticationData("login", $(this), document.getElementById("login_data_email").value, document.getElementById("login_data_password").value, null, null);
+        sendAuthenticationData("register", $(this), document.getElementById("register_data_email").value, document.getElementById("register_data_password").value, document.getElementById("register_data_password_repeat").value, document.getElementById("register_data_terms").checked);
     });
 
 </script>

@@ -39,19 +39,4 @@ public class HelloWorldApplication {
         model.addAttribute("courses", courseRepository.findAll());
         return "index";
     }
-
-
-
-
-    @RequestMapping("/logowanie")
-    public String loginView() {
-        return "logowanie";
-    }
-
-
-    @RequestMapping("/rejestracja")
-    public String RegisterView() {
-        return "rejestracja";
-    }
-
 }

@@ -12,7 +12,9 @@ public class UserDto {
 
     private String email;
     private String password;
-    private String matchingPassword;
+    private String passwordRepeat;
+
+    private boolean terms;
 
 
     public String getEmail() {
@@ -31,22 +33,30 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getMatchingPassword() {
-        return matchingPassword;
+    public String getPasswordRepeat() {
+        return passwordRepeat;
     }
 
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
     }
 
+    public boolean areTermsChecked() {
+        return terms;
+    }
+
+    public void setTerms(boolean terms) {
+        this.terms = terms;
+    }
 
     public UserDto() {
     }
 
-    public UserDto(String email, String password, String matchingPassword) {
+    public UserDto(String email, String password, String passwordRepeat, boolean terms) {
         this.email = email;
         this.password = password;
-        this.matchingPassword = matchingPassword;
+        this.passwordRepeat = passwordRepeat;
+        this.terms = terms;
     }
 
 
@@ -70,6 +80,6 @@ public class UserDto {
     }
 
     public boolean arePasswordsEqual() {
-        return password.equals(matchingPassword);
+        return password.equals(passwordRepeat);
     }
 }

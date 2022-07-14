@@ -183,11 +183,37 @@
                 dataType:"json",
                 url: url,
                 success: function(data) {
-                    window.location.href = "/profil";
+
+                    console.log(data);
+
+                    if (data == null || data.type == null || data.success == null || data.message == null) {
+                        showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                        return;
+                    }
+                    if (!(data.type === "register" || data.type === "login")) {
+                        showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                        return;
+                    }
+
+
+                    if (data.type === "register") {
+                        if (data.success) window.location.href = "/logowanie?registered=true";
+
+                        showPopup(data.message, data.success);
+                        return;
+
+                    } else if (data.type === "login") {
+                        if (data.success) window.location.href = "/profil";
+                        window.location.href = "/profil";
+                    }
+
+
+
                 }, 
                 error: function(xhr, status, error) {
                     let data = xhr.responseJSON;
-                    showPopup(data.message, 0);
+                    if (data != null || data != undefined)
+                        showPopup(data.message, 0);
                 }
             });
         }
