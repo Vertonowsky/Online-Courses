@@ -10,10 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -27,11 +24,13 @@ public class AuthController {
 
 
     @GetMapping("/logowanie")
-    public ModelAndView showLoginForm(Model model) {
+    public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered, Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return new ModelAndView( "logowanie");
+            ModelAndView mav = new ModelAndView( "logowanie");
+            mav.addObject("registered", registered);
+            return mav;
         }
 
         return new ModelAndView( "redirect:/");

@@ -60,7 +60,7 @@
                     <h1 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h1>
                     <h2 class="desc">Zobacz naszą pełną ofertę i sam zdecyduj co Cię interesuje!
 
-                        <a href="/edu/courses-list.php" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
+                        <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
 
                 </div>
                     ';
@@ -115,7 +115,7 @@
 
                     <div class="left">
                         <div class="photo">
-                            <img src="/edu/images/course_photo_'.$courseId.'.png" />
+                            <img src="/images/course_photo_'.$courseId.'.png" />
                         </div>
                         <p class="category">['.$row['category'].']</p>
 

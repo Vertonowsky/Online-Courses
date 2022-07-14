@@ -20,6 +20,16 @@
 
         <div id="auth_content">
 
+            <div id="registration_info_bg" th:if="${registered}">
+                <div class="window" id="registration_info">
+                    <i class="center_icon fas fa-check-circle"></i>
+                    <h1 class="subtitle">Proces rejestracji zakończony sukcesem!</h1>
+                    <h2 class="desc">Możesz się teraz zalogować na swoje konto.</h2>
+                    <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
+
+                </div>
+            </div>
+
             <div class="left">
 
                 <a th:href="@{/}" id="nav_logo">Kursowo.pl</a>
@@ -47,15 +57,6 @@
                     </div>
 
                     <div class="desc">Zaloguj się, aby mieć dostęp do posiadanych kursów</div>
-
-
-
-                    <div th:if="${param.error}">
-                        Invalid username and password.
-                    </div>
-                    <div th:if="${param.logout}">
-                        You have been logged out.
-                    </div>
 
 
                     <form id="login_form" th:action="@{/logowanie2}" method="POST">
@@ -152,6 +153,11 @@
         e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
         sendAuthenticationData("login", $(this), document.getElementById("login_data_email").value, document.getElementById("login_data_password").value, null, null);
     });
+
+    function closeRegistrationInfo() {
+        const info = document.getElementById("registration_info_bg");
+        info.style.display = "none";
+    }
 
 </script>
 
