@@ -172,9 +172,6 @@
             }
 
 
-            console.log("ok");
-
-
             let url = form.attr('action');
             
             $.ajax({

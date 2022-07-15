@@ -3,10 +3,13 @@
 <head>
     <title th:text="${course.name}"></title>
 
-    <link rel="stylesheet" href="/css/main.css"></link>
-    <link rel="stylesheet" href="/css/course_container.css"></link>
-    <link rel="stylesheet" href="/css/display.css"></link>
-    <link rel="stylesheet" href="/css/popup.css"></link>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/course_container.css"/>
+    <link rel="stylesheet" href="/css/display.css"/>
+    <link rel="stylesheet" href="/css/popup.css"/>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
     <div th:insert="~{dependencies :: dependencies}"></div>
 </head>
@@ -229,6 +232,11 @@ Wczytanie price, price_promotion i advantages
                                     <div class="input_group">
                                         <input id="discount_code_input" class="input" type="text" placeholder="...">
                                         <label>Kod rabatowy: </label>
+                                        <!--<form id="discount_form" th:action="@{/purchase/useDiscountCode}" method="POST">
+                                            <button type="submit"> <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i></button>
+                                            <input name="courseId" value="1"/>
+                                            <input name="codeName" value="jesien30"/>
+                                        </form>-->
                                         <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i>
                                     </div>
 
@@ -271,7 +279,7 @@ Wczytanie price, price_promotion i advantages
                         </ul>.</h2>
 
                         <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
-                        <a href="/edu/kurs.php?id=<?php echo $_GET['id']; ?>" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+                        <a th:href="@{'/kurs.php?id=' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
 
                     </div>
                 </div>
@@ -443,14 +451,27 @@ Wczytanie price, price_promotion i advantages
                 return;
             }
 
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
             $.ajax({
-                type:"POST",
-                dataType:"json",
-                data: { course_id: /*[[${course.id}]]*/ "", code_name: code_name },
-                url:"php/purchase/useDiscountCode.php",
+                type: "POST",
+                dataType: "json",
+                data: { courseId: /*[[${course.id}]]*/ "", codeName: code_name },
+                url: "/purchase/useDiscountCode",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
                 success: function(data) {
 
-                    if (data.response) {
+                    if (data == null) {
+                        showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                        return;
+                    }
+
+                    showPopup(data.message, data.success);
+
+                    if (data.success) {
 
                         let text = '<tr>'+
                                         '<td>' + data.lista.title + '</td>' +
@@ -467,8 +488,6 @@ Wczytanie price, price_promotion i advantages
 
                         document.getElementById('final_price').innerHTML = data.price + " zł";
                     }
-
-                    showPopup(data.message, data.response);
 
 
                 },

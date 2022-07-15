@@ -10,5 +10,7 @@ public interface DiscountCodeRepository extends JpaRepository<DiscountCode, Inte
 
     Optional<DiscountCode> findById(Integer id);
 
+    Optional<DiscountCode> findByName(String name);
+
 
 }
