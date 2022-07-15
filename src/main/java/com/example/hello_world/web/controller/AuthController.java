@@ -1,6 +1,8 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
@@ -21,6 +23,9 @@ public class AuthController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/logowanie")
@@ -90,5 +95,11 @@ public class AuthController {
         map.replace("success", false, true);
         map.put("message", "Pomyślnie utworzono konto!");
         return map;
+    }
+
+
+    @GetMapping("/list-users")
+    public Iterable<User> getUsers() {
+        return userRepository.findAll();
     }
 }

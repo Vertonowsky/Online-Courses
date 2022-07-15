@@ -3,6 +3,8 @@ package com.example.hello_world.persistence.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -34,7 +36,11 @@ public class User {
     //Rank rank;
 
     @Column(name="registration_date", nullable = false)
-    Date registrationDate;
+    private Date registrationDate;
+
+
+    @OneToMany(mappedBy = "user")
+    private Set<DiscountCodeUsed> codes;
 
 
 
@@ -92,4 +98,36 @@ public class User {
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
     }
+
+    public Set<DiscountCodeUsed> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(Set<DiscountCodeUsed> codes) {
+        this.codes = codes;
+    }
+
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        User comparing = (User) o;
+        return (this.id.equals(comparing.id) &&
+                this.email.equals(comparing.email) &&
+                this.password.equals(comparing.password) &&
+                this.active == comparing.active) &&
+                this.roles.equals(comparing.roles) &&
+                this.registrationDate.equals(comparing.registrationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, active, roles, registrationDate);
+    }
+
+
 }

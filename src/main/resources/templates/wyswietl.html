@@ -124,6 +124,12 @@ Wczytanie price, price_promotion i advantages
 
                 </div>
             </div>
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+
         </div>
 
 
@@ -144,38 +150,26 @@ Wczytanie price, price_promotion i advantages
 
             <!-- Modal content -->
             <div class="modal_content active">
-
                 <span class="close"><i class="fas fa-times"></i></span>
-                
             
                 <div class="top">
 
-                    <?php 
-                        if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
-                            echo '<h1 id="main_title" class="title">Sprawdź poprawność danych i dokonaj płatności</h1>';
-                        } else {
-                            echo '<h1 id="main_title" class="title">Do korzystania z pełnej wersji kursu wymagane jest konto</h1>';
-                        }
-                    ?>
+                    <h1 th:if="${loggedIn}" th:id="main_title" class="title" th:text="'Sprawdź poprawność danych i dokonaj płatności'"></h1>
+                    <h1 th:if="${!loggedIn}" th:id="main_title" class="title" th:text="'Do korzystania z pełnej wersji kursu wymagane jest konto'"></h1>
 
                     <div class="step_progress_bar">
                         <ul class="progressbar">
 
-                            <?php 
-                                if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
-                                    echo '<li class="progress_item complete">Logowanie</li>
-                                        <li class="progress_item active">Płatność</li>';
-                                } else {
-                                    echo '<li class="progress_item active">Logowanie</li>
-                                        <li class="progress_item">Płatność</li>';
-                                    
-                                }
-                            ?>
+                            <li th:if="${loggedIn}" class="progress_item complete">Logowanie</li>
+                            <li th:if="${loggedIn}" class="progress_item active">Płatność</li>
+
+                            <li th:if="${!loggedIn}" class="progress_item active">Logowanie</li>
+                            <li th:if="${!loggedIn}" class="progress_item">Płatność</li>
 
                             <li class="progress_item">Gotowe</li>
+
                         </ul>
                     </div>
-
                 </div>
                 
 
@@ -187,31 +181,16 @@ Wczytanie price, price_promotion i advantages
 
                 
                 <div class="bottom">
-                    <?php 
-                        if (isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
-                            echo '<div class="tab_section active">';
-                        } else {
-                            echo '<div class="tab_section">';
-                        }
-                    ?>
+
+                    <div th:class="'tab_section ' + ${loggedIn ? 'active' : ''}">
 
                         <div id="payment_container">
                             <div class="content">
                                 <table id="payment_table">
                                     <tr>
-                                        <td><p class="course_title"><?php echo $row['name']; ?></p><p class="category">Kategoria: <span class="cat">[<?php echo $row['category']; ?>]</span></p></td>
-                                        
-                                        <?php
+                                        <td><p class="course_title" th:text="${course.name}"></p><p class="category">Kategoria: <span class="cat" th:text="'[' + ${course.category} + ']'"></span></p></td>
 
-                                            $price = $row['price'];
-                                            $price_promotion = $row['price_promotion'];
-
-                                            $final_price = $price;
-                                            if ($price_promotion > 0) $final_price = $price_promotion;
-
-                                            echo '<td>'.number_format((float)$final_price, 2, ',', '').' zł</td>';
-
-                                        ?>
+                                        <td th:text="${course.pricePromotion > 0} ? ${course.pricePromotion} + ' zł' : ${course.price} + ' zł'"></td>
                                     </tr>
 
                                     <!--<tr>
@@ -220,7 +199,8 @@ Wczytanie price, price_promotion i advantages
                                     </tr>-->
                                 </table>
 
-                                <div id="final_price"><?php echo number_format((float)$final_price, 2, ',', '').' zł'; ?></div>
+                                <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.pricePromotion} + ' zł' : ${course.price} + ' zł'"></div>
+
 
                                 <!--
                                     INPUT GROUP - Input with its elements
@@ -257,8 +237,6 @@ Wczytanie price, price_promotion i advantages
 
                                 </div>
 
-
-
                             </div>
                         </div>
                     </div>
@@ -266,13 +244,7 @@ Wczytanie price, price_promotion i advantages
 
 
 
-                    <?php 
-                        if (!(isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn'])) {
-                            echo '<div class="tab_section active">';
-                        } else {
-                            echo '<div class="tab_section">';
-                        }
-                    ?>
+                    <div th:class="'tab_section ' + ${!loggedIn ? 'active' : ''}">
 
                         <i class="modal_center_icon fas fa-user-circle"></i>
 
@@ -280,12 +252,10 @@ Wczytanie price, price_promotion i advantages
                         <h2 class="desc">Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.</h2>
 
                         <div class="buttons">
-                            <?php 
-                                echo '
-                                    <a href="/edu/rejestracja.php" class="button_gray">Stwórz nowe konto <i class="fas fa-arrow-circle-right"></i></a>
-                                    <a href="/edu/logowanie.php?id='.$_GET['id'].'&buy=1" class="button_gray">Zaloguj <i class="fas fa-arrow-circle-right"></i></a>';
 
-                            ?>
+                            <a th:href="@{/rejestracja}" class="button_gray">Stwórz nowe konto <i class="fas fa-arrow-circle-right"></i></a>
+                            <a th:href="@{/logowanie}" class="button_gray">Zaloguj <i class="fas fa-arrow-circle-right"></i></a>
+
                         </div>
                     </div>
 
@@ -297,7 +267,7 @@ Wczytanie price, price_promotion i advantages
                         <h1 class="subtitle">Pomyślnie dokonano zakupu.</h1>
                         <h2 class="desc">Wszystkie zakupione kursy dostępne są w
                         <ul class="href">
-                            <li><a class="list_link" href="/edu/profil.php"><span class="bold">panelu użytkownika</span></a></li>
+                            <li><a class="list_link" th:href="@{/profil}"><span class="bold">panelu użytkownika</span></a></li>
                         </ul>.</h2>
 
                         <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
@@ -306,11 +276,6 @@ Wczytanie price, price_promotion i advantages
                     </div>
                 </div>
             </div>
-
-            <!--
-                START footer
-            -->
-            <div th:insert="~{footer :: footer}"></div>
 
         </div>
 
