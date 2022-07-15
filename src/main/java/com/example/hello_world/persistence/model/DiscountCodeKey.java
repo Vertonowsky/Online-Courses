@@ -15,6 +15,11 @@ public class DiscountCodeKey implements Serializable {
     private Integer userId;
 
 
+    public DiscountCodeKey() {
+
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
