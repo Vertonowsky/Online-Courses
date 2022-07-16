@@ -28,15 +28,11 @@ public class DiscountCodeUsed {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "success")
-    private boolean success;
 
 
 
-
-    public DiscountCodeUsed(Date date, boolean success) {
+    public DiscountCodeUsed(Date date) {
         this.date = date;
-        this.success = success;
     }
 
     public DiscountCodeUsed() {
@@ -72,14 +68,6 @@ public class DiscountCodeUsed {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
 

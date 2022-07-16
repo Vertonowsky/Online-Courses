@@ -32,7 +32,7 @@ public class DiscountCodeController {
     @GetMapping("/add-discount-code")
     public String addDiscountCode() {
         Date now = new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000 * 10);
-        DiscountCode discountCode = new DiscountCode("jesien30", "jesien30 | KOD RABATOWY -30%", DiscountType.PERCENTAGE, 30.0, now, 10L);
+        DiscountCode discountCode = new DiscountCode("jesien30", "jesien30 | KOD RABATOWY -30%", DiscountType.PERCENTAGE, 30.0, now);
 
         discountCodeRepository.save(discountCode);
         return "Added new discount code to repository!";

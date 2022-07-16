@@ -34,8 +34,6 @@ public class DiscountCode {
     @Column(name = "expiry_date", nullable = false)
     private Date expiryDate;
 
-    @Column(name = "all_available", nullable = false)
-    private Long allAvailable;
 
 
     @OneToMany(mappedBy = "discountCode")
@@ -47,13 +45,12 @@ public class DiscountCode {
 
     }
 
-    public DiscountCode(String name, String title, DiscountType type, double value, Date expiryDate, Long allAvailable) {
+    public DiscountCode(String name, String title, DiscountType type, double value, Date expiryDate) {
         this.name = name;
         this.title = title;
         this.type = type;
         this.value = value;
         this.expiryDate = expiryDate;
-        this.allAvailable = allAvailable;
     }
 
 
@@ -101,14 +98,6 @@ public class DiscountCode {
         this.expiryDate = expiryDate;
     }
 
-    public Long getAllAvailable() {
-        return allAvailable;
-    }
-
-    public void setAllAvailable(Long allAvailable) {
-        this.allAvailable = allAvailable;
-    }
-
     public Set<DiscountCodeUsed> getCodes() {
         return codes;
     }
@@ -131,13 +120,12 @@ public class DiscountCode {
                 this.title.equals(comparing.title) &&
                 this.type.equals(comparing.type) &&
                 this.value == comparing.value &&
-                this.expiryDate.equals(comparing.expiryDate) &&
-                this.allAvailable.equals(comparing.allAvailable));
+                this.expiryDate.equals(comparing.expiryDate));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, title, type, value, expiryDate, allAvailable);
+        return Objects.hash(id, name, title, type, value, expiryDate);
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.hello_world.web.controller;
 
 import com.example.hello_world.CourseStatus;
+import com.example.hello_world.DiscountType;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.*;
 import com.example.hello_world.security.MyUserDetails;
@@ -43,69 +44,87 @@ public class PurchaseController {
 
     @PostMapping("/purchase/useDiscountCode")
     public Map<String, Object> useDiscountCode(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName") String codeName) {
+        Date now = new Date(System.currentTimeMillis());
         Map<String, Object> map = new HashMap<>();
-
-        if (courseId < 1 || courseRepository.findCourseById(courseId) == null) {
-            map.put("success", false);
-            map.put("message", "Nie odnaleziono takiego kursu.");
-            return map;
-        }
-
-
-        String message = String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName);
-
-        if (codeName == null || codeName.isEmpty()) {
-            map.put("success", false);
-            map.put("message", "ssss");
-            return map;
-        }
+        map.put("success", false);
+        map.put("message", String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
+        map.put("discount", null);
+        map.put("newPrice", null);
 
         Pattern pattern = Pattern.compile(DISCOUNT_PATTERN);
         Matcher matcher = pattern.matcher(codeName);
-        if (!matcher.matches()) {
-            map.put("success", false);
-            map.put("message", message);
+
+        Optional<Course> course = courseRepository.findById(courseId);
+        Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
+
+
+
+        if (courseId < 1 || course.isEmpty()) {
+            map.replace("message", "Błąd: Nie odnaleziono podanego kursu.");
             return map;
         }
 
+        if (codeName == null || codeName.isEmpty()) return map;
+        if (!matcher.matches()) return map;
+        if (discountCode.isEmpty()) return map;
 
-        if (discountCodeRepository.findByName(codeName).isEmpty()) {
-            map.put("success", false);
-            map.put("message", "Ups. Nie znalazłem takiego kodu ;c");
+        if (now.compareTo(discountCode.get().getExpiryDate()) > 0) {
+            map.replace("message", "Błąd: Podany kod utracił ważność.");
             return map;
         }
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            MyUserDetails currentUserName = (MyUserDetails) authentication.getPrincipal();
-            Optional<User> user = userRepository.findByEmail(currentUserName.getUsername());
-            if (user.isPresent()) {
-                DiscountCode discountCode = discountCodeRepository.findByName(codeName).get();
+            map.put("success", false);
+            map.replace("message", "Błąd: Zakup kursu możliwy jedynie dla zalogowanych użytkowników.");
+        }
 
-                DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
-                discountCodeUsed.setDiscountCode(discountCode);
-                discountCodeUsed.setUser(user.get());
+        MyUserDetails currentUserName = (MyUserDetails) authentication.getPrincipal();
+        Optional<User> user = userRepository.findByEmail(currentUserName.getUsername());
+        if (user.isPresent()) {
+            double discount = 0.0;
+            double newPrice = 0;
+            double coursePrice = course.get().getPricePromotion() > 0 ? course.get().getPricePromotion() : course.get().getPrice();
 
-                //Check if user already used this coupon
-                /*if (discountCodeUsedRepository.findById(new DiscountCodeKey(discountCode.getId(), user.get().getId())).isPresent()) {
-                    map.put("success", false);
-                    map.put("message", "Użyto już tego kuponu!");
-                    return map;
-                }*/
-                discountCodeUsed.setDate(new Date(System.currentTimeMillis()));
-                discountCodeUsedRepository.save(discountCodeUsed);
-
-                map.put("success", true);
-                map.put("message", "Świetnie!");
-                return map;
+            //Calculate discount
+            if (discountCode.get().getType() == DiscountType.PERCENTAGE) {
+                double value = discountCode.get().getValue();
+                discount = (value/100) * coursePrice;
+                newPrice = coursePrice - discount;
             }
+
+            if (discountCode.get().getType() == DiscountType.VALUE) {
+                discount = discountCode.get().getValue();
+                newPrice = coursePrice - discount;
+            }
+
+            DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
+            discountCodeUsed.setDiscountCode(discountCode.get());
+            discountCodeUsed.setUser(user.get());
+            discountCodeUsed.setDate(now);
+            discountCodeUsedRepository.save(discountCodeUsed);
+
+            map.replace("success", true);
+            map.replace("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
+            map.replace("discount", discount);
+            map.replace("newPrice", newPrice);
+            map.put("title", discountCode.get().getTitle());
+            return map;
         }
 
 
-        map.put("success", true);
-        map.put("message", "Wystąpił nieoczekiwany błąd ;c");
+        map.replace("success", false);
+        map.replace("message", "Wystąpił nieoczekiwany błąd ;c");
         return map;
     }
+
+
+
+
+
+
+
 
 
 
@@ -119,10 +138,10 @@ public class PurchaseController {
             MyUserDetails currentUserName = (MyUserDetails) authentication.getPrincipal();
             Optional<User> user = userRepository.findByEmail(currentUserName.getUsername());
             if (user.isPresent()) {
-                Course course = courseRepository.findCourseById(1);
+                Optional<Course> course = courseRepository.findById(1);
 
                 CourseOwned courseOwned = new CourseOwned();
-                courseOwned.setCourse(course);
+                courseOwned.setCourse(course.get());
                 courseOwned.setUser(user.get());
 
 

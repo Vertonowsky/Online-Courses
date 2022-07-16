@@ -104,9 +104,9 @@ Wczytanie price, price_promotion i advantages
                     <div class="prices">
                         <div class="price_block"> 0 zł</div>
 
-                        <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.price} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.pricePromotion} + ' zł'"> --- </span></div>
+                        <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
 
-                        <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.price} + ' zł'"> --- </div>';
+                        <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>';
                     </div>
 
 
@@ -191,9 +191,9 @@ Wczytanie price, price_promotion i advantages
                             <div class="content">
                                 <table id="payment_table">
                                     <tr>
-                                        <td><p class="course_title" th:text="${course.name}"></p><p class="category">Kategoria: <span class="cat" th:text="'[' + ${course.category} + ']'"></span></p></td>
+                                        <td><p class="course_title" th:text="${course.name}"></p><p class="category">Kategoria: <span class="cat" th:text="'[' + ${course.getCategoryAsString()} + ']'"></span></p></td>
 
-                                        <td th:text="${course.pricePromotion > 0} ? ${course.pricePromotion} + ' zł' : ${course.price} + ' zł'"></td>
+                                        <td th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></td>
                                     </tr>
 
                                     <!--<tr>
@@ -202,7 +202,7 @@ Wczytanie price, price_promotion i advantages
                                     </tr>-->
                                 </table>
 
-                                <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.pricePromotion} + ' zł' : ${course.price} + ' zł'"></div>
+                                <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></div>
 
 
                                 <!--
@@ -306,22 +306,11 @@ Wczytanie price, price_promotion i advantages
 <script th:inline="javascript">
 
     let myNav      = document.getElementById("header");
-    let main_title = document.getElementById("main_title");
 
 
     window.onload = function (){
         myNav.classList.add("nav_active");
     };
-
-
-
-    function openNextTopic(topic_id) {
-        let element  = document.getElementById("topics_list");
-
-        window.location.href = "/edu/kurs.php?id=<?php echo $_GET['id']; ?>&topic=" + topic_id + "&p=0";
-    }
-
-
 
 
 
@@ -464,7 +453,7 @@ Wczytanie price, price_promotion i advantages
                 },
                 success: function(data) {
 
-                    if (data == null) {
+                    if (data == null || data.success == null || data.message == null) {
                         showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
                         return;
                     }
@@ -474,8 +463,8 @@ Wczytanie price, price_promotion i advantages
                     if (data.success) {
 
                         let text = '<tr>'+
-                                        '<td>' + data.lista.title + '</td>' +
-                                        '<td>-' + data.lista.discount + ' zł</td>' +
+                                        '<td>' + data.title + '</td>' +
+                                        '<td>- ' + (data.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
                                     '</tr>';
 
 
@@ -486,7 +475,7 @@ Wczytanie price, price_promotion i advantages
                         discount_input.disabled = true;
                         discount_input.classList.add("disabled");
 
-                        document.getElementById('final_price').innerHTML = data.price + " zł";
+                        document.getElementById('final_price').innerHTML = data.newPrice.toFixed(2).replaceAll(".", ",") + " zł";
                     }
 
 
@@ -499,23 +488,6 @@ Wczytanie price, price_promotion i advantages
         }
     }
 
-
-
-
-
-
-
-
-    function getUrlParam(name) {
-        let results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-        return (results && results[1]) || undefined;
-    }
-
-
-    let sortType = 3;
-    if (getUrlParam("s") != null) {
-        sortType = getUrlParam("s");
-    }
 
 </script>
 

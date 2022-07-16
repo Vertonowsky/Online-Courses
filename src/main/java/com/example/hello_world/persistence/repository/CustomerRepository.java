@@ -3,8 +3,10 @@ package com.example.hello_world.persistence.repository;
 import com.example.hello_world.persistence.model.Customer;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
-    Customer findCustomerById(Integer id);
+    Optional<Customer> findById(Integer id);
 
 }

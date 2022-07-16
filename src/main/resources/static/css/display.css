@@ -418,10 +418,9 @@
 
             #display_content #all_topics {
                 position: relative;
-                padding-top: 740px;
+                margin: 740px 0px 0px 0px;
                 padding-bottom: 30px;
                 width: 70%;
-                margin: 0px;
             }
 
 
@@ -900,8 +899,8 @@
                         }
 
                         #payment_container .input_group .input.disabled {
-                            background: #ACC5E3;
-                            border: 2px solid #819BBF;
+                            background: #CCE3FF;
+                            border: 2px solid #83A8C9;
                             color: #29323D;
                         }
 

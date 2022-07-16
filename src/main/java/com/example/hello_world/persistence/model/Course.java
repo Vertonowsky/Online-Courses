@@ -3,13 +3,17 @@ package com.example.hello_world.persistence.model;
 
 import com.example.hello_world.Category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.Set;
 
 @Entity
 @Table(name = "courses")
 public class Course {
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,6 +99,11 @@ public class Course {
         return category;
     }
 
+    public String getCategoryAsString() {
+        String s = String.valueOf(category).toLowerCase();
+        return StringUtils.capitalize(s);
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -111,12 +120,20 @@ public class Course {
         return price;
     }
 
+    public String getPriceAsString() {
+        return df.format(price);
+    }
+
     public void setPrice(Double price) {
         this.price = price;
     }
 
     public Double getPricePromotion() {
         return pricePromotion;
+    }
+
+    public String getPricePromotionAsString() {
+        return df.format(pricePromotion);
     }
 
     public void setPricePromotion(Double pricPromotion) {
