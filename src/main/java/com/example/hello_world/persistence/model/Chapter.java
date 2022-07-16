@@ -14,24 +14,23 @@ public class Chapter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chapter_id")
-    Integer id;
+    private Integer id;
 
     @Column(name = "chapter_index")
     @Min(0)
-    Integer index;
+    private Integer index;
 
     @Column(length = 100)
-    String title;
+    private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     @JsonIgnore
-    Course course;
-
+    private Course course;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "chapter")
     @OrderBy("index ASC, title ASC")
-    Set<Topic> topics;
+    private Set<Topic> topics;
 
 
     public Chapter() {

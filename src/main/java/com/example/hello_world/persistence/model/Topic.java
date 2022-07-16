@@ -3,7 +3,6 @@ package com.example.hello_world.persistence.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "topics")
@@ -12,22 +11,21 @@ public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "topic_id")
-    Integer id;
+    private Integer id;
 
     @Column(name = "topic_index")
-    @Min(0)
-    Integer index;
+    private Integer index;
 
     @Column(name = "title", nullable = false, length = 100)
-    String title;
+    private String title;
 
     @Column(name = "video_location", nullable = false,length = 200)
-    String location;
+    private String location;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "chapter_id_conn")
     @JsonIgnore
-    Chapter chapter;
+    private Chapter chapter;
 
 
 
@@ -35,12 +33,14 @@ public class Topic {
 
     }
 
-
     public Topic(Integer index, String title, String location) {
         this.index = index;
         this.title = title;
         this.location = location;
     }
+
+
+
 
     public Integer getId() {
         return id;

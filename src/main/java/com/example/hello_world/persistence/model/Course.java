@@ -2,6 +2,7 @@ package com.example.hello_world.persistence.model;
 
 
 import com.example.hello_world.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,33 +14,38 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    Integer id;
+    private Integer id;
 
     @Column(name = "type", nullable = false, length = 100)
-    String type;
+    private String type;
 
     @Column(name = "name", nullable = false, length = 100)
-    String name;
+    private String name;
 
     @Column(name = "description", nullable = false, length = 400)
-    String description;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 30)
-    Category category;
+    private Category category;
 
     @Column(name = "advantages", nullable = false, length = 600)
-    String advantages;
+    private String advantages;
 
     @Column(name = "price", nullable = false, precision = 2)
-    Double price;
+    private Double price;
 
     @Column(name = "price_promotion", nullable = false, precision = 2)
-    Double pricePromotion;
+    private Double pricePromotion;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "course")
     @OrderBy("index ASC, title ASC")
-    Set<Chapter> chapters;
+    private Set<Chapter> chapters;
+
+
+    @OneToMany(mappedBy = "course2")
+    @JsonIgnore
+    private Set<CourseOwned> coursesOwned;
 
 
     public Course() {
@@ -123,5 +129,13 @@ public class Course {
 
     public void setChapters(Set<Chapter> chapters) {
         this.chapters = chapters;
+    }
+
+    public Set<CourseOwned> getCoursesOwned() {
+        return coursesOwned;
+    }
+
+    public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
+        this.coursesOwned = coursesOwned;
     }
 }

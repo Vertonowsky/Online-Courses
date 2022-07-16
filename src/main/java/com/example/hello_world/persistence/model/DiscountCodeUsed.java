@@ -11,30 +11,42 @@ import java.util.Objects;
 @Table(name = "discount_codes_used")
 public class DiscountCodeUsed {
 
-    @EmbeddedId
-    @Column(name = "id")
-    DiscountCodeKey id = new DiscountCodeKey();
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "operation_id")
+    private Integer id;
 
     @ManyToOne
-    @MapsId("userId")
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    User user;
-
+    private User user;
 
     @ManyToOne
-    @MapsId("codeId")
     @JoinColumn(name = "code_id")
-
-    DiscountCode discountCode;
-
+    private DiscountCode discountCode;
 
     @Column(name = "date")
     private Date date;
 
+    @Column(name = "success")
+    private boolean success;
 
-    public DiscountCodeKey getId() {
+
+
+
+    public DiscountCodeUsed(Date date, boolean success) {
+        this.date = date;
+        this.success = success;
+    }
+
+    public DiscountCodeUsed() {
+
+    }
+
+
+
+
+    public Integer getId() {
         return id;
     }
 
@@ -62,12 +74,12 @@ public class DiscountCodeUsed {
         this.date = date;
     }
 
-    public DiscountCodeUsed(Date date) {
-        this.date = date;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public DiscountCodeUsed() {
-
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
 

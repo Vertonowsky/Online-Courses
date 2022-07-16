@@ -22,7 +22,6 @@ public class User {
     @Column(nullable = false, length = 60)
     private String email;
 
-
     @Column(nullable = false, length = 64)
     private String password;
 
@@ -38,9 +37,12 @@ public class User {
     @Column(name="registration_date", nullable = false)
     private Date registrationDate;
 
-
     @OneToMany(mappedBy = "user")
     private Set<DiscountCodeUsed> codes;
+
+
+    @OneToMany(mappedBy = "user2")
+    private Set<CourseOwned> coursesOwned;
 
 
 
