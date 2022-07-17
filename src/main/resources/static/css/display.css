@@ -291,7 +291,7 @@
             width: 100%;
             padding-top: 67px;
             padding-bottom: 60px;
-            background: #FAFAFA;
+            background: #fff;
             box-shadow: 0 4px 4px 2px #EBEBEB;
             z-index: 0;
         }
@@ -477,8 +477,8 @@
                 }
 
                 #sticky .desc .bold {
-                    color: #57995E;
-                    font-weight: bold;
+                    color: #33B3E8;
+                    font-weight: normal;
                 }
 
 
@@ -512,7 +512,7 @@
                     #sticky .price_promotion {
                         font-size: var(--font-size-normal);
                         margin-left: 5px;
-                        color: #57995E;
+                        color: #33B3E8;
                     }
 
 
@@ -785,7 +785,7 @@
         }
 
         .modal .href .bold {
-            color: #57995E;
+            color: #33B3E8;
         }
 
 

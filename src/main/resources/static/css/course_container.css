@@ -3,18 +3,18 @@
     box-sizing: border-box;
     display: block;
     width: 100%;
-    border-radius: 20px;
+    border-radius: 15px;
     padding: 20px;
     text-align: left;
     margin: 30px 0px 0px 0px;
     border: 1px solid #EDEDED;
     font-size: 0px;
-    box-shadow: 0px 5px 5px 2px #E6E6E6;
+    box-shadow: 0px 2px 2px 2px #E6E6E6;
     transition: all 0.3s;
 }
 
 .course_container:hover {
-    box-shadow: 0px 6px 6px 3px #D6D6D6;
+    box-shadow: 0px 3px 4px 3px #D6D6D6;
 }
 
 .course_container:last-child {
@@ -57,11 +57,11 @@
             .course_container .category {
                 position: relative;
                 display: block;
-                margin: 0px;
-                margin-top: 10px;
+                margin: 10px 0px 0px 0px;
                 width: 100%;
                 text-align: center;
                 font-size: var(--font-size-smaller);
+                color: #1291C4;
             }
 
 
@@ -154,7 +154,7 @@
                             margin: auto;
                         }
 
-                        .description .button_green {
+                        .description .button_gray {
                             position: relative;
                             display: inline-block;
                             vertical-align: top;
@@ -452,8 +452,8 @@
                     height: 38px;
                 }
 
-                    .course_container .button_green {
-                        padding: 8px 0px 8px 2px;
+                    .course_container .button_gray {
+                        padding: 10px 0px 10px 2px;
                         width: 200px;
                     }
 
@@ -478,11 +478,11 @@
                 margin-top: 25px;
             }
     
-                .description .button_green {
+                .description .button_gray {
                     display: block;
-                    width: 40%;
+                    width: 50%;
                     min-width: 160px;
-                    padding: 6px 0px 6px 2px;
+                    padding: 10px 0px 10px 2px;
                     margin: 10px auto 0px auto;
                     font-size: var(--font-size-smaller);
                 }
@@ -618,7 +618,8 @@
                         width: 100%;
                     }
 
-                    .description .button_green {
+                    .description .button_gray {
+                        width: 85%;
                         margin-top: 7px;
                         font-size: var(--font-size-phone);
                     }

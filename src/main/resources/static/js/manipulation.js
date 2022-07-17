@@ -53,7 +53,7 @@ function loadCourses(typeFilters, categoryFilters) {
                                             '</div>' +
                                             '<p class="desc ">' + element.description + '</p>' +
 
-                                            '<a class="button_green" href="/wyswietl/' + element.id + '">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>' +
+                                            '<a class="button_gray" href="/wyswietl/' + element.id + '">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>' +
 
                                         '</div>' +
                                     '</div>' + 
