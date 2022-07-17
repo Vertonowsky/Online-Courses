@@ -17,14 +17,7 @@
 
 <!--
 
-DODAĆ!!!!!!!!!!
-
-Czy id jest prawidłowe? Czy zostało uzupełnione?
-Czy ziomal jest zalogowany? - obsługa informacji na temat tego, czy kurs jest dostępny dla danego użytkownika
-
-Wczytanie kursu - o ile istnieje w bazie danych
-
-Wczytanie price, price_promotion i advantages
+Wczytanie advantages
 
 -->
 
@@ -279,7 +272,7 @@ Wczytanie price, price_promotion i advantages
                         </ul>.</h2>
 
                         <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
-                        <a th:href="@{'/kurs.php?id=' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+                        <a th:href="@{'/kurs/' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
 
                     </div>
                 </div>
@@ -305,7 +298,8 @@ Wczytanie price, price_promotion i advantages
 
 <script th:inline="javascript">
 
-    let myNav      = document.getElementById("header");
+    const discount_input = document.getElementById('discount_code_input');
+    const myNav = document.getElementById("header");
 
 
     window.onload = function (){
@@ -317,11 +311,10 @@ Wczytanie price, price_promotion i advantages
 
     // Get the button that opens the modal
     let button_buy = document.getElementById("button_buy");
-
-    let modal_buy = document.getElementById('modal_buy');
+    let modal_buy  = document.getElementById('modal_buy');
 
     // Get the <span> element that closes the modal
-    let close_btn = document.getElementsByClassName("close")[0];
+    let close_btn     = document.getElementsByClassName("close")[0];
     let modal_content = document.getElementsByClassName("modal_content")[0];
 
     // When the user clicks the button, open the modal
@@ -379,14 +372,30 @@ Wczytanie price, price_promotion i advantages
     function verifyPayment() {
         if (document.getElementById("terms_input").checked) {
 
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            let code_name = "";
+            if (discount_input.disabled) code_name = discount_input.value;
+
             $.ajax({
                 type:"POST",
                 dataType:"json",
-                data: { course_id: /*[[${course.id}]]*/ "", code_name: document.getElementById('discount_code_input').value},
-                url:"php/purchase/verifyPayment.php",
+                data: { courseId: /*[[${course.id}]]*/ "", codeName: code_name},
+                url:"/purchase/verifyPayment",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
                 success: function(data) {
 
-                    if (data.response) {
+                    if (data == null || data.success == null || data.message == null) {
+                        showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                        return;
+                    }
+
+                    showPopup(data.message, data.success);
+
+                    if (data.success) {
 
                         let progress_item = document.getElementsByClassName('progress_item');
                         progress_item[0].classList.add('complete');
@@ -405,22 +414,16 @@ Wczytanie price, price_promotion i advantages
                         document.getElementById("main_title").innerHTML = "Przejdź do swojego profilu aby skorzystać z kursu";
 
                     }
-
-                    console.log(data.response);
-                    showPopup(data.message, data.response);
-
-
                 },
+
                 error: function(xhr, status, error) {
                     alert(error);
                     console.warn(xhr.responseText);
                 }
             });
 
-
         } else {
             showPopup("Błąd: Upewnij się, że zaznaczyłeś wszystkie obowiązkowe pola.", false);
-            return;
         }
     }
 
@@ -432,8 +435,7 @@ Wczytanie price, price_promotion i advantages
     function useDiscountCode() {
         if (!(document.getElementById('discount_icon').className === "fas fa-times-circle")) {
 
-            let discount_input = document.getElementById('discount_code_input');
-            let code_name      = discount_input.value;
+            let code_name = discount_input.value;
 
             if (code_name === "" || code_name == null) {
                 showPopup("Błąd: Pole z kodem rabatowym nie może być puste.", false);
@@ -464,7 +466,7 @@ Wczytanie price, price_promotion i advantages
 
                         let text = '<tr>'+
                                         '<td>' + data.title + '</td>' +
-                                        '<td>- ' + (data.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
+                                        '<td>-' + (data.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
                                     '</tr>';
 
 

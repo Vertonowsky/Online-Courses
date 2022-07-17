@@ -291,7 +291,8 @@
             width: 100%;
             padding-top: 67px;
             padding-bottom: 60px;
-            background: #F5F5F5;
+            background: #FAFAFA;
+            box-shadow: 0 4px 4px 2px #EBEBEB;
             z-index: 0;
         }
     
@@ -842,7 +843,7 @@
                     font-weight: bold;
                     font-size: 16px;
                     padding-right: 10px;
-                    color: #57995E;
+                    color: var(--color-light-blue);
                 }
 
                 #payment_container .course_title {
@@ -865,13 +866,13 @@
                     position: relative;
                     margin-top: 10px;
                     padding-bottom: 5px;
-                    border-bottom: 2px solid #60768F;
+                    border-bottom: 2px solid #8092B3;
                     font-size: 16px;
                     font-weight: bold;
                     text-align: center;
                     width: 100px;
                     float: right;
-                    color: #57995E;
+                    color: var(--color-light-blue);
                 }
 
                 #payment_container .button_gray {
@@ -940,9 +941,8 @@
                             width: 200px;
                             left: 25px;
                             right: 0px;
-                            margin: auto;
+                            margin: 0px auto 30px auto;
                             padding: 0px;
-                            margin-bottom: 30px;
                         }
 
                 

@@ -87,10 +87,11 @@ public class CourseController {
 
         model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
 
+        if (id < 1) return "redirect:/";
         Optional<Course> course = courseRepository.findById(id);
-        if (course.isPresent()) model.addAttribute("course", course.get());
-        else model.addAttribute("course", null);
+        if (course.isEmpty()) return "redirect:/";
 
+        model.addAttribute("course", course.get());
         return "wyswietl";
     }
 
