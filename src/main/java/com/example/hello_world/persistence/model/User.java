@@ -40,9 +40,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<DiscountCodeUsed> codes;
 
-
     @OneToMany(mappedBy = "user2")
     private Set<CourseOwned> coursesOwned;
+
+    @OneToMany(mappedBy = "user")
+    private Set<PaymentHistory> paymentHistories;
 
 
 

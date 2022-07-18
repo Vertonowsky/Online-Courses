@@ -253,12 +253,15 @@
         </div>
 
         <!--
-            IMPORT FOOTER FROM EXTERNAL FILE
+            START popup
         -->
-        <?php
-            $path = "content/footer.php";
-            include_once($path);
-        ?>
+        <div th:insert="~{popup :: popup}"></div>
+
+
+        <!--
+            START footer
+        -->
+        <div th:insert="~{footer :: footer}"></div>
 
 
 

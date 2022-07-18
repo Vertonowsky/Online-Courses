@@ -6,16 +6,16 @@ import com.example.hello_world.persistence.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 public class CourseController {
 
     @Autowired
@@ -73,26 +73,26 @@ public class CourseController {
 
 
 
-    @RequestMapping("/lista-kursow")
-    public String courseListView(Model model) {
+    @GetMapping("/lista-kursow")
+    public ModelAndView courseListView(Model model) {
         model.addAttribute("subjects", courseRepository.findAllTypes());
         model.addAttribute("categories", courseRepository.findAllCategories());
-        return "lista-kursow";
+        return new ModelAndView("lista-kursow");
     }
 
 
     @GetMapping("/wyswietl/{id}")
-    public String courseSpectateView(@PathVariable("id") Integer id, Model model) {
+    public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
 
-        if (id < 1) return "redirect:/";
+        if (id < 1) return new ModelAndView("redirect:/");
         Optional<Course> course = courseRepository.findById(id);
-        if (course.isEmpty()) return "redirect:/";
+        if (course.isEmpty()) return new ModelAndView("redirect:/");
 
         model.addAttribute("course", course.get());
-        return "wyswietl";
+        return new ModelAndView("wyswietl");
     }
 
 }

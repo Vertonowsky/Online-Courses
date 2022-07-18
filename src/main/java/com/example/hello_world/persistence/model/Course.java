@@ -46,15 +46,19 @@ public class Course {
     @OrderBy("index ASC, title ASC")
     private Set<Chapter> chapters;
 
-
     @OneToMany(mappedBy = "course2")
     @JsonIgnore
     private Set<CourseOwned> coursesOwned;
 
+    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    private Set<PaymentHistory> paymentHistories;
 
-    public Course() {
 
-    }
+
+
+
+    public Course() {}
 
     public Course(String type, String name, String description, Category category, String advantages, Double price, Double pricePromotion) {
         this.type = type;

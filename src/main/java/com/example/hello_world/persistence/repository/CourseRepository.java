@@ -2,6 +2,7 @@ package com.example.hello_world.persistence.repository;
 
 import com.example.hello_world.Category;
 import com.example.hello_world.persistence.model.Course;
+import com.example.hello_world.web.dto.CourseDto;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,10 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     @Query("SELECT DISTINCT c.category FROM Course c ORDER BY c.category ASC")
     Iterable<String> findAllCategories();
+
+
+    @Query("SELECT NEW com.example.hello_world.web.dto.CourseDto(c.id, c.name, c.category) FROM Course c")
+    Iterable<CourseDto> findAllCoursesNames();
 
     Optional<Course> findById(Integer id);
 

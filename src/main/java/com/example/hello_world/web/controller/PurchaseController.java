@@ -39,6 +39,9 @@ public class PurchaseController {
     @Autowired
     DiscountCodeUsedRepository discountCodeUsedRepository;
 
+    @Autowired
+    PaymentHistoryRepository paymentHistoryRepository;
+
 
 
     @PostMapping("/purchase/useDiscountCode")
@@ -79,6 +82,14 @@ public class PurchaseController {
         map.replace("message", "Wystąpił nieoczekiwany błąd ;c");
         return map;
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -159,6 +170,14 @@ public class PurchaseController {
             }
 
 
+            //Save payment request in database
+            PaymentHistory paymentHistory = new PaymentHistory(now, prices.get("newPrice"), "PLN", true);
+            paymentHistory.setCourse(course);
+            paymentHistory.setUser(user.get());
+            paymentHistoryRepository.save(paymentHistory);
+
+
+
             map.replace("success", true);
             map.replace("message", String.format("Sukces: Zakupiono kurs %s!", course.getName()));
             if (prices.get("discount") != null) map.replace("discount", prices.get("discount"));
@@ -173,6 +192,15 @@ public class PurchaseController {
         map.put("message", "Wystąpił nieoczekiwany błąd ;c");
         return map;
     }
+
+
+
+
+
+
+
+
+
 
 
 
