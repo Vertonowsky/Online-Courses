@@ -37,8 +37,8 @@
                     </div>
 
                     <div class="buttons">
-                        <div class="tablinks button_blue" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział</div>
-                        <div class="tablinks button_blue" onclick="openTab(event, 'new_topic')">Dodaj nowy temat</div>
+                        <div class="tablinks button_gray" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział <i class="fas fa-arrow-circle-right"></i></div>
+                        <div class="tablinks button_gray" onclick="openTab(event, 'new_topic')">Dodaj nowy temat <i class="fas fa-arrow-circle-right"></i></div>
                     </div>
 
 
@@ -55,8 +55,8 @@
 
 
                         <div class="accept_decline">
-                            <div class="button_red" onclick="closeAllTabs()">Anuluj</div>
-                            <div type="submit" class="button_blue" onclick="addNewChapter()">Potwierdź</div>
+                            <div class="button_red" onclick="closeAllTabs()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
+                            <div type="submit" class="button_gray" onclick="addNewChapter()">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
 
@@ -101,14 +101,65 @@
 
                         <div class="accept_decline">
                             <div class="button_red" onclick="closeAllTabs()">Anuluj</div>
-                            <div class="button_blue" onclick="addNewTopic()">Potwierdź</div>
+                            <div class="button_gray" onclick="addNewTopic()">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
                 </div>
 
 
 
-                <div class="right" id="testujemy">
+                <div class="right" id="display_panel">
+
+                    <div th:if="${!#lists.isEmpty(selectedCourse)}">
+                        <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
+                            <i class="center_icon fas fa-exclamation-circle"></i>
+
+                            <h1 class="subtitle">Kurs nie zawiera żadnych rozdziałów oraz tematów!</h1>
+                            <h2 class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</h2>
+
+                        </div>
+                    </div>
+
+
+                    <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
+                        <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}">
+                            <div class="chapter_header">
+
+                                <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>
+                                <div class="th_index" th:text="${chapter.index}"></div>
+                                <div class="th_title" th:text="${chapter.title}"></div>
+                                <div class="th_operations">
+                                    <div class="icons">
+                                        <i class="fas fa-pencil-alt icon_save" th:onclick="|updateChapter(${chapter.id})|"></i>
+                                        <i class="fas fa-trash icon_delete" th:onclick="|deleteChapter(${selectedCourse.id}, ${chapter.id})|"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="topic_menu" th:if="${chapter.topics != null}" th:id="'right_chapter_id_' + ${chapter.id}">
+                                <div class="topic_header" th:each="topic : ${chapter.topics}">
+
+                                    <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
+                                    <div class="td_index" th:text="${topic.index}"></div>
+                                    <div class="td_title" th:text="${topic.title}"></div>
+                                    <div class="td_operations">
+                                        <div class="icons">
+                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|updateTopic(${topic.id})|"></i>
+                                            <i class="fas fa-trash icon_delete" th:onclick="|deleteTopic(${selectedCourse.id}, ${topic.id})|"></i>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--<div class="right" id="display_panel">
                     <ul id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
                         <li th:each="chapter : ${selectedCourse.chapters}" class="chapter_menu">
                             <div class="list_element">
@@ -129,7 +180,7 @@
                             </ul>
                         </li>
                     </ul>
-                </div>
+                </div>-->
             </div>
         </div>
 
@@ -181,7 +232,6 @@
         let selected_course_id = 0;
 
         if (selected_course) selected_course_id = selected_course.id;
-        console.log(selected_course_id);
 
 
         function openTab(e, cityName) {
@@ -214,14 +264,16 @@
 
         function clearInputs() {
             document.getElementById("new_topic_input").value = "";
-            document.getElementById("new_topic_index").value = "";
+            document.getElementById("new_topic_index").value = 0;
 
             document.getElementById("new_chapter_title").value = "";
-            document.getElementById("new_chapter_index").value = 1;
+            document.getElementById("new_chapter_index").value = 0;
+
+            document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML = "Nie wybrano pliku wideo..";
         }
 
         function reloadCourseInformation() {
-            $("#testujemy").load('/admin/getCourseInfo/' + selected_course_id);
+            $("#display_panel").load('/admin/getCourseInfo/' + selected_course_id);
             $("#select_chapter").load('/admin/getChaptersInfo/' + selected_course_id);
         }
 
@@ -272,7 +324,7 @@
         function addNewChapter() {
             let chapter_index = document.getElementById("new_chapter_index").value;
             let chapter_name  = document.getElementById("new_chapter_title").value;
-            if (chapter_name != "") {
+            if (chapter_name != "" && chapter_name != null && chapter_index != null && chapter_index != "" && chapter_index >= 0) {
 
                 let token = $("meta[name='_csrf']").attr("content");
                 let header = $("meta[name='_csrf_header']").attr("content");
@@ -303,14 +355,12 @@
 
 
         function addNewTopic() {
-            var chapter_id  = document.getElementById("select_chapter").dataset.id;
-            var topic_name  = document.getElementById("new_topic_input").value;
-            var topic_index = document.getElementById("new_topic_index").value;
+            let chapter_id  = document.getElementById("select_chapter").dataset.id;
+            let topic_title = document.getElementById("new_topic_input").value;
+            let topic_index = document.getElementById("new_topic_index").value;
+            let topic_video = document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML;
 
-            var select_video_value  = document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML;
-            var topic_video         = "/edu/videos/" + select_video_value;
-
-            if (topic_name != "" && topic_video != "" && chapter_id >= 0 && topic_index >= 0) {
+            if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
 
                 let token = $("meta[name='_csrf']").attr("content");
                 let header = $("meta[name='_csrf_header']").attr("content");
@@ -318,8 +368,8 @@
                 $.ajax({
                     type:"POST",
                     dataType:"json",
-                    data: { course_id: selected_course_id, chapter_id: chapter_id, topic_name: topic_name, topic_index: topic_index, topic_video: topic_video},
-                    url:"php/admin/addNewTopic.php",
+                    data: { courseId: selected_course_id, chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
+                    url:"/admin/addNewTopic",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token)
                     },

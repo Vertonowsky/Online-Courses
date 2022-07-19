@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @RestController
 public class PurchaseController {
 
-    private final String DISCOUNT_PATTERN = "[a-zA-Z0-9]+";
+    private final String DISCOUNT_PATTERN = "[a-zA-Z0-9]*";
 
     @Autowired
     UserRepository userRepository;

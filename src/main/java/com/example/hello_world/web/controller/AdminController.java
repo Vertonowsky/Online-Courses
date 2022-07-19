@@ -2,8 +2,10 @@ package com.example.hello_world.web.controller;
 
 import com.example.hello_world.persistence.model.Chapter;
 import com.example.hello_world.persistence.model.Course;
+import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
+import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.web.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -18,13 +20,16 @@ import java.util.regex.Pattern;
 @RestController
 public class AdminController {
 
-    private final String STRING_PATTERN = "[a-zA-Z0-9~!@#$%^&*()-_=+\\[]\\{}|'?,.<>]+";
+    private final String STRING_PATTERN = "[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ ~!@#$%^&*()-_=+'?,.<>\\[\\]{}|]*";
 
     @Autowired
     CourseRepository courseRepository;
 
     @Autowired
     ChapterRepository chapterRepository;
+
+    @Autowired
+    TopicRepository topicRepository;
 
 
     @RequestMapping(value = {"/admin", "/admin/{id}"})
@@ -60,6 +65,15 @@ public class AdminController {
 
 
 
+
+
+
+
+
+
+
+
+
     @PostMapping("/admin/addNewChapter")
     public Map<String, Object> addNewChapter(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "chapterTitle") String title, @RequestParam(value = "chapterIndex") Integer index) {
         Map<String, Object> map = new HashMap<>();
@@ -69,6 +83,7 @@ public class AdminController {
         if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) return map;
         if (!isStringValid(title)) {
             map.replace("message", "Błąd: Podany tutuł zawiera niedozwolone znaki.");
+            return map;
         }
 
 
@@ -81,9 +96,74 @@ public class AdminController {
 
         map.replace("success", true);
         map.replace("message", "Sukces: Dodano nowy rozdział do kursu!");
-        map.put("view", new ModelAndView("admin :: course_preview"));
         return map;
     }
+
+
+
+
+
+
+
+
+
+    @PostMapping("/admin/addNewTopic")
+    public Map<String, Object> addNewTopic(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
+                                           @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono podanego kursu.");
+
+        if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) return map;
+
+        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) {
+            map.replace("message", "Błąd: Nie odnaleziono rozdziału o podanym identyfikatorze.");
+            return map;
+        }
+
+        if (topicIndex < 0) {
+            map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+            return map;
+        }
+
+        if (!isStringValid(topicTitle)) {
+            map.replace("message", "Błąd: Nazwa kursu bądź ścieżka video zawiera niedozwolone znaki.");
+            return map;
+        }
+
+        if (!isStringValid(topicVideo)) {
+            map.replace("message", "Błąd: 22222222222222");
+            return map;
+        }
+
+
+        Optional<Chapter> chapter = chapterRepository.findById(chapterId);
+        Topic topic = new Topic();
+        topic.setIndex(topicIndex);
+        topic.setTitle(topicTitle);
+        topic.setLocation(topicVideo);
+        topic.setChapter(chapter.get());
+        topicRepository.save(topic);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Dodano nowy temat do kursu!");
+        return map;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
