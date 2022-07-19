@@ -9,4 +9,6 @@ public interface TopicRepository extends CrudRepository<Topic, Integer> {
 
     Optional<Topic> findById(Integer id);
 
+    void delete(Topic topic);
+
 }

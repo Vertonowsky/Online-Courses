@@ -9,4 +9,6 @@ public interface ChapterRepository extends CrudRepository<Chapter, Integer> {
 
     Optional<Chapter> findById(Integer id);
 
+    void delete(Chapter chapter);
+
 }

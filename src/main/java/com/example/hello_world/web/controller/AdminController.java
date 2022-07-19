@@ -159,6 +159,48 @@ public class AdminController {
 
 
 
+    @PostMapping("/admin/deleteTopic")
+    public Map<String, Object> deleteTopic(@RequestParam(value = "topicId") Integer topicId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono podanego tematu.");
+
+        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) return map;
+
+        Topic topic = topicRepository.findById(topicId).get();
+        topicRepository.delete(topic);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Usunięto wskazany temat.");
+        return map;
+    }
+
+
+
+
+
+
+
+    @PostMapping("/admin/deleteChapter")
+    public Map<String, Object> deleteChapter(@RequestParam(value = "chapterId") Integer chapterId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono podanego rozdziału.");
+
+        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
+
+        Chapter chapter = chapterRepository.findById(chapterId).get();
+        for (Topic topic : chapter.getTopics()) {
+            topicRepository.delete(topic);
+        }
+
+        chapterRepository.delete(chapter);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Usunięto wskazany rozdział wraz z tematami.");
+        return map;
+    }
+
 
 
 

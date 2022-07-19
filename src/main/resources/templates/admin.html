@@ -56,7 +56,7 @@
 
                         <div class="accept_decline">
                             <div class="button_red" onclick="closeAllTabs()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
-                            <div type="submit" class="button_gray" onclick="addNewChapter()">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
+                            <div class="button_gray" onclick="confirm('newChapter')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
 
                         <div class="accept_decline">
                             <div class="button_red" onclick="closeAllTabs()">Anuluj</div>
-                            <div class="button_gray" onclick="addNewTopic()">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
+                            <div class="button_gray" onclick="confirm('newTopic')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,10 @@
 
 
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
-                        <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}">
+
+                        <h1 id="introduction"> Podgląd </h1>
+
+                        <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                             <div class="chapter_header">
 
                                 <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>
@@ -131,23 +134,23 @@
                                 <div class="th_operations">
                                     <div class="icons">
                                         <i class="fas fa-pencil-alt icon_save" th:onclick="|updateChapter(${chapter.id})|"></i>
-                                        <i class="fas fa-trash icon_delete" th:onclick="|deleteChapter(${selectedCourse.id}, ${chapter.id})|"></i>
+                                        <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteChapter', ${chapter.id})|"></i>
                                     </div>
                                 </div>
 
                             </div>
 
 
-                            <div class="topic_menu" th:if="${chapter.topics != null}" th:id="'right_chapter_id_' + ${chapter.id}">
-                                <div class="topic_header" th:each="topic : ${chapter.topics}">
+                            <div class="topic_menu" th:if="${chapter.topics != null}">
+                                <div class="topic_header" th:each="topic : ${chapter.topics}" th:id="'right_topic_id_' + ${topic.id}">
 
                                     <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
                                     <div class="td_index" th:text="${topic.index}"></div>
                                     <div class="td_title" th:text="${topic.title}"></div>
                                     <div class="td_operations">
                                         <div class="icons">
-                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|updateTopic(${topic.id})|"></i>
-                                            <i class="fas fa-trash icon_delete" th:onclick="|deleteTopic(${selectedCourse.id}, ${topic.id})|"></i>
+                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|editTopic(${topic.id})|"></i>
+                                            <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteTopic', ${topic.id})|"></i>
                                         </div>
                                     </div>
 
@@ -155,34 +158,40 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <div id="modal_confirmation" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal_content active">
+                <span class="close"><i class="fas fa-times"></i></span>
+
+                <div class="top">
+                    <h1 class="title" id="modal_title"> Potwierdź akcje!</h1>
                 </div>
 
 
+                <div class="bottom">
 
-                <!--<div class="right" id="display_panel">
-                    <ul id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
-                        <li th:each="chapter : ${selectedCourse.chapters}" class="chapter_menu">
-                            <div class="list_element">
-                                <input type="text" class="chapter_input" th:id="'chapter_text_id_' + ${chapter.id}" th:value="${chapter.title}"/>
-                                <input class="input_number" th:id="'chapter_index_id_' + ${chapter.id}" type="number" min="0" th:value="${chapter.index}"/>
-                                <i class="fas fa-check right_menu_save" th:onclick="|updateChapter(${chapter.id})|"></i>
-                            </div>
+                    <div id="js_info"></div>
 
-                            <ul class="topic_menu" th:if="${chapter.topics != null}" th:id="'right_chapter_id_' + ${chapter.id}">
-                                <li th:each="topic : ${chapter.topics}" class="right_menu_topic">
+                    <div class="button_red" onclick="closeModal()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
+                    <div id="js_confirm" class="button_gray">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
 
-                                    <input class="right_menu_topic_text" th:id="'topic_title_id_' + ${topic.id}" th:value="${topic.title}">
-                                    <input class="input_number" th:id="'topic_index_id_' + ${topic.id}" type="number" th:value="${topic.index}">
-                                    <i class="fas fa-check right_menu_save" th:onclick="|updateTopic(${topic.id})|"></i>
-                                    <i class="fas fa-trash right_menu_delete" th:onclick="|deleteTopic(${selectedCourse.id}, ${topic.id})|"></i>
-
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>-->
+                </div>
             </div>
+
         </div>
+
+
 
 
 
@@ -198,6 +207,10 @@
         <div th:insert="~{footer :: footer}"></div>
 
 
+
+
+
+
         <script src="/js/popup.js"></script>
         <script src="/js/jquery-1.11.3.js"></script>
     
@@ -208,17 +221,233 @@
 
     <script th:inline="javascript">
 
-
         const myNav = document.getElementById("header");
         window.onload = function () { 
             myNav.classList.add("nav_active");
         };
 
-
-
         function openCourse(course_id) {
             window.location.href = '/admin/' + course_id;
         }
+
+
+
+
+
+        // Get the button that opens the modal
+        let modal_confirmation  = document.getElementById('modal_confirmation');
+
+        // Get the <span> element that closes the modal
+        let close_btn     = document.getElementsByClassName("close")[0];
+
+        function closeModal() {
+            modal_confirmation.classList.remove("active");
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        close_btn.onclick = function() {
+            closeModal();
+        }
+
+
+
+
+
+
+
+
+        const modalTitle = document.getElementById("modal_title");
+        const jsInfo = document.getElementById("js_info");
+        const jsConfirm = document.getElementById("js_confirm");
+
+
+        function confirm(type, id) {
+            if (type == "newChapter") {
+                let chapter_index = document.getElementById("new_chapter_index").value;
+                let chapter_name  = document.getElementById("new_chapter_title").value;
+
+                if (chapter_name != "" && chapter_name != null && chapter_index != null && chapter_index != "" && chapter_index >= 0) {
+
+                    modalTitle.innerHTML = "Potwierdź dodawanie nowego rozdziału!";
+
+                    jsInfo.innerHTML = '' +
+                        '<div class="chapter_header">' +
+                        '   <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>' +
+                        '   <div class="th_index">' + chapter_index + '</div>' +
+                        '   <div class="th_title">' + chapter_name + '</div>' +
+                        '</div>';
+
+                    jsConfirm.setAttribute('onclick', 'addNewChapter()');
+
+                } else {
+                    alert("Wypełnij wszystkie dane!");
+                    return;
+                }
+            }
+
+
+
+            if (type == "newTopic") {
+                let chapter_id  = document.getElementById("select_chapter").dataset.id;
+                let topic_title = document.getElementById("new_topic_input").value;
+                let topic_index = document.getElementById("new_topic_index").value;
+                let topic_video = document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML;
+
+                if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
+
+                    modalTitle.innerHTML = "Potwierdź dodawanie nowego tematu!";
+
+                    jsInfo.innerHTML = '' +
+                        '<div class="topic_header">' +
+                        '   <div class="td_type"> <i class="far fa-dot-circle"></i> </div>' +
+                        '   <div class="td_index">' + topic_index + '</div>' +
+                        '   <div class="td_title">' + topic_title + '</div>' +
+                        '</div>' +
+                        '<h1 id="js_info_title"> Materiał wideo: </h1>' +
+                        '<p  id="js_info_desc">' + topic_video + '</p>';
+
+                    jsConfirm.setAttribute('onclick', 'addNewTopic()');
+
+                } else {
+                    alert("Wypełnij wszystkie dane!");
+                    return;
+                }
+            }
+
+
+
+
+            if (type == "deleteTopic") {
+
+                modalTitle.innerHTML = "Czy na pewno chcesz usunąć temat?";
+                jsInfo.innerHTML = "";
+
+                let parent = document.getElementById("right_topic_id_" + id);
+                parent = parent.cloneNode(true);
+                let child = parent.getElementsByClassName("td_operations")[0];
+                parent.removeChild(child);
+
+                if (child != null)
+                    jsInfo.appendChild(parent);
+
+                jsConfirm.setAttribute('onclick', 'deleteTopic(' + id + ')');
+
+            }
+
+
+
+
+
+            if (type == "deleteChapter") {
+
+                modalTitle.innerHTML = "Czy na pewno chcesz usunąć rozdział wraz z tematami?";
+                jsInfo.innerHTML = "";
+
+                let parent = getChapterWithTopicsView(id);
+
+                jsInfo.appendChild(parent);
+                jsConfirm.setAttribute('onclick', 'deleteChapter(' + id + ')');
+
+            }
+
+
+
+
+
+
+
+            modal_confirmation.classList.add("active");
+        }
+
+
+
+
+
+        function getChapterWithTopicsView(id) {
+            let parent = document.getElementById("right_chapter_id" + id);
+            parent = parent.cloneNode(true);
+
+
+            let parent2 = parent.getElementsByClassName("chapter_header")[0];
+            parent2.childNodes.forEach(c=>{
+                if(c.className  == "th_operations"){
+                    parent2.removeChild(c);
+                }
+            });
+
+
+            let grandChild = parent.getElementsByClassName("topic_menu")[0];
+            let grandChilds2 = null;
+            if (grandChild != null)
+                grandChilds2 = grandChild.getElementsByClassName("topic_header");
+
+            if (grandChilds2 != null) {
+                if (grandChilds2.length > 0) {
+                    for (let i = 0; i < grandChilds2.length; i++) {
+                        let obj = grandChilds2[i];
+
+                        obj.childNodes.forEach(c => {
+                            if (c.className == "td_operations") {
+                                obj.removeChild(c);
+                            }
+                        });
+                    }
+                }
+            }
+
+            return parent;
+        }
+
+
+
+
+
+
+
+        function editTopic(id) {
+            let chapter_index = document.getElementById("new_chapter_index").value;
+            let chapter_name = document.getElementById("new_chapter_title").value;
+
+            modalTitle.innerHTML = "Potwierdź dodawanie nowego rozdziału!";
+
+            jsInfo.innerHTML = '' +
+                '<div class="chapter_header">' +
+                '   <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>' +
+                '   <div class="th_index">' + chapter_index + '</div>' +
+                '   <div class="th_title">' + chapter_name + '</div>' +
+                '</div>';
+
+            jsConfirm.setAttribute('onclick', 'addNewChapter()');
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -314,6 +543,10 @@
                     all_selects[i].classList.remove("active");
                 }
             }
+
+            if (event.target == modal_confirmation) {
+                closeModal();
+            }
         }
 
 
@@ -342,6 +575,7 @@
                         showPopup(data.message, data.success);
                         clearInputs();
                         reloadCourseInformation();
+                        closeModal();
 
                     }, 
                     error: function(xhr, status, error) {
@@ -349,6 +583,8 @@
                         console.warn(xhr.responseText);
                     }
                 });
+            } else {
+                alert("Wypełnij wszystkie dane!");
             }
         }
 
@@ -378,6 +614,7 @@
                         showPopup(data.message, data.success);
                         clearInputs();
                         reloadCourseInformation();
+                        closeModal();
 
                     }, 
                     error: function(xhr, status, error) {
@@ -450,24 +687,71 @@
 
 
 
-        function deleteTopic(course_id, topic_id) {
-            $.ajax({
-                type:"POST",
-                dataType:"json",
-                data: {course_id: course_id, topic_id: topic_id},
-                url:"php/admin/deleteTopic.php",
-                success: function(data) {
+        function deleteTopic(topic_id) {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
 
-                    showPopup(data.message, data.response);
+            if (topic_id != null && topic_id != "" && topic_id > 0) {
 
-                    if (data.response) rightDisplayChapters();
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {topicId: topic_id},
+                    url: "/admin/deleteTopic",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function (data) {
 
-                }, 
-                error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
-                }
-            });
+                        showPopup(data.message, data.success);
+                        reloadCourseInformation();
+                        closeModal();
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                        console.warn(xhr.responseText);
+                    }
+                });
+
+            } else {
+                alert("Uzupełnij wszystkie dane!");
+            }
+        }
+
+
+
+
+        function deleteChapter(chapter_id) {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            if (chapter_id != null && chapter_id != "" && chapter_id > 0) {
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {chapterId: chapter_id},
+                    url: "/admin/deleteChapter",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function (data) {
+
+                        showPopup(data.message, data.success);
+                        reloadCourseInformation();
+                        closeModal();
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                        console.warn(xhr.responseText);
+                    }
+                });
+
+            } else {
+                alert("Uzupełnij wszystkie dane!");
+            }
         }
 
 
