@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 @Controller
@@ -29,7 +30,12 @@ public class AuthController {
 
 
     @GetMapping("/logowanie")
-    public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered, Model model) {
+    public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered, HttpServletRequest request) {
+
+        String referrer = request.getHeader("Referer");
+        if(referrer!=null){
+            request.getSession().setAttribute("url_prior_login", referrer);
+        }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {

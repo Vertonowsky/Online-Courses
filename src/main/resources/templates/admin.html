@@ -4,11 +4,11 @@
     <title>Panel Administracyjny</title>
 
     <link rel="stylesheet" href="/css/main.css"/>
-    <link rel="stylesheet" href="/css/admin.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
 
     <div th:insert="~{dependencies :: dependencies}"></div>
 
+    <link rel="stylesheet" href="/css/admin.css"/>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
@@ -31,12 +31,12 @@
                         <div class="select_btn" onclick="toggleSelect('select_course')" th:text="${selectedCourse == null} ? 'Nie wybrano kursu..' : ${selectedCourse.name}" ></div>
                         <i class="fa fa-chevron-left"></i>
                         <ul class="select_content">
-                            <li class="select_option" th:if="${!courses.isEmpty()}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
+                            <li class="select_option" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
                         </ul>
 
                     </div>
 
-                    <div class="buttons">
+                    <div class="buttons" th:if="${!#lists.isEmpty(selectedCourse)}">
                         <div class="tablinks button_gray" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział <i class="fas fa-arrow-circle-right"></i></div>
                         <div class="tablinks button_gray" onclick="openTab(event, 'new_topic')">Dodaj nowy temat <i class="fas fa-arrow-circle-right"></i></div>
                     </div>
@@ -100,7 +100,7 @@
 
 
                         <div class="accept_decline">
-                            <div class="button_red" onclick="closeAllTabs()">Anuluj</div>
+                            <div class="button_red" onclick="closeAllTabs()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
                             <div class="button_gray" onclick="confirm('newTopic')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
 
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
 
-                        <h1 id="introduction"> Podgląd </h1>
+                        <h1 class="headline" id="introduction"> Podgląd </h1>
 
                         <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                             <div class="chapter_header">
@@ -212,6 +212,7 @@
 
 
         <script src="/js/popup.js"></script>
+        <script src="/js/header.js"></script>
         <script src="/js/jquery-1.11.3.js"></script>
     
 </body>

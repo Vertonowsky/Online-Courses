@@ -7,8 +7,8 @@
  * 
  */
 function openNav() {
-    button = document.getElementById("navPanelToggle");
-    tab = document.getElementById("navPanel");
+    let button = document.getElementById("navPanelToggle");
+    let tab = document.getElementById("navPanel");
     void tab.offsetWidth;
     tab.className = "";
 

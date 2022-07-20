@@ -173,12 +173,17 @@
 
 
             let url = form.attr('action');
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
             
             $.ajax({
                 data: form.serialize(), // Serializes the form's elements
                 type: "POST",
                 dataType:"json",
                 url: url,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
                 success: function(data) {
 
                     console.log(data);
@@ -200,8 +205,10 @@
                         return;
 
                     } else if (data.type === "login") {
-                        if (data.success) window.location.href = "/profil";
-                        window.location.href = "/profil";
+                        if (data.success) window.location.href = data.url;
+
+                        showPopup(data.message, data.success);
+                        return;
                     }
 
 

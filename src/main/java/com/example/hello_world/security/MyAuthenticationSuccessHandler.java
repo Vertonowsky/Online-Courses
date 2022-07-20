@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +24,22 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         // This is actually not an error, but an OK message. It is sent to avoid redirects.
         response.setHeader("Content-Type", "text/xml; charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
+
         Map<String, Object> data = new HashMap<>();
         data.put("type", "login");
         data.put("success", true);
         data.put("message", "Pomyślnie zalogowano.");
 
-        //response.getOutputStream().println(objectMapper.writeValueAsString(data));
+        String url = null;
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            url = (String) request.getSession().getAttribute("url_prior_login");
+        }
+
+        System.out.println(url);
+
+        if (url == null || url.equals("http://localhost:8080/") || url.equals("https://localhost:8080/")) data.put("url", "/profil");
+        else data.put("url", url);
 
         response.getWriter().println(objectMapper.writeValueAsString(data));
 

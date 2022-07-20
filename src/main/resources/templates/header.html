@@ -36,7 +36,7 @@
 
                     <div class="dropdown_content">
 
-                        <!--<a href="admin.php" class="dropdown_link"><i class="fas fa-tools"></i> Panel administracyjny </a>-->
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}" class="dropdown_link"><i class="fas fa-tools"></i> Panel administracyjny </a>
 
                         <a class="dropdown_link" th:href="@{/profil}"><i class="fas fa-user-circle"></i> Moje konto</a>
                         <a class="dropdown_link" th:href="@{/kontynnuj_kurs}"><i class="fas fa-file-video"></i> Kontynuuj kurs</a>
