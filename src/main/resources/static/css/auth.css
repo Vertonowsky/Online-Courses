@@ -193,43 +193,47 @@
                 }
 
                         .other_login_button {
-                            display: flex;
-                            align-items: center;
-                            min-height: 50px;
-                            height: auto;
+                            position: relative;
+                            box-sizing: border-box;
                             width: calc(100% - 4px);
+                            height: auto;
                             background: transparent;
                             border: 2px solid #E6E6E6;
                             border-radius: 10px;
                             margin-bottom: 10px;
+                            padding: 15px 15px 15px 45px;
                             cursor: pointer;
                             text-align: center;
                             transition: all 0.3s;
                         }
 
-                            .other_login_button:last-child {
-                                margin-bottom: 0px;
-                            }
-
-                            .other_login_button:hover {
-                                background: #F5F5F5;
-                            }
-
-
-                        .other_login_button .text {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: var(--font-size-normal);
-                            color: var(--color-title);
-                            width: 100%;
+                        .other_login_button:last-child {
+                            margin-bottom: 0px;
                         }
 
-                            .other_login_button .text .img {
-                                height: 30px;
-                                width: 30px;
-                                margin-right: 8px;
-                            }
+                        .other_login_button:hover {
+                            background: #F5F5F5;
+                        }
+
+                                .other_login_button .text {
+                                    position: relative;
+                                    display: inline-block;
+                                    text-align: left;
+                                    font-size: var(--font-size-normal);
+                                    color: var(--color-title);
+                                }
+
+                                    .other_login_button .img {
+                                        position: absolute;
+                                        top: 50%;
+                                        transform: translateY(-50%);
+                                        left: -35px;
+                                        height: 30px;
+                                        width: 30px;
+                                        margin-right: 8px;
+                                    }
+
+
 
 
                 #auth_container .checkbox_body {
@@ -483,10 +487,6 @@
             #other_login_methods {
                 margin-top: 70px;
             }
-
-                .other_login_button {
-                    height: 46px;
-                }
 
                 .other_login_button .text {
                     font-size: var(--font-size-phone);
