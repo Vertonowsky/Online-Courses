@@ -110,20 +110,19 @@
 
                 <div class="right" id="display_panel">
 
-                    <div th:if="${!#lists.isEmpty(selectedCourse)}">
-                        <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
-                            <i class="center_icon fas fa-exclamation-circle"></i>
-
-                            <h1 class="subtitle">Kurs nie zawiera żadnych rozdziałów oraz tematów!</h1>
-                            <h2 class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</h2>
-
-                        </div>
-                    </div>
-
-
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
 
                         <h1 class="headline" id="introduction"> Podgląd </h1>
+                        <div th:if="${!#lists.isEmpty(selectedCourse)}">
+                            <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
+                                <i class="center_icon fas fa-exclamation-circle"></i>
+
+                                <h1 class="subtitle">Kurs nie zawiera żadnych rozdziałów oraz tematów!</h1>
+                                <h2 class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</h2>
+
+                            </div>
+                        </div>
+
 
                         <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                             <div class="chapter_header">
@@ -133,7 +132,7 @@
                                 <div class="th_title" th:text="${chapter.title}"></div>
                                 <div class="th_operations">
                                     <div class="icons">
-                                        <i class="fas fa-pencil-alt icon_save" th:onclick="|updateChapter(${chapter.id})|"></i>
+                                        <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editChapter', ${chapter.id})|"></i>
                                         <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteChapter', ${chapter.id})|"></i>
                                     </div>
                                 </div>
@@ -149,7 +148,7 @@
                                     <div class="td_title" th:text="${topic.title}"></div>
                                     <div class="td_operations">
                                         <div class="icons">
-                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|editTopic(${topic.id})|"></i>
+                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editTopic', ${topic.id})|"></i>
                                             <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteTopic', ${topic.id})|"></i>
                                         </div>
                                     </div>
@@ -180,15 +179,56 @@
 
 
                 <div class="bottom">
+                    <div id="js_info">
 
-                    <div id="js_info"></div>
+                        <div th:fragment="editChapter" th:if="${editChapter != null}">
+                            <div class="headline">Nazwa i indeks rozdziału:</div>
+                            <div class="input_group" th:if="${editChapter != null}">
+                                <input class="input" id="edit_chapter_title" type="text" th:value="${editChapter.title}" placeholder="Wpisz nazwę rozdziału..">
+                                <input class="input_number" id="edit_chapter_index" type="number" th:value="${editChapter.index}">
+                            </div>
+                        </div>
+
+
+                        <div th:fragment="editTopic" th:if="${editTopic != null}" style="text-align: left">
+
+                            <div class="headline">Rozdział: </div>
+                            <div id="edit_select_chapter" class="select_menu" style="margin-bottom: 40px;" th:data-id="${finalChapter.id}">
+                                <div class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.title}"></div>
+                                <i class="fa fa-chevron-left"></i>
+
+                                <ul class="select_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
+                                    <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('edit_select_chapter', this, ${chapter.id})|" th:text="${chapter.title}"></li>
+                                </ul>
+                            </div>
+
+                            <div class="headline">Materiał wideo:</div>
+                            <div id="edit_select_video" class="select_menu" style="margin-bottom: 40px;">
+                                <div class="select_btn" onclick="toggleSelect('edit_select_video')" th:text="${editTopic.location}"></div>
+                                <i class="fa fa-chevron-left"></i>
+
+                                <ul class="select_content">
+                                    <li class="select_option" th:each="video, state : ${videos}" th:onclick="|selectOption('edit_select_video', this, ${state.index})|" th:text="${video}"></li>
+                                </ul>
+
+                            </div>
+
+
+                            <div class="headline">Nazwa oraz indeks tematu:</div>
+                            <div class="input_group">
+                                <input id="edit_topic_input" type="text" class ="input" th:value="${editTopic.title}" placeholder="Wpisz nazwę tematu..">
+                                <input class="input_number" id="edit_topic_index" type="number" th:value="${editTopic.index}">
+                            </div>
+
+                        </div>
+
+                    </div>
 
                     <div class="button_red" onclick="closeModal()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
                     <div id="js_confirm" class="button_gray">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
 
                 </div>
             </div>
-
         </div>
 
 
@@ -319,7 +359,6 @@
 
 
             if (type == "deleteTopic") {
-
                 modalTitle.innerHTML = "Czy na pewno chcesz usunąć temat?";
                 jsInfo.innerHTML = "";
 
@@ -332,7 +371,6 @@
                     jsInfo.appendChild(parent);
 
                 jsConfirm.setAttribute('onclick', 'deleteTopic(' + id + ')');
-
             }
 
 
@@ -340,7 +378,6 @@
 
 
             if (type == "deleteChapter") {
-
                 modalTitle.innerHTML = "Czy na pewno chcesz usunąć rozdział wraz z tematami?";
                 jsInfo.innerHTML = "";
 
@@ -348,13 +385,27 @@
 
                 jsInfo.appendChild(parent);
                 jsConfirm.setAttribute('onclick', 'deleteChapter(' + id + ')');
-
             }
 
 
+            if (type == "editChapter") {
+                modalTitle.innerHTML = "Edytowanie rozdziału...";
+                jsInfo.innerHTML = "";
+
+                $("#js_info").load('/admin/getChapterEditDetails/' + id);
+
+                jsConfirm.setAttribute('onclick', 'editChapter(' + id + ')');
+            }
 
 
+            if (type == "editTopic") {
+                modalTitle.innerHTML = "Edytowanie tematu...";
+                jsInfo.innerHTML = "";
 
+                $("#js_info").load('/admin/getTopicEditDetails/' + id + '?courseId=' + selected_course_id);
+
+                jsConfirm.setAttribute('onclick', 'editTopic(' + id + ')');
+            }
 
 
             modal_confirmation.classList.add("active");
@@ -398,32 +449,6 @@
 
             return parent;
         }
-
-
-
-
-
-
-
-        function editTopic(id) {
-            let chapter_index = document.getElementById("new_chapter_index").value;
-            let chapter_name = document.getElementById("new_chapter_title").value;
-
-            modalTitle.innerHTML = "Potwierdź dodawanie nowego rozdziału!";
-
-            jsInfo.innerHTML = '' +
-                '<div class="chapter_header">' +
-                '   <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>' +
-                '   <div class="th_index">' + chapter_index + '</div>' +
-                '   <div class="th_title">' + chapter_name + '</div>' +
-                '</div>';
-
-            jsConfirm.setAttribute('onclick', 'addNewChapter()');
-        }
-
-
-
-
 
 
 
@@ -506,8 +531,6 @@
             $("#display_panel").load('/admin/getCourseInfo/' + selected_course_id);
             $("#select_chapter").load('/admin/getChaptersInfo/' + selected_course_id);
         }
-
-
 
 
         function toggleSelect(selectName) {
@@ -605,7 +628,7 @@
                 $.ajax({
                     type:"POST",
                     dataType:"json",
-                    data: { courseId: selected_course_id, chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
+                    data: { chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
                     url:"/admin/addNewTopic",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token)
@@ -636,55 +659,82 @@
 
 
 
+        function editChapter(chapterId) {
+            let chapter_index = document.getElementById("edit_chapter_index").value;
+            let chapter_name  = document.getElementById("edit_chapter_title").value;
+            if (chapter_name != "" && chapter_name != null && chapter_index != null && chapter_index != "" && chapter_index >= 0) {
 
+                let token = $("meta[name='_csrf']").attr("content");
+                let header = $("meta[name='_csrf_header']").attr("content");
 
-        function updateChapter(chapter_id) {
-            let chapter_index = document.getElementById("chapter_index_id_" + chapter_id).value;
-            let chapter_name  = document.getElementById("chapter_text_id_" + chapter_id).value;
-            
-            $.ajax({
-                type:"POST",
-                dataType:"json",
-                data: {chapter_id: chapter_id, chapter_index: chapter_index, chapter_name: chapter_name},
-                url:"php/admin/updateChapter.php",
-                success: function(data) {
+                $.ajax({
+                    type:"POST",
+                    dataType:"json",
+                    data: { chapterId: chapterId, chapterTitle: chapter_name, chapterIndex: chapter_index},
+                    url:"/admin/editChapter",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function(data) {
 
-                    showPopup(data.message, data.response);
+                        showPopup(data.message, data.success);
+                        reloadCourseInformation();
+                        closeModal();
 
-                    if (data.response) rightDisplayChapters();
-                        
-                }, 
-                error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
-                }
-            });
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                        console.warn(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Wypełnij wszystkie dane!");
+            }
         }
 
 
 
-        function updateTopic(topic_id) {
-            let topic_index = document.getElementById("topic_index_id_" + topic_id).value;
-            let topic_name  = document.getElementById("topic_title_id_" + topic_id).value;
-            
-            $.ajax({
-                type:"POST",
-                dataType:"json",
-                data: {topic_id: topic_id, topic_index: topic_index, topic_name: topic_name},
-                url:"php/admin/updateTopic.php",
-                success: function(data) {
 
-                    showPopup(data.message, data.response);
 
-                    if (data.response) rightDisplayChapters();
 
-                },
-                error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
-                }
-            });
+        function editTopic(topicId) {
+            let chapter_id  = document.getElementById("edit_select_chapter").dataset.id;
+            let topic_title = document.getElementById("edit_topic_input").value;
+            let topic_index = document.getElementById("edit_topic_index").value;
+            let topic_video = document.getElementById("edit_select_video").getElementsByClassName("select_btn")[0].innerHTML;
+
+            if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
+
+                let token = $("meta[name='_csrf']").attr("content");
+                let header = $("meta[name='_csrf_header']").attr("content");
+
+                $.ajax({
+                    type:"POST",
+                    dataType:"json",
+                    data: { topicId: topicId, chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
+                    url:"/admin/editTopic",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function(data) {
+
+                        showPopup(data.message, data.success);
+                        reloadCourseInformation();
+                        closeModal();
+
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                        console.warn(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Wypełnij wszystkie dane!");
+            }
         }
+
+
+
 
 
 
@@ -759,39 +809,6 @@
 
 
 
-
-
-
-
-
-        function uploadFile(form) {
-
-            var url = form.attr('action');
-
-            $.ajax({
-                data: form.serialize(), // Serializes the form's elements
-                type: "POST",
-                dataType:"json",
-                url: url,
-                success: function(data) {
-
-                    showPopup(data.message, data.response);
-                    
-                }, 
-                error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
-                }
-            });
-        }
-
-
-
-
-        $("#file_upload_form").submit(function(e) {
-            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-            uploadFile($(this));
-        });
 
 
     </script>

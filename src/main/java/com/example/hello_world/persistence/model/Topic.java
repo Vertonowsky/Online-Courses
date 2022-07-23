@@ -3,6 +3,7 @@ package com.example.hello_world.persistence.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "topics")
@@ -26,6 +27,11 @@ public class Topic {
     @JoinColumn(name = "chapter_id_conn")
     @JsonIgnore
     private Chapter chapter;
+
+
+    @OneToMany(mappedBy = "topic")
+    @JsonIgnore
+    private Set<FinishedTopics> finishedTopics;
 
 
 
@@ -77,4 +83,14 @@ public class Topic {
     public void setChapter(Chapter chapter) {
         this.chapter = chapter;
     }
+
+    public Set<FinishedTopics> getFinishedTopics() {
+        return finishedTopics;
+    }
+
+    public void setFinishedTopics(Set<FinishedTopics> finishedTopics) {
+        this.finishedTopics = finishedTopics;
+    }
+
+
 }

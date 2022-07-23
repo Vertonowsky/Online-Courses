@@ -894,6 +894,11 @@ a {
             font-size: var(--font-size-phone);
         }
 
+
+        .tooltip {
+            top: 20%;
+        }
+
     }
 
 

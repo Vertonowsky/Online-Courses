@@ -46,6 +46,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<PaymentHistory> paymentHistories;
 
+    @OneToMany(mappedBy = "user")
+    private Set<FinishedTopics> finishedTopics;
+
 
 
     public User() {
@@ -110,6 +113,36 @@ public class User {
     public void setCodes(Set<DiscountCodeUsed> codes) {
         this.codes = codes;
     }
+
+    public Set<CourseOwned> getCoursesOwned() {
+        return coursesOwned;
+    }
+
+    public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
+        this.coursesOwned = coursesOwned;
+    }
+
+    public Set<PaymentHistory> getPaymentHistories() {
+        return paymentHistories;
+    }
+
+    public void setPaymentHistories(Set<PaymentHistory> paymentHistories) {
+        this.paymentHistories = paymentHistories;
+    }
+
+    public Set<FinishedTopics> getFinishedTopics() {
+        return finishedTopics;
+    }
+
+    public void setFinishedTopics(Set<FinishedTopics> finishedTopics) {
+        this.finishedTopics = finishedTopics;
+    }
+
+
+
+
+
+
 
 
 

@@ -46,20 +46,7 @@ public class AdminController {
         }
 
         model.addAttribute("selectedCourse", courseRepository.findById(id).get());
-
-        File folder = new File("D:\\Xampp\\htdocs\\edu\\videos");
-        File[] listOfFiles = folder.listFiles();
-        List<String> allVideos = new ArrayList<>();
-
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                if (file.isFile()) {
-                    allVideos.add(file.getName());
-                }
-            }
-        }
-
-        model.addAttribute("videos", allVideos);
+        model.addAttribute("videos", getVideoList());
         return mav;
     }
 
@@ -108,35 +95,24 @@ public class AdminController {
 
 
     @PostMapping("/admin/addNewTopic")
-    public Map<String, Object> addNewTopic(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
+    public Map<String, Object> addNewTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
                                            @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono podanego kursu.");
+        map.put("message", "Błąd: Nie odnaleziono rozdziału o podanym identyfikatorze.");
 
-        if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) return map;
-
-        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) {
-            map.replace("message", "Błąd: Nie odnaleziono rozdziału o podanym identyfikatorze.");
-            return map;
-        }
+        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
 
         if (topicIndex < 0) {
             map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
             return map;
         }
 
-        if (!isStringValid(topicTitle)) {
+        if (!isStringValid(topicTitle) || !isStringValid(topicVideo)) {
             map.replace("message", "Błąd: Nazwa kursu bądź ścieżka video zawiera niedozwolone znaki.");
             return map;
         }
-
-        if (!isStringValid(topicVideo)) {
-            map.replace("message", "Błąd: 22222222222222");
-            return map;
-        }
-
 
         Optional<Chapter> chapter = chapterRepository.findById(chapterId);
         Topic topic = new Topic();
@@ -210,14 +186,136 @@ public class AdminController {
 
 
 
-    @GetMapping("/admin/getCourseInfo/{id}")
-    public ModelAndView getCourseInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
-        if (courseId == null) {
-            return null;
+
+
+    @PostMapping("/admin/editChapter")
+    public Map<String, Object> editChapter(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "chapterTitle") String title, @RequestParam(value = "chapterIndex") Integer index) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono podanego rozdziału.");
+
+        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
+        if (!isStringValid(title)) {
+            map.replace("message", "Błąd: Podany tutuł zawiera niedozwolone znaki.");
+            return map;
+        }
+
+
+        Chapter chapter = chapterRepository.findById(chapterId).get();
+        chapter.setTitle(title);
+        chapter.setIndex(index);
+        chapterRepository.save(chapter);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Edytowano rozdział!");
+        return map;
+    }
+
+
+
+
+    @PostMapping("/admin/editTopic")
+    public Map<String, Object> editTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicId") Integer topicId, @RequestParam(value = "topicTitle") String topicTitle,
+                                           @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono tematu o podanym identyfikatorze.");
+
+        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) return map;
+
+        if (topicIndex < 0) {
+            map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+            return map;
+        }
+
+        if (!isStringValid(topicTitle) || !isStringValid(topicVideo)) {
+            map.replace("message", "Błąd: Nazwa tematu bądź ścieżka video zawiera niedozwolone znaki.");
+            return map;
+        }
+
+
+        Topic topic = topicRepository.findById(topicId).get();
+        topic.setIndex(topicIndex);
+        topic.setTitle(topicTitle);
+        topic.setLocation(topicVideo);
+        if (chapterRepository.findById(chapterId).isPresent())
+            topic.setChapter(chapterRepository.findById(chapterId).get());
+
+        topicRepository.save(topic);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Edytowano temat!");
+        return map;
+    }
+
+
+
+
+
+
+
+
+    @GetMapping("/admin/getChapterEditDetails/{id}")
+    public ModelAndView getChapterEditDetails(@PathVariable(name = "id") Integer chapterId, Model model) {
+        if (chapterId == null || chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) {
+            model.addAttribute("editChapter", null);
+            return new ModelAndView("admin :: editChapter");
+        }
+
+        model.addAttribute("editChapter", chapterRepository.findById(chapterId).get());
+        return new ModelAndView("admin :: editChapter");
+    }
+
+
+
+    @GetMapping("/admin/getTopicEditDetails/{id}")
+    public ModelAndView getTopicEditDetails(@PathVariable(name = "id") Integer topicId, @RequestParam(value = "courseId") Integer courseId, Model model) {
+        if (courseId == null || topicId == null) {
+            model.addAttribute("editTopic", null);
+            return new ModelAndView("admin :: editTopic");
         }
 
         if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
-            return null;
+            model.addAttribute("editTopic", null);
+            return new ModelAndView("admin :: editTopic");
+        }
+
+        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) {
+            model.addAttribute("editTopic", null);
+            return new ModelAndView("admin :: editTopic");
+        }
+
+        Topic finalTopic = topicRepository.findById(topicId).get();
+        Chapter finalChapter = null;
+
+        for (Chapter chapter : chapterRepository.findAll()) {
+            if (chapter.getTopics().contains(finalTopic)) {
+                finalChapter = chapter;
+                break;
+            }
+        }
+
+        model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
+        model.addAttribute("videos", getVideoList());
+        model.addAttribute("finalChapter", finalChapter);
+        model.addAttribute("editTopic", finalTopic);
+        return new ModelAndView("admin :: editTopic");
+    }
+
+
+
+
+
+
+
+
+
+    @GetMapping("/admin/getCourseInfo/{id}")
+    public ModelAndView getCourseInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
+        if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
+            model.addAttribute("selectedCourse", null);
+            return new ModelAndView("admin :: course_preview");
         }
 
         model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
@@ -228,12 +326,9 @@ public class AdminController {
 
     @GetMapping("/admin/getChaptersInfo/{id}")
     public ModelAndView getChaptersInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
-        if (courseId == null) {
-            return null;
-        }
-
-        if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
-            return null;
+        if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
+            model.addAttribute("selectedCourse", null);
+            return new ModelAndView("admin :: chapter_select");
         }
 
         model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
@@ -250,6 +345,22 @@ public class AdminController {
     }
 
 
+
+    private List<String> getVideoList() {
+        File folder = new File("D:\\Xampp\\htdocs\\edu\\videos");
+        File[] listOfFiles = folder.listFiles();
+        List<String> allVideos = new ArrayList<>();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    allVideos.add(file.getName());
+                }
+            }
+        }
+
+        return allVideos;
+    }
 
 
 
