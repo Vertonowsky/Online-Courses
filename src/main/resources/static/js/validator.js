@@ -117,7 +117,6 @@
                     msg[0]   = "<i class='fas fa-check ok'></i> Pole obowiązkowe<br>";
                 }
             }
-            
 
             /**
              * Complete = TRUE - Every inserted data matches regexp
@@ -235,8 +234,9 @@
 
 
         function showToolTip(index, text, boolean) {
-            var message = document.getElementsByClassName("tooltip_text")[index];
-            var icon    = document.getElementsByClassName("tooltip_icon")[index];
+            let message = document.getElementsByClassName("tooltip_text")[index];
+            let icon    = document.getElementsByClassName("tooltip_icon")[index];
+            if (message === null || icon === null) return;
 
             if (boolean) {
                 icon.classList.remove('fa-exclamation-circle');
@@ -251,18 +251,4 @@
             icon.style.visibility = "visible";
             text = text.toString().replaceAll(",", " ");  //Remove commas from array
             message.innerHTML = text;
-        }
-
-
-
-
-
-
-
-
-
-
-        function getUrlParam(name) {
-            var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-            return (results && results[1]) || undefined;
         }

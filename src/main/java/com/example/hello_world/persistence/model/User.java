@@ -47,7 +47,7 @@ public class User {
     private Set<PaymentHistory> paymentHistories;
 
     @OneToMany(mappedBy = "user")
-    private Set<FinishedTopics> finishedTopics;
+    private Set<FinishedTopic> finishedTopics;
 
 
 
@@ -130,11 +130,11 @@ public class User {
         this.paymentHistories = paymentHistories;
     }
 
-    public Set<FinishedTopics> getFinishedTopics() {
+    public Set<FinishedTopic> getFinishedTopics() {
         return finishedTopics;
     }
 
-    public void setFinishedTopics(Set<FinishedTopics> finishedTopics) {
+    public void setFinishedTopics(Set<FinishedTopic> finishedTopics) {
         this.finishedTopics = finishedTopics;
     }
 

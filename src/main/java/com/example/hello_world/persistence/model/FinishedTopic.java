@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "finished_topics")
-public class FinishedTopics {
+public class FinishedTopic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,9 @@ public class FinishedTopics {
 
 
 
-    public FinishedTopics() {}
+    public FinishedTopic() {}
 
-    public FinishedTopics(User user, Topic topic, Date date) {
+    public FinishedTopic(User user, Topic topic, Date date) {
         this.user = user;
         this.topic = topic;
         this.date = date;
@@ -75,7 +75,7 @@ public class FinishedTopics {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        FinishedTopics comparing = (FinishedTopics) o;
+        FinishedTopic comparing = (FinishedTopic) o;
         return (this.id.equals(comparing.id) &&
                 this.date.equals(comparing.date));
     }

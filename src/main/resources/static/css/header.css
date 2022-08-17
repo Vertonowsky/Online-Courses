@@ -3,9 +3,9 @@
 #header {
     position: fixed;
     box-sizing: border-box;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     height: 70px;
     text-align: center;
@@ -13,13 +13,13 @@
     border-bottom: 2px solid transparent;
     transition: all 0.4s;
     z-index: 3;
-    padding: 14px 0px 12px 0px;
-    font-size: 0px;
+    padding: 14px 0 12px 0;
+    font-size: 0;
 }
 
 
 #header.nav_active {
-    padding: 12px 0px 8px 0px;
+    padding: 12px 0 8px 0;
     background: #fff;
     border-bottom: 2px solid #E0E0E0;
 }
@@ -31,7 +31,7 @@
     transition: all 0.3s;
     right: 25px;
     top: 50%;
-    padding: 15px 0px;
+    padding: 15px 0;
     transform: translateY(-50%);
     font-size: 25px;
     color: #808080;
@@ -62,7 +62,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            margin: 0px;
+            margin: 0;
             font-size: 18px;
             font-weight: bold;
             color: var(--color-title);
@@ -102,7 +102,7 @@
             text-decoration: none;
             border-bottom: 2px solid transparent;
             font-size: 16px;
-            padding: 0px 6px 4px 6px;
+            padding: 0 6px 4px 6px;
             margin-right: 20px;
             transition: all 0.3s;
             -moz-transition: all 0.3s;
@@ -117,7 +117,7 @@
 
 
         .header_button:last-child {
-            margin-right: 0px;
+            margin-right: 0;
         }
 
 
@@ -146,7 +146,7 @@
         }
 
         #header.nav_active #login_button {
-            margin-right: 0px;
+            margin-right: 0;
         }
 
         #header #login_button:hover {
@@ -162,7 +162,7 @@
 
         #header .button_transparent_underline {
             width: 120px;
-            padding: 10px 0px;
+            padding: 10px 0;
             margin-right: 10px;
         }
 
@@ -188,10 +188,10 @@
             background: #fff;
             height: 45px;
             min-width: 200px;
-            padding: 0px 30px 0px 20px;
+            padding: 0 30px 0 20px;
             cursor: pointer;
             border-radius: 8px;
-            box-shadow: 0 0px 2px 2px #E0E0E0;
+            box-shadow: 0 0 2px 2px #E0E0E0;
             transition: all 0.3s;
         }
 
@@ -223,12 +223,12 @@
             width: 150%;
             transition: all 0.1s;
             border-radius: 8px;
-            box-shadow: 0 0px 2px 2px #E0E0E0;
+            box-shadow: 0 0 2px 2px #E0E0E0;
         }
 
         #header.nav_active .dropdown_content {
-            border-top-left-radius: 0px;
-            border-top-right-radius: 0px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
         }
         
         .dropdown_content .dropdown_link {
@@ -278,8 +278,8 @@
         }
 
         #header.nav_active .dropdown_content .dropdown_link:first-of-type {
-            border-top-left-radius: 0px;
-            border-top-right-radius: 0px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
         }
 
         .dropdown_content .dropdown_link:last-of-type:hover {
@@ -294,8 +294,8 @@
 
         .dropdown:hover .dropbtn {
             height: 56px;
-            border-bottom-right-radius: 0px;
-            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
             border-bottom: none;
             background: rgba(39, 51, 59, 0.95);
             background: #fff;
@@ -389,7 +389,7 @@
         @media screen and (max-width: 1024px) {    
 
             #header_buttons {
-                margin-left: 220px;
+                margin-left: 190px;
             }
 
         }
@@ -402,7 +402,7 @@
             }
 
                 #header.nav_active {
-                    padding: 0px;
+                    padding: 0;
                 }
 
                 #nav_logo {
@@ -412,7 +412,7 @@
 
             #navPanelToggle {
                 display: block;
-                padding: 0px;
+                padding: 0;
                 top: 50%;
                 transform: translateY(-50%);
             }
@@ -421,13 +421,13 @@
                 position: fixed;
                 visibility: hidden;
                 top: 50px;
-                right: 0px;
+                right: 0;
                 width: 300px;
                 height: 100%;
                 opacity: 0;
                 z-index: 20;
                 background: #FFF;
-                padding: 0px;
+                padding: 0;
             }
 
             #navPanel.active {
@@ -438,7 +438,7 @@
             #header_buttons {
                 display: block;
                 width: 100%;
-                margin: 50px 0px 30px 0px;
+                margin: 50px 0 30px 0;
                 height: auto;
             }
 
@@ -446,8 +446,8 @@
                     top: auto;
                     transform: translateY(0%);
                     font-size: var(--font-size-normal);
-                    padding: 0px 6px 4px 6px;
-                    margin-right: 0px;
+                    padding: 0 6px 4px 6px;
+                    margin-right: 0;
                     width: 100%;
                     display: block;
                     text-align: center;
@@ -458,7 +458,7 @@
                 }
 
                 .header_button.nav_active:first-child {
-                    margin-top: 0px;
+                    margin-top: 0;
                 }
 
             
@@ -468,8 +468,8 @@
                 width: 100%;
                 clear: both;
                 margin: auto;
-                left: 0px;
-                right: 0px;
+                left: 0;
+                right: 0;
                 height: auto;
                 text-align: center;
             }
@@ -482,7 +482,7 @@
                 .dropdown_content {
                     position: relative;
                     width: 100%;
-                    top: 0px;
+                    top: 0;
                     border: none;
                 }
 
@@ -506,7 +506,7 @@
 
             #navPanelToggle {
                 display: block;
-                padding: 10px 0px;
+                padding: 10px 0;
             }
 
             #nav_logo {
@@ -524,14 +524,14 @@
             right: -70%;
         }
         100% {
-            right: 0px;
+            right: 0;
         }
     }
 
 
     @keyframes slideOutToRight {
         0% {
-            right: 0px;
+            right: 0;
             opacity: 1;
             visibility: visible;
         }

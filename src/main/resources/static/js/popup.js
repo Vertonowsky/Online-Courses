@@ -35,11 +35,11 @@ function showPopup(text1, status1) {
 
     if (status1) {
         popup.style.background = "#22A8E0"; 
-        popup.style.boxShadow  = "0px 0px 4px 2px #209FD4";
+        popup.style.boxShadow  = "0px 0 4px 2px #209FD4";
         document.getElementById("popup_title").innerHTML = "<i class='icon fas fa-check'></i>" + text1;
     } else {
         popup.style.background = "#FF7070"; 
-        popup.style.boxShadow  = "0px 0px 4px 2px #E65353";
+        popup.style.boxShadow  = "0px 0 4px 2px #E65353";
         document.getElementById("popup_title").innerHTML = "<i class='icon fas fa-exclamation-triangle'></i>" + text1;
     }
 

@@ -122,6 +122,8 @@ public class AdminController {
         topic.setChapter(chapter.get());
         topicRepository.save(topic);
 
+
+
         map.replace("success", true);
         map.replace("message", "Sukces: Dodano nowy temat do kursu!");
         return map;

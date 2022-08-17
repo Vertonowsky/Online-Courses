@@ -34,99 +34,152 @@ Wczytanie advantages
             <div id="banner">
                 <div class="inner">
 
-                    <div class="description">
+                    <div class="panel_left">
 
-                        <div class="title" th:text="${course.name}"></div>
+                        <div class="heading" th:text="${course.name}"></div>
                         <div class="desc" th:text="${course.description}"></div>
 
                         <!--<ul class="advantages"></*?php echo $advantages; ?></ul>-->
 
-                        <table id="table">
-                            <tr>
-                                <th>Kurs gwrantuje:</th>
-                                <th>Darmowy</th>
-                                <th><i class="fas fa-star"></i> Premium <i class="fas fa-star"></i></th>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>Tłumaczenie od doświadczonego korepetytora</td>
-                                <td><i class='fas fa-check'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>Swobodę uczenia się o dowolnej porze</td>
-                                <td><i class='fas fa-check'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>Starannie wyselekcjonowane zadania</td>
-                                <td><i class='fas fa-check'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>Ponad 70 godzin materiałów wideo</td>
-                                <td><i class='fas fa-times'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>110 zadań do samodzielnego rozwiązania + odpowiedzi</td>
-                                <td><i class='fas fa-times'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-star-of-life"></i>3-miesięczny dostęp do kursu</td>
-                                <td><i class='fas fa-times'></i></td>
-                                <td><i class='fas fa-check'></i></td>
-                            </tr>
-                        </table>
+
+                        <div id="plans">
+
+                            <div class="plan_container">
+
+                                <h1 class="title">Wersja próbna</h1>
+                                <div class="prices">
+                                    <div class="price_block">0 zł</div>
+                                </div>
+
+                                <ul class="adv_list">
+
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                    </li>
+                                    <li class="unavailable">
+                                        <div class="left"><i class="fas fa-times"></i></div>
+                                        <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                    </li>
+                                    <li class="unavailable">
+                                        <div class="left"><i class="fas fa-times"></i></div>
+                                        <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                    </li>
+                                </ul>
+
+                                <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
+
+                            </div>
+
+                            <div class="plan_container premium">
+
+                                <h1 class="title">Wersja premium</h1>
+                                <div class="prices">
+                                    <!--<div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
+                                    <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>-->
+                                    <div class="price_block">289 zł</div>
+                                </div>
+
+                                <ul class="adv_list">
+
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                    </li>
+                                    <li class="available">
+                                        <div class="left"><i class="fas fa-check"></i></div>
+                                        <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                    </li>
+                                </ul>
+
+                                <a class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                </div>
+                    <div class="panel_right">
+                        <div class="photo">
+                            <img alt="" th:src="@{'/images/zasob1.png'}"/>
+                        </div>
+                    </div>
 
+                </div>
             </div>
 
-            <div class="content">
 
-                <div id="sticky">
-                    <div class="photo">
-                        <img alt="" th:src="@{'/images/course_photo_' + ${course.id} + '.png'}"/>
-                    </div>
+            <div id="below_banner">
+                <div id="test">
 
-                    <p class="desc">Przed dokonaniem zakupu, przetestuj nasz kurs korzystając z <span class="bold">darmowej wersji</span>!</p>
-
-                    <div class="prices">
-                        <div class="price_block"> 0 zł</div>
-
-                        <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
-
-                        <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>';
-                    </div>
-
-
-                    <div class="buttons">
-                        <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wersja próbna<i class="fas fa-arrow-circle-right"></i></a>
-                        <a class="button_gray" id="button_buy">Pełny dostęp<i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                 </div>
+                <!--<img alt="" id="bg_image" th:src="@{'/images/bg.png'}"/>-->
+                <h1 id="below_introduction"> Tego nauczysz się w naszym kursie:</h1>
 
+                <div id="all_topics" th:if="${course != null}">
 
-                <div id="all_topics">
+                    <div class="chapter_menu" th:each="chapter : ${course.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
+                        <div class="chapter_header">
 
-                    <!--<?php
-                    
-                        loadWholePage($conn, $courseId, $isLoggedIn);
+                            <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>
+                            <div class="th_title" th:text="${chapter.title}"></div>
 
-                    ?>-->
+                        </div>
 
+                        <div class="topic_menu" th:if="${chapter.topics != null}">
+                            <div class="topic_header" th:each="topic : ${chapter.topics}" th:id="'right_topic_id_' + ${topic.id}">
+
+                                <div class="td_left">
+                                    <i class="fab fa-gg-circle"></i>
+                                    <div class="duration">[12:33]</div>
+                                </div>
+
+                                <div class="td_right">
+                                    <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
+                                    <div class="td_title" th:text="${topic.title}"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!--
-                START footer
-            -->
-            <div th:insert="~{footer :: footer}"></div>
-
         </div>
+
+
+        <!--
+            START footer
+        -->
+        <div th:insert="~{footer :: footer}"></div>
 
 
 
@@ -196,49 +249,48 @@ Wczytanie advantages
                                 </table>
 
                                 <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></div>
+                            </div>
 
+                            <!--
+                                                                INPUT GROUP - Input with its elements
+                                                            -->
+                            <div class="buttons">
 
                                 <!--
-                                    INPUT GROUP - Input with its elements
+                                    CHECKBOX- custom checkbox input
                                 -->
-                                <div class="buttons">
-
-                                    <!--
-                                        CHECKBOX- custom checkbox input
-                                    -->
-                                    <div class="checkbox_body">
-                                        <div style="display: block;" class="standard-checkbox">
-                                            <label class="checkbox-border">
-                                                <input name="terms" type="checkbox" class="invisible" id="terms_input"></input>
-                                                <div class="checkbox">
-                                                    <svg width="20px" height="20px" viewBox="0 0 20 20">
-                                                        <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
-                                                        <polyline points="4 11 8 15 16 6"></polyline>
-                                                    </svg>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <span class="checkbox-label">Akceptuję regulamin</span>
+                                <div class="checkbox_body">
+                                    <div style="display: block;" class="standard-checkbox">
+                                        <label class="checkbox-border">
+                                            <input name="terms" type="checkbox" class="invisible" id="terms_input"></input>
+                                            <div class="checkbox">
+                                                <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                                    <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
+                                                    <polyline points="4 11 8 15 16 6"></polyline>
+                                                </svg>
+                                            </div>
+                                        </label>
                                     </div>
-
-
-                                    <div class="input_group">
-                                        <input id="discount_code_input" class="input" type="text" placeholder="...">
-                                        <label>Kod rabatowy: </label>
-                                        <!--<form id="discount_form" th:action="@{/purchase/useDiscountCode}" method="POST">
-                                            <button type="submit"> <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i></button>
-                                            <input name="courseId" value="1"/>
-                                            <input name="codeName" value="jesien30"/>
-                                        </form>-->
-                                        <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i>
-                                    </div>
-
-
-                                    <div onclick="verifyPayment()" class="button_gray">Przejdź do płatności <i class="fas fa-arrow-circle-right"></i></div>
-
+                                    <span class="checkbox-label">Akceptuję regulamin</span>
                                 </div>
 
+
+                                <div class="input_group">
+                                    <input id="discount_code_input" class="input" type="text" placeholder="...">
+                                    <label>Kod rabatowy: </label>
+                                    <!--<form id="discount_form" th:action="@{/purchase/useDiscountCode}" method="POST">
+                                        <button type="submit"> <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i></button>
+                                        <input name="courseId" value="1"/>
+                                        <input name="codeName" value="jesien30"/>
+                                    </form>-->
+                                    <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i>
+                                </div>
+
+
+                                <div onclick="verifyPayment()" class="button_gray">Przejdź do płatności <i class="fas fa-arrow-circle-right"></i></div>
+
                             </div>
+
                         </div>
                     </div>
 
@@ -271,8 +323,10 @@ Wczytanie advantages
                             <li><a class="list_link" th:href="@{/profil}"><span class="bold">panelu użytkownika</span></a></li>
                         </ul>.</h2>
 
-                        <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
-                        <a th:href="@{'/kurs/' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+                        <div class="buttons">
+                            <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
+                            <a th:href="@{'/kurs/' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
 
                     </div>
                 </div>
@@ -298,8 +352,11 @@ Wczytanie advantages
 
 <script th:inline="javascript">
 
+
+
     const discount_input = document.getElementById('discount_code_input');
     const myNav = document.getElementById("header");
+    const body  = document.querySelector("body");
 
 
     window.onload = function (){
@@ -319,6 +376,7 @@ Wczytanie advantages
 
     // When the user clicks the button, open the modal
     button_buy.onclick = function() {
+        body.style.overflow = "hidden";
         modal_buy.classList.add("active");
         modal_content.classList.add("active");
     }
@@ -328,6 +386,7 @@ Wczytanie advantages
     function closeModal() {
         modal_buy.classList.remove("active");
         modal_content.classList.remove("active");
+        body.style.overflow = "auto";
     }
 
 

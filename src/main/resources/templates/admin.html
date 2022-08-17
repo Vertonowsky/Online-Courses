@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
+    <link rel="stylesheet" href="/css/course_container.css"/>
 
     <div th:insert="~{dependencies :: dependencies}"></div>
 
@@ -108,7 +109,7 @@
 
 
 
-                <div class="right" id="display_panel">
+                <div id="display_panel">
 
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
 
@@ -131,7 +132,7 @@
                                 <div class="th_index" th:text="${chapter.index}"></div>
                                 <div class="th_title" th:text="${chapter.title}"></div>
                                 <div class="th_operations">
-                                    <div class="icons">
+                                    <div class="preview_icons">
                                         <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editChapter', ${chapter.id})|"></i>
                                         <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteChapter', ${chapter.id})|"></i>
                                     </div>
@@ -147,7 +148,7 @@
                                     <div class="td_index" th:text="${topic.index}"></div>
                                     <div class="td_title" th:text="${topic.title}"></div>
                                     <div class="td_operations">
-                                        <div class="icons">
+                                        <div class="preview_icons">
                                             <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editTopic', ${topic.id})|"></i>
                                             <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteTopic', ${topic.id})|"></i>
                                         </div>

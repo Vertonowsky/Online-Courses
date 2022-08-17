@@ -2,7 +2,7 @@
     position: absolute;  
     width: 100%;
     height: 100%;
-    font-size: 0px;
+    font-size: 0;
 }
 
 
@@ -44,7 +44,7 @@
                 }
 
                 #left_title {
-                    margin: 150px 0px 0px 0px;
+                    margin: 150px 0 0 0;
                     font-size: 24px;
                     color: #E6E6E6;
                     font-weight: bold;
@@ -55,7 +55,7 @@
                     width: 80%;
                     line-height: 22px;
                     color: #ccc;
-                    margin: 3px auto 0px auto;
+                    margin: 3px auto 0 auto;
                 }
 
                 .left .button_blue {
@@ -63,7 +63,7 @@
                     box-sizing: border-box;
                     display: block;
                     width: 200px;
-                    margin: 20px auto 0px auto;
+                    margin: 20px auto 0 auto;
                     padding: 13px 10px;
                     outline: 0;
                     border: 0;
@@ -90,13 +90,13 @@
 
                 #auth_container .title_with_shadow {
                     position: relative;
-                    margin: 0px;
+                    margin: 0;
                     width: 280px;
                 }
 
                         #auth_container .tit_text {
                             position: relative;
-                            margin: 0px;
+                            margin: 0;
                             color: var(--color-title);
                             font-size: var(--font-size-big);
                             font-weight: bold;
@@ -108,7 +108,7 @@
                             width: 50%;
                             height: 100%;
                             left: -10px;
-                            top: 0px;
+                            top: 0;
                             background: linear-gradient(90deg, rgba(240,240,240,1) 20%, rgba(235,235,235,0) 100%);
                             z-index: 0;
                         }
@@ -116,14 +116,14 @@
 
                 #auth_container .desc {
                     color: var(--color-default);
-                    margin: 10px 0px 30px 0px;
+                    margin: 10px 0 30px 0;
                     font-size: var(--font-size-normal);
                 }
 
                 #auth_container .input_group {
                     width: 100%;
                     display: block;
-                    margin: 0px 0px 20px 0px;
+                    margin: 0 0 20px 0;
                 }
 
                 #auth_container .input_group:last-of-type {
@@ -140,19 +140,19 @@
 
                         #auth_container .href {
                             font-size: var(--font-size-normal);
-                            left: 0px;
+                            left: 0;
                             width: 190px;
                             padding-left: 10px;
                             text-align: center;
                         }
 
                         #auth_container .button_blue {
-                            padding: 14px 0px;
+                            padding: 14px 0;
                             width: 180px;
                             border: 2px solid #F0F0F0;
                             outline: 0;
                             border: 0;
-                            right: 0px;
+                            right: 0;
                         }
 
                         /*#login_page input:-webkit-autofill {
@@ -208,7 +208,7 @@
                         }
 
                         .other_login_button:last-child {
-                            margin-bottom: 0px;
+                            margin-bottom: 0;
                         }
 
                         .other_login_button:hover {
@@ -305,18 +305,18 @@
 
         #registration_info .subtitle {
             font-size: 18px;
-            margin: 0px;
+            margin: 0;
         }
 
         #registration_info .desc {
             font-size: 15px;
             font-weight: normal;
-            margin: 10px 0px 0px 0px;
+            margin: 10px 0 0 0;
         }
 
         #registration_info .button_gray {
             display: block;
-            margin: 20px auto 0px auto;
+            margin: 20px auto 0 auto;
         }
 
 
@@ -428,7 +428,7 @@
 
                 #auth_container .button_blue {
                     position: relative;
-                    padding: 14px 0px;
+                    padding: 14px 0;
                     width: 80%;
                     margin-top: 20px;
                 }
@@ -464,7 +464,7 @@
                 width: 100%;
                 padding: 80px 40px 25px 40px;
                 transform: translateY(0%);
-                top: 0px;
+                top: 0;
             }
 
                 #auth_container .tit_text {

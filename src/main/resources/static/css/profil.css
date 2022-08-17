@@ -11,7 +11,7 @@ body {
     padding-bottom: 80px;
     width: 1350px;
     min-height: 100vh;
-    font-size: 0px;
+    font-size: 0;
     height: auto;
     margin: auto;
 }
@@ -21,7 +21,7 @@ body {
     box-sizing: border-box;
     background: #FCFCFC;
     border: 1px solid #EDEDED;
-    box-shadow: 0px 5px 5px 2px #E6E6E6;
+    box-shadow: 0 5px 5px 2px #E6E6E6;
     border-radius: 7px;
     width: 100%;
 }
@@ -46,8 +46,7 @@ body {
                 font-size: var(--font-size-title);
                 color: var(--color-default);
                 font-weight: normal;
-                margin: 0px;
-                margin-bottom: 20px;
+                margin: 0 0 20px 0;
                 text-align: left;
             }
 
@@ -67,18 +66,18 @@ body {
 
             #no_courses_found .subtitle {
                 font-size: 18px;
-                margin: 0px;
+                margin: 0;
             }
 
             #no_courses_found .desc {
                 font-size: 15px;
                 font-weight: normal;
-                margin: 10px 0px 0px 0px;
+                margin: 10px 0 0 0;
             }
 
             #no_courses_found .button_gray {
                 display: block;
-                margin: 20px auto 0px auto;
+                margin: 20px auto 0 auto;
             }
 
 
@@ -120,14 +119,13 @@ body {
                 height: 35px;
                 border-radius: 10px;
                 background: #A3DEFF;
-                margin: auto;
                 font-size: var(--font-size-normal);
                 color: #1C5473;
-                margin-bottom: 4px;
+                margin: 0 auto 4px auto;
             }
 
             .progress_background:last-of-type {
-                margin-bottom: 0px;
+                margin-bottom: 0;
             }
 
             .progress_fill {
@@ -192,8 +190,8 @@ body {
                     display: block;
                     width: 100%;
                     text-align: left;
-                    font-size: 0px;
-                    padding: 8px 0px 8px 8px;
+                    font-size: 0;
+                    padding: 8px 0 8px 8px;
                     border-bottom: 1px solid #BFBFBF;
                 }
 
@@ -263,7 +261,7 @@ body {
         }
 
             #courses_list {
-                padding: 0px;
+                padding: 0;
             }
 
         #content_right {
@@ -285,7 +283,7 @@ body {
             display: inline-block;
             width: 35%;
             margin-left: 3%;
-            margin-top: 0px;
+            margin-top: 0;
         }
     }
     
@@ -327,7 +325,7 @@ body {
 
             #profile_content .heading {
                 font-size: var(--font-size-normal);
-                margin: 0px;
+                margin: 0;
                 margin-bottom: 15px;
             }
 

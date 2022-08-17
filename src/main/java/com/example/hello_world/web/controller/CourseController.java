@@ -1,8 +1,14 @@
 package com.example.hello_world.web.controller;
 
 import com.example.hello_world.Category;
+import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.Course;
+import com.example.hello_world.persistence.model.FinishedTopic;
+import com.example.hello_world.persistence.model.Topic;
+import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.CourseRepository;
+import com.example.hello_world.persistence.repository.UserRepository;
+import com.example.hello_world.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +28,9 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/add2")
     public String addCourse() {
@@ -84,15 +95,59 @@ public class CourseController {
     @GetMapping("/wyswietl/{id}")
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MyUserDetails currentUserName = null;
+        if (auth.getPrincipal() instanceof MyUserDetails) {
+            currentUserName = (MyUserDetails) auth.getPrincipal();
 
+            Optional<User> optionalUser = userRepository.findByEmail(currentUserName.getUsername());
+            if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
+        }
         model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
+
+
 
         if (id < 1) return new ModelAndView("redirect:/");
         Optional<Course> course = courseRepository.findById(id);
         if (course.isEmpty()) return new ModelAndView("redirect:/");
 
+        Map<Integer, TopicStatus> topicsInfo = new HashMap<>();
+        //User user = optionalUser.get();
+
+        Integer firstFinished = 0;
+
+        /*for (Chapter ch : course.get().getChapters()) {
+            for (Topic t : ch.getTopics()) {
+                if (isTopicFinished(user, t)) topicsInfo.put(t.getId(), TopicStatus.FINISHED);
+                else
+                    if (firstFinished == 0) firstFinished = t.getId();
+            }
+        }*/
+
+
+
+
+
         model.addAttribute("course", course.get());
+        model.addAttribute("topics", null);
         return new ModelAndView("wyswietl");
     }
+
+
+
+
+    private boolean isTopicFinished(User u, Topic t) {
+        for (FinishedTopic finishedTopic : u.getFinishedTopics()) {
+            if (t.equals(finishedTopic.getTopic())) return true;
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
 
 }

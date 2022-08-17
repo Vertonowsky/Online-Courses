@@ -163,7 +163,7 @@ function openFilters() {
         tab.classList.add('active');
     } else {
         button.classList.remove("active");
-        top_panel.style.paddingBottom = "0px";
+        top_panel.style.paddingBottom = "0";
         tab.classList.remove('active');
     }
 }

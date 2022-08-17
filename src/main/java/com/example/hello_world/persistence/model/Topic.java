@@ -31,7 +31,7 @@ public class Topic {
 
     @OneToMany(mappedBy = "topic")
     @JsonIgnore
-    private Set<FinishedTopics> finishedTopics;
+    private Set<FinishedTopic> finishedTopics;
 
 
 
@@ -84,11 +84,11 @@ public class Topic {
         this.chapter = chapter;
     }
 
-    public Set<FinishedTopics> getFinishedTopics() {
+    public Set<FinishedTopic> getFinishedTopics() {
         return finishedTopics;
     }
 
-    public void setFinishedTopics(Set<FinishedTopics> finishedTopics) {
+    public void setFinishedTopics(Set<FinishedTopic> finishedTopics) {
         this.finishedTopics = finishedTopics;
     }
 
