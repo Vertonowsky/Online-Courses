@@ -23,13 +23,12 @@
 
         <div id="auth_content">
 
-            <div id="registration_info_bg" th:if="${registered}">
+            <div id="registration_info_bg" th:if="${!#strings.isEmpty(registered) && registered}">
                 <div class="window" id="registration_info">
                     <i class="center_icon fas fa-check-circle"></i>
                     <h1 class="subtitle">Proces rejestracji zakończony sukcesem!</h1>
                     <h2 class="desc">Możesz się teraz zalogować na swoje konto.</h2>
                     <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
-
                 </div>
             </div>
 
@@ -62,13 +61,13 @@
                     <div class="desc">Zaloguj się, aby mieć dostęp do posiadanych kursów</div>
 
 
-                    <form id="login_form" th:action="@{/logowanie2}" method="POST">
+                    <form id="login_form" th:action="@{/logowanie}" method="POST">
 
                         <!--
                             INPUT GROUP - Input with its elements
                         -->
                         <div class="input_group">
-                            <input value="" id="login_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, 'email', this.value)">
+                            <input th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" id="login_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, 'email', this.value)">
                             <label> Email: </label>
 
                             <!--
@@ -86,7 +85,7 @@
                             INPUT GROUP - Input with its elements
                         -->
                         <div class="input_group">
-                            <input value="" id="login_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, 'passwordLogin', this.value)">
+                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="login_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, 'passwordLogin', this.value)">
                             <label> Hasło: </label>
 
                             <!--
@@ -134,13 +133,6 @@
             <a th:href="@{/}" id="button_go_back"><i style="font-size: 13px;" class="fas fa-chevron-left"></i> Strona główna</a>
             <a th:href="@{/rejestracja}" id="button_go_next">Rejestracja <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
 
-
-            <div id="respond">
-                <i class="fas fa-exclamation-triangle"></i>
-                <label id="respond_text"></label>
-                <i id="close_respond" class="fas fa-times" onclick="closePopup()"></i>
-            </div>
-
         </div>
 
 
@@ -152,17 +144,28 @@
 </body>
 
 
-<script>
+<script th:inline="javascript">
+
 
     $("#login_form").submit(function(e) {
-        e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-        sendAuthenticationData("login", $(this), document.getElementById("login_data_email").value, document.getElementById("login_data_password").value, null, null);
+        if (!checkInputData(0, "email", document.getElementById("login_data_email").value) || !checkInputData(1, "passwordLogin", document.getElementById("login_data_password").value))
+            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
     });
 
     function closeRegistrationInfo() {
         const info = document.getElementById("registration_info_bg");
         info.style.display = "none";
     }
+
+    /*<![CDATA[*/
+        let error = /*[[${error}]]*/ "";
+
+        if (error != "" && error != null) {
+            showPopup(error,  0);
+            checkInputData(0, "email", document.getElementById("login_data_email").value);
+            checkInputData(1, "passwordLogin", document.getElementById("login_data_password").value);
+        }
+    /*]]>*/
 
 </script>
 

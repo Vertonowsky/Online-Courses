@@ -71,6 +71,7 @@
 
 
         #popup_info {
+            width: 80%;
             bottom: 40px;
             padding: 12px 6px;
             border-radius: 8px;

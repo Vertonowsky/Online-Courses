@@ -6,7 +6,6 @@ import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
-import com.example.hello_world.web.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -362,20 +361,6 @@ public class AdminController {
         }
 
         return allVideos;
-    }
-
-
-
-
-
-
-
-
-
-
-    @GetMapping("/admin/lol")
-    public Iterable<CourseDto> lol() {
-        return courseRepository.findAllCoursesNames();
     }
 
 }

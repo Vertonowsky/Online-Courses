@@ -8,6 +8,9 @@
 
     <div th:insert="~{dependencies :: dependencies}"></div>
 
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 </head>
 <body>
 
@@ -50,7 +53,7 @@
 
 
                     <div id="register_square" class="tab_content">
-                        <form id="register_form" th:action="@{/auth/register}"  th:object="${user}" method="POST">
+                        <form id="register_form" th:action="@{/auth/register}" th:object="${user}" method="POST">
 
                             <!--
                                 INPUT GROUP - Input with its elements

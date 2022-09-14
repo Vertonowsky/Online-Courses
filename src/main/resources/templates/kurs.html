@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+<?php
+
+    session_start();
+
+    $isLoggedIn = isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn'];
+    
+    if (!isset($_GET['id']) || $_GET['id'] == null) {
+        echo header('Location: /edu/');
+        exit();
+    } 
+
+    $courseId = $_GET['id'];
+
+    require_once($_SERVER['DOCUMENT_ROOT'] . "/edu/php/manipulation/hehe.php");
+    require_once($_SERVER['DOCUMENT_ROOT'] . "/edu/php/database/MysqlConnection.php");
+    $mysqlConnection = new MysqlConnection();
+    $conn = $mysqlConnection->open();
+
+?>
+
+
+<html>
+    <meta charset="UTF-8">
+    <title>Kursowo | Potęgi i pierwiastki</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/edu/css/main.css"></link>
+    <link rel="stylesheet" href="/edu/css/kurs.css"></link>
+    <link rel="stylesheet" href="/edu/css/elements.css"></link>
+    <link rel="stylesheet" href="/edu/css/course_container.css"></link>
+    <link rel="stylesheet" href="/edu/css/all-styles.css"></link>
+    <link rel="stylesheet" href="/edu/css/footer.css"></link>
+    <link rel="icon" href="/edu/images/logo.png">
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <link rel="stylesheet" href="/edu/assets/font-awesome/css/all.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    </script>
+
+
+</head>
+
+<body>
+
+
+
+
+
+        <div id="content_course">
+            <div id="course_left" class="active">
+                <!--<div id="navigation_container">
+                    <div id="complete"><div id="complete_fill"></div></div>
+                    <p id="course_finised">Ukończono 37%</p>
+                </div>-->
+                    
+                <ul id="all_topics">
+
+                <?php 
+                    
+                    $src = loadWholePage($conn, $courseId, $isLoggedIn);
+
+                    $conn = $mysqlConnection->close();
+
+                ?>
+
+                </ul>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="course_center" class="active">
+
+                <div id="video_container" tabindex="0">
+                    <video id="video">
+                        <source id="source" type="video/mp4" src="<?php echo $src?>">
+                    </video>
+                    <div id="volume_display_info"></div>
+                    <div id="center_info" class="active"><i id="center_info_icon" class="fas fa-play"></i></div>
+
+
+                    <div id="video-controls">
+                        <div id="timeline_container">
+                            <input id="timeline_slider" type="range" min="0" value="0" class="timeline_slider" step="0.001">
+                            <output id="bubble"></output>
+                        </div>
+
+
+                        <!--<div id="timeline_buffered_container">
+                            <input id="timeline_buffered_slider" type="range" min="0" value="0" class="timeline_buffered_slider" step="0.001">
+                        </div>-->
+
+
+
+
+                        <div class="left">
+                            <button id="video-play">
+                                <i class="o-play-btn__icon">
+                                    <div class="o-play-btn__mask"></div>
+                                </i>
+                            </button>
+                            <div id="video_volume" type="button" data-state="1"><i onclick="mute()" id="video_volume_icon" class=""></i>
+                                <div id="volume_slider_container">
+                                    <input id="volume_slider" type="range" min="0" max="100" class="slider_volume">
+                                </div>
+                            </div>
+                            <div id="video_time">0:00</div>
+
+                        </div>
+
+
+                        <div class="right">
+                            <button id="video_speed" type="button" data-state="1" onclick="videoSpeed()"><i class="fas fa-cog"></i></button>
+                            <div id="video_settings">
+                                <h1>Predkosc odtwarzania</h1>
+                                <ul>
+                                    <li onclick="changeSpeed(this, 0.25)" class="video_speed_option">0.25</li>
+                                    <li onclick="changeSpeed(this, 0.5)" class="video_speed_option">0.50</li>
+                                    <li onclick="changeSpeed(this, 0.75)" class="video_speed_option">0.75</li>
+                                    <li onclick="changeSpeed(this, 1)"    class="video_speed_option active">Normalna</li>
+                                    <li onclick="changeSpeed(this, 1.5)"  class="video_speed_option">1.5</li>
+                                    <li onclick="changeSpeed(this, 1.75)" class="video_speed_option">1.75</li>
+                                    <li onclick="changeSpeed(this, 2)"    class="video_speed_option">2</li>
+                                </ul>
+                            </div>
+                            <button id="video-fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="below_video_options">
+
+                    <div id="go_home" onclick="window.location = '/edu/szczegoly.php?id=' + <?php echo $_GET['id']; ?>;"> <i class="fas fa-arrow-left"></i> Powrót do strony kursu</div>
+
+                    <div id="unfinish" class="button_activity"> Oznacz jako niewykonane! <i class="fas fa-times"></i></div>
+                    <div id="finish" class="button_activity"> Oznacz jako wykonane! <i class="fas fa-check"></i></div>
+
+                </div>
+
+
+
+                <!--<div id="exercises_container">
+                    <div class="task">
+                        <h1 class="task_number">Zadanie 1</h1>
+                        <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
+                        <ol class="answers">
+                            <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
+                            <li class="answer"><span class="index">B.</span> Gdy dowie się, że musi zajebać 180 stopni na jednokierunkowej</li>
+                            <li class="answer"><span class="index">C.</span> Jak zobaczy słodkiego pieska za zakrętem</li>
+                            <li class="answer"><span class="index">D.</span> Gdy nie trafi w srającą sarne</li>
+
+                        </ol>
+
+                    </div>
+
+                    <div class="task">
+                        <h1 class="task_number">Zadanie 1</h1>
+                        <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
+                        <ol class="answers">
+                            <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
+                            <li class="answer"><span class="index">B.</span> Gdy dowie się, że musi zajebać 180 stopni na jednokierunkowej</li>
+                            <li class="answer"><span class="index">C.</span> Jak zobaczy słodkiego pieska za zakrętem</li>
+                            <li class="answer"><span class="index">D.</span> Gdy nie trafi w srającą sarne</li>
+
+                        </ol>
+
+                    </div>
+
+
+                    <div class="task">
+                        <h1 class="task_number">Zadanie 1</h1>
+                        <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
+                        <ol class="answers">
+                            <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
+                            <li class="answer"><span class="index">B.</span> Gdy dowie się, że musi zajebać 180 stopni na jednokierunkowej</li>
+                            <li class="answer"><span class="index">C.</span> Jak zobaczy słodkiego pieska za zakrętem</li>
+                            <li class="answer"><span class="index">D.</span> Gdy nie trafi w srającą sarne</li>
+
+                        </ol>
+
+                    </div>
+
+                </div>-->
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+
+
+
+        <script src="/edu/assets/jquery/jquery-1.11.3.js"></script>
+        <script src="/edu/js/manipulation.js"></script>
+    
+</body>
+
+
+
+
+<script>
+
+
+        function openNextTopic(topic_id) {
+            var element  = document.getElementById("all_topics");
+            var position = element.scrollTop;
+
+            window.location.href = "/edu/kurs.php?id=<?php echo $_GET['id']; ?>&topic=" + topic_id + "&p=" + position; 
+        }
+
+
+        //$( window ).load(function()
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        var button_play       = document.getElementById("video-play");
+        var button_fullscreen = document.getElementById("video-fullscreen");
+        var center_info       = document.getElementById("center_info");
+        var center_info_icon  = document.getElementById("center_info_icon");
+
+        var video_container = document.getElementById("video_container");
+        const video = document.getElementById("video");
+
+
+        var fullscreen = false;
+        var muted  = false;
+        var paused = true;
+        var volume = 0;
+        var delay2, timer2;
+
+
+
+        center_info.onclick = function() {
+            playVideo();
+        }
+
+        button_play.onclick = function(){
+            playVideo();
+        };
+
+        video.onclick = function(){
+            playVideo();
+        }
+
+        video.ondblclick = function(){
+            if (!fullscreen) openFullscreen(video_container);
+            if (fullscreen) closeFullscreen();
+        }
+
+        button_fullscreen.onclick = function(){
+            if (!fullscreen) openFullscreen(video_container);
+            if (fullscreen) closeFullscreen();
+        };
+
+
+
+
+        $('#video_container').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function() {
+            if (document.fullscreenElement) {
+                fullscreen = true;
+            } else {
+                fullscreen = false;
+            }
+        });
+
+
+
+
+
+
+
+
+
+        function showCenterInfo(type, visible) {
+            if (type == "pause") {
+                center_info_icon.className = "fas fa-pause";
+                center_info.style.padding = "18px";
+            }
+
+            if (type == "play") {
+                center_info_icon.className = "fas fa-play";
+                center_info.style.padding = "18px 18px 18px 22px";
+            }
+
+            if (type == "back") {
+                center_info_icon.className = "fas fa-undo-alt";
+            }
+
+            if (type == "forward") {
+                center_info_icon.className = "fas fa-redo-alt";
+            }
+
+            center_info.classList.add("active");
+            delay2 = 2;
+        }
+
+
+
+        function closeCenterInfo() {
+            delay2--;
+            
+            if (delay2 < 0) {
+                clearTimeout(timer2);
+                timer2 = null;
+                return;
+            }
+            
+            if (delay2 > 0) {
+                //show popup
+                clearTimeout(timer2);
+            }
+            
+            if (delay2 == 0) {
+                center_info.classList.remove("active");
+            }
+            timer2 = setTimeout("closeCenterInfo()", 500);
+        }
+
+
+
+        function closeVolumeInfo() {
+            delay--;
+            
+            if (delay < 0) {
+                clearTimeout(timer);
+                timer = null;
+                return;
+            }
+            
+            if (delay > 0) {
+                //show popup
+                clearTimeout(timer);
+            }
+            
+            if (delay == 0) {
+                volume_display_info.classList.remove("active");
+            }
+            timer = setTimeout("closeVolumeInfo()", 500);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function playVideo() {
+            if (video.paused) {
+                video.play();
+                paused = false;
+                button_play.classList.add("o-play-btn--playing");
+                showCenterInfo("pause");
+                closeCenterInfo();
+            }
+            else {
+                video.pause();
+                paused = true;
+                button_play.className = " ";
+                showCenterInfo("play");
+            }
+        }
+
+        
+
+
+
+
+
+        /* Open fullscreen */
+        function openFullscreen(elem) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+
+
+        /* Close fullscreen */
+        function closeFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+
+
+        function mute() {
+            if (!muted) {
+                muted = true;
+                volume = 0;
+                volume_slider.value = volume;
+                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume + '%, #414345 ' + volume + '%, #414345 100%)';
+                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                volume_icon.className = "fas fa-volume-mute";
+                video.volume = volume/100;
+                console.log(muted);
+                return;
+            }
+
+            if (muted) {
+                muted = false;
+                var vol = getCookie("video_volume")
+                if (vol != null) {
+                    volume = vol;
+                }
+                volume_slider.value = volume;
+                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume + '%, #414345 ' + volume + '%, #414345 100%)';
+                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                volume_icon.className = "fas fa-volume-up";
+                video.volume = volume/100;
+                console.log(muted);
+                return;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+            var delay, timer;
+
+            function updateVolume(vol) {
+                video.volume = vol/100;
+                volume = vol;
+
+
+                if (vol == 0) {
+                    volume_icon.className = "fas fa-volume-mute";
+                    muted = true;
+                }
+
+                if (vol > 0) {
+                    if (muted) {
+                        volume_icon.className = "fas fa-volume-up";
+                        muted = false;
+                    }
+                }
+
+                document.cookie = "video_volume=" + volume + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+
+                volume_slider.value = vol;
+                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + vol + '%, #414345 ' + vol + '%, #414345 100%)';
+                volume_display_info.classList.add("active");
+                volume_display_info.innerHTML = vol + "%";
+
+                delay = 3;
+                closeVolumeInfo();
+            }
+
+
+
+
+
+
+
+
+
+            const volume_container   = document.getElementById("volume_slider_container");
+            const game_volume        = document.getElementById("video_volume");
+            const volume_icon        = document.getElementById("video_volume_icon")
+            const volume_slider      = document.getElementById("volume_slider");
+            const volume_slider_info = document.getElementById("volume_display_info");
+            const video_controls     = document.getElementById("video-controls");
+
+
+            const timeline_slider    = document.getElementById("timeline_slider");
+            const bubble             = document.getElementById("bubble");
+
+            const video_time         = document.getElementById("video_time");
+
+
+            const timeline_buffered_slider    = document.getElementById("timeline_buffered_slider");
+
+
+            volume_slider.oninput = function() {
+                updateVolume(this.value);
+            };
+
+
+            volume_icon.addEventListener("mouseenter", function() {
+                volume_container.classList.add('active');
+            });
+
+
+            video_controls.addEventListener("mouseleave", function() {
+                volume_container.className = "";
+            });
+
+
+
+
+
+
+
+
+
+            $(document).ready(function() {
+                var vol   = getCookie("video_volume");
+                var mute = getCookie("video_muted");
+                if (mute == "true") {
+                    muted = true;
+                } else {
+                    muted = false;
+                }
+
+                if (vol != "") {
+                    volume = vol;
+                    if (muted) volume = 0;
+                } else if (muted == "" || vol == "") {
+                    volume = 50;
+                }
+
+                video.volume = volume/100;
+                volume_slider.value = volume;
+                volume_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume_slider.value + '%, #414345 ' + volume_slider.value + '%, #414345 100%)';
+                volume_slider_info.innerHTML = volume_slider.value + "%";
+
+                if (muted) volume_icon.className = "fas fa-volume-mute";
+                else if (!muted) volume_icon.className = "fas fa-volume-up";
+            });
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            video.onloadedmetadata = function() {
+                var duration = video.duration;
+                if (Number.isNaN(duration)) duration = 0;
+                timeline_slider.max = parseInt(duration);
+                updateVideoTime();
+                timeline_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) 100%)';
+            };
+
+
+
+
+            timeline_slider.addEventListener('mousemove', function(e) {
+                valueHover = calcSliderPos(e).toFixed(3);
+                setBubble(timeline_slider, valueHover);
+                bubble.classList.add("active");
+            });
+
+
+            timeline_slider.oninput = function() {
+                var percentage = (this.value*100)/this.max;
+                timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
+                video.currentTime = this.value;
+                video.pause();
+            }
+
+            timeline_slider.onmouseup = function() {
+                if (!paused) playVideo();
+            }
+
+
+            timeline_slider.addEventListener('mouseleave', function(e) {
+                bubble.classList.remove("active");
+            });
+
+
+            video.ontimeupdate = function() {
+                timeline_slider.value = this.currentTime;
+                var percentage = (timeline_slider.value*100)/timeline_slider.max;
+                timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
+                updateVideoTime();
+            };
+
+
+
+            function calcSliderPos(e) {
+                return (e.offsetX / e.target.clientWidth) *  parseInt(e.target.getAttribute('max'),10);
+            }
+
+
+            function setBubble(range, val) {
+                if (val < 0) val = 0;
+                if (parseFloat(val) > range.max) val = range.max;
+                const min = range.min ? range.min : 0;
+                const max = range.max ? range.max : 100;
+                const newVal = Number(((val - min) * 100) / (max - min));
+
+
+                var time = integerToTime(val);
+
+                bubble.innerHTML = time;
+
+                // Sorta magic numbers based on size of the native UI thumb
+                bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
+            }
+
+
+
+            function integerToTime(integer) {
+                var time;
+
+                var hours = "", minutes, seconds;
+                if (integer > 3600) {
+                    var czas = integer;
+                    hours = parseInt(czas/3600);
+                    czas = czas - (hours*3600);
+                    minutes = parseInt(czas/60);
+                    seconds = parseInt(czas%60);
+                    hours = hours + ":";
+                    if(minutes < 10) minutes = "0" + minutes;
+                } else {
+                    minutes = parseInt(integer/60);
+                    seconds = parseInt(integer%60);
+                }
+                if(seconds < 10) seconds = "0" + seconds;
+                time = hours + minutes + ":" + seconds;
+
+                return time;
+            }
+
+
+
+
+            function updateVideoTime() {
+                var currentTime = parseInt(video.currentTime);
+                var duration    = parseInt(video.duration);
+
+                if (Number.isNaN(video.currentTime)) currentTime = 0;
+                if (Number.isNaN(video.duration))    duration = 0;
+
+                var time;
+                var maxTime;
+                
+                time    = integerToTime(currentTime);
+                maxTime = integerToTime(duration);
+
+                video_time.innerHTML = time + " / " + maxTime;
+            }
+
+
+
+
+
+
+            function updateBufferedTime() {
+                var size = video.buffered.length;
+
+                console.log(size);
+
+                /*for (var i=0; i<size; i++) {
+                    console.log(video.buffered.start(i));
+                    console.log(video.buffered.end(i));
+                }*/
+                
+
+
+                var percentage = (video.buffered.end(size-1)*100)/timeline_slider.max;
+
+
+                timeline_buffered_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+            video_container.addEventListener("keydown", e => {
+                if (e.keyCode >= 37 && e.keyCode <= 40) e.preventDefault();
+
+                if (e.isComposing || e.keyCode === 229) {
+                    return;
+                }
+
+                if (e.keyCode == 37) {
+                    var time = video.currentTime - 10;
+                    if (time < 0) time = 0;
+                    video.currentTime = time;
+
+                    showCenterInfo("back");
+                    closeCenterInfo();
+                    return;
+                }
+
+                
+                if (e.keyCode == 39) {
+                    var time = video.currentTime + 10;
+                    if (time > video.duration) time = video.duration;
+                    video.currentTime = time;
+
+                    showCenterInfo("forward");
+                    closeCenterInfo();
+                    return;
+                }
+
+
+                if (e.keyCode == 38) {
+                    var vol = parseInt((video.volume*100) + 5);
+                    if (vol > 100) vol = 100;
+                    updateVolume(vol);
+                    return;
+                }
+
+
+                if (e.keyCode == 40) {
+                    var vol = parseInt((video.volume*100) - 5);
+                    if (vol < 0) vol = 0;
+                    updateVolume(vol);
+                    return;
+                }
+
+                if (e.keyCode == 32) {
+                    playVideo();
+                }
+            });
+
+
+ 
+            var video_settings = document.getElementById("video_settings");
+            var video_speed    = document.getElementById("video_speed");
+
+            function videoSpeed() {
+                if (video_settings.classList.contains("active")) {
+                    video_settings.classList.remove("active");
+                    return;
+                }
+
+                if (!video_settings.classList.contains("active")) {
+                    video_settings.classList.add("active");
+                    return;
+                }
+            }
+
+
+
+            function setActive(element) {
+                if (element.classList.contains("active")) {
+                    element.classList.remove("active");
+                    return;
+                }
+
+                if (!element.classList.contains("active")) {
+                    element.classList.add("active");
+                    return;
+                }
+            }
+
+
+
+
+            function changeSpeed(element, speed) {
+                var options = document.getElementsByClassName('video_speed_option');
+                for (var i=0; i < options.length; i++) {
+                    options[i].classList.remove("active");
+                }
+
+                setActive(element);
+                video.playbackRate = speed;
+
+            }
+
+
+
+
+
+
+
+
+
+</script>
+
+
+</html>

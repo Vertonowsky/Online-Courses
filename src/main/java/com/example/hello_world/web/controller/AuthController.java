@@ -1,6 +1,7 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.persistence.model.FinishedTopic;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.UserAlreadyExistsException;
@@ -41,6 +42,20 @@ public class AuthController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             ModelAndView mav = new ModelAndView( "logowanie");
             mav.addObject("registered", registered);
+            return mav;
+        }
+
+        return new ModelAndView( "redirect:/");
+    }
+
+
+
+    @PostMapping("/logowanie")
+    public ModelAndView showLoginform(HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            ModelAndView mav = new ModelAndView( "logowanie");
+            mav.addObject("registered", false);
             return mav;
         }
 
@@ -107,5 +122,10 @@ public class AuthController {
     @GetMapping("/list-users")
     public Iterable<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @GetMapping("/list-usersaaa")
+    public Iterable<FinishedTopic> getUsers22() {
+        return userRepository.findFinishedTopics(userRepository.findByEmail("klocek@wp.pl").get());
     }
 }

@@ -12,20 +12,19 @@ import java.util.Objects;
 @Table(name = "courses_owned")
 public class CourseOwned {
 
-    @EmbeddedId
-    @Column(name = "id")
-    private CourseKey id = new CourseKey();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "operation_id")
+    private Integer id;
 
     @ManyToOne
-    @MapsId("userId")
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User user2;
+    private User user;
 
     @ManyToOne
-    @MapsId("courseId")
     @JoinColumn(name = "course_id")
-    private Course course2;
+    private Course course;
 
     @Column(name = "buy_date")
     private Date buyDate;
@@ -38,24 +37,24 @@ public class CourseOwned {
     private CourseStatus status;
 
 
-    public CourseKey getId() {
+    public Integer getId() {
         return id;
     }
 
     public User getUser() {
-        return user2;
+        return user;
     }
 
     public void setUser(User user) {
-        this.user2 = user;
+        this.user = user;
     }
 
     public Course getCourse() {
-        return course2;
+        return course;
     }
 
     public void setCourse(Course course) {
-        this.course2 = course;
+        this.course = course;
     }
 
     public Date getBuyDate() {

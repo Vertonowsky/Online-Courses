@@ -152,16 +152,8 @@
          */
         function sendAuthenticationData(type, form, email, password, passwordRepeat, terms) {
             let correctData = 0; // Count correct data
-
-            if (type === "login") {
-                if (checkInputData(0, "email", email)) correctData++;
-                if (checkInputData(1, "passwordLogin", password))  correctData++;
-                    
-
-                if (correctData != 2) return; // Value '2' means all data is correct
             
-            
-            } else if (type === "register") {
+            if (type === "register") {
                 if (checkInputData(0, "email", email)) correctData++;
                 if (checkInputData(1, "password", password))  correctData++;
                 if (checkInputData(2, "passwordRepeat", passwordRepeat))  correctData++;
@@ -170,46 +162,38 @@
                 if (correctData != 4) return; // Value '4' means all data is correct
             }
 
-
             let url = form.attr('action');
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
+
             
             $.ajax({
                 data: form.serialize(), // Serializes the form's elements
                 type: "POST",
-                dataType:"json",
+                dataType: "json",
                 url: url,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token)
                 },
                 success: function(data) {
 
-                    console.log(data);
-
                     if (data == null || data.type == null || data.success == null || data.message == null) {
                         showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
                         return;
                     }
-                    if (!(data.type === "register" || data.type === "login")) {
+                    if (data.type != "register") {
                         showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
                         return;
                     }
 
 
                     if (data.type === "register") {
-                        if (data.success) window.location.href = "/logowanie?registered=true";
-
+                        if (data.success) {
+                            window.location.href = "/logowanie?registered=true";
+                            return;
+                        }
                         showPopup(data.message, data.success);
-                        return;
-
-                    } else if (data.type === "login") {
-                        if (data.success) window.location.href = data.url;
-
-                        showPopup(data.message, data.success);
-                        return;
                     }
-
 
 
                 }, 

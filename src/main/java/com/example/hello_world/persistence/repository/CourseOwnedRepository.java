@@ -19,12 +19,12 @@ public interface CourseOwnedRepository extends JpaRepository<CourseOwned, Course
 
     Optional<CourseOwned> findById(CourseKey id);
 
-    @Query("SELECT c FROM CourseOwned c WHERE c.user2 = :user AND c.course2 = :course")
+    @Query("SELECT c FROM CourseOwned c WHERE c.user = :user AND c.course = :course")
     Optional<CourseOwned> findIfAlreadyBought(@Param("user") User user, @Param("course") Course course);
 
 
     @Modifying
-    @Query("UPDATE CourseOwned c SET c.buyDate = :buyDate, c.expiryDate = :expiryDate, c.status = com.example.hello_world.CourseStatus.RENEWED WHERE c.user2 = :user AND c.course2 = :course")
+    @Query("UPDATE CourseOwned c SET c.buyDate = :buyDate, c.expiryDate = :expiryDate, c.status = com.example.hello_world.CourseStatus.RENEWED WHERE c.user = :user AND c.course = :course")
     void updateExistingCourseExpiration(@Param("user") User user, @Param("course") Course course, @Param("buyDate") Date buyDate, @Param("expiryDate") Date expiryDate);
 
     List<CourseOwned> findAll();

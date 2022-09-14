@@ -1,23 +1,28 @@
 package com.example.hello_world.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        response.setHeader("Content-Type", "text/xml; charset=UTF-8");
+    @Autowired
+    ServletContext context;
+
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        /*response.setHeader("Content-Type", "text/xml; charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
         Map<String, Object> data = new HashMap<>();
@@ -25,7 +30,16 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         data.put("success", false);
         data.put("message", "Błędny adres email lub hasło.");
 
-        response.getWriter().println(objectMapper.writeValueAsString(data));
+        response.getWriter().println(objectMapper.writeValueAsString(data));*/
+        //String redirectUrl = request.getContextPath() + "/logowanie";
+
+
+
+        request.setAttribute("error", "Błędny adres email lub hasło.");
+        request.setAttribute("dataEmail", request.getParameter("email"));
+        request.setAttribute("dataPassword", request.getParameter("password"));
+        RequestDispatcher dispatcher = context.getRequestDispatcher("/logowanie");
+        dispatcher.forward(request, response);
     }
 
 }

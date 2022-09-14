@@ -83,6 +83,10 @@ public class PaymentHistory {
         return amount;
     }
 
+    public Integer getAmountInt() {
+        return amount.intValue();
+    }
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
@@ -102,7 +106,6 @@ public class PaymentHistory {
     public void setSuccess(boolean success) {
         this.success = success;
     }
-
 
 
 

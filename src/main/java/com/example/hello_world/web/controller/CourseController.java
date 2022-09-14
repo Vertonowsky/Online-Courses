@@ -1,10 +1,7 @@
 package com.example.hello_world.web.controller;
 
 import com.example.hello_world.Category;
-import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.Course;
-import com.example.hello_world.persistence.model.FinishedTopic;
-import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
@@ -19,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -110,38 +105,11 @@ public class CourseController {
         Optional<Course> course = courseRepository.findById(id);
         if (course.isEmpty()) return new ModelAndView("redirect:/");
 
-        Map<Integer, TopicStatus> topicsInfo = new HashMap<>();
-        //User user = optionalUser.get();
-
-        Integer firstFinished = 0;
-
-        /*for (Chapter ch : course.get().getChapters()) {
-            for (Topic t : ch.getTopics()) {
-                if (isTopicFinished(user, t)) topicsInfo.put(t.getId(), TopicStatus.FINISHED);
-                else
-                    if (firstFinished == 0) firstFinished = t.getId();
-            }
-        }*/
-
-
-
-
 
         model.addAttribute("course", course.get());
         model.addAttribute("topics", null);
         return new ModelAndView("wyswietl");
     }
-
-
-
-
-    private boolean isTopicFinished(User u, Topic t) {
-        for (FinishedTopic finishedTopic : u.getFinishedTopics()) {
-            if (t.equals(finishedTopic.getTopic())) return true;
-        }
-        return false;
-    }
-
 
 
 

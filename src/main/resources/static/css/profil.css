@@ -65,14 +65,14 @@ body {
             }
 
             #no_courses_found .subtitle {
-                font-size: 18px;
+                font-size: 17px;
                 margin: 0;
             }
 
             #no_courses_found .desc {
                 font-size: 15px;
                 font-weight: normal;
-                margin: 10px 0 0 0;
+                margin: 7px 0 0 0;
             }
 
             #no_courses_found .button_gray {

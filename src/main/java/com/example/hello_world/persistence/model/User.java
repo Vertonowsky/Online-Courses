@@ -37,13 +37,15 @@ public class User {
     @Column(name="registration_date", nullable = false)
     private Date registrationDate;
 
+
     @OneToMany(mappedBy = "user")
     private Set<DiscountCodeUsed> codes;
 
-    @OneToMany(mappedBy = "user2")
+    @OneToMany(mappedBy = "user")
     private Set<CourseOwned> coursesOwned;
 
     @OneToMany(mappedBy = "user")
+    @OrderBy("proceedDate DESC")
     private Set<PaymentHistory> paymentHistories;
 
     @OneToMany(mappedBy = "user")
@@ -106,6 +108,7 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
+
     public Set<DiscountCodeUsed> getCodes() {
         return codes;
     }
@@ -129,6 +132,7 @@ public class User {
     public void setPaymentHistories(Set<PaymentHistory> paymentHistories) {
         this.paymentHistories = paymentHistories;
     }
+
 
     public Set<FinishedTopic> getFinishedTopics() {
         return finishedTopics;

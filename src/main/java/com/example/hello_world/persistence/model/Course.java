@@ -46,7 +46,7 @@ public class Course {
     @OrderBy("index ASC, title ASC")
     private Set<Chapter> chapters;
 
-    @OneToMany(mappedBy = "course2")
+    @OneToMany(mappedBy = "course")
     @JsonIgnore
     private Set<CourseOwned> coursesOwned;
 
