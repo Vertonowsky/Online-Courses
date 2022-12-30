@@ -16,6 +16,8 @@ public class HelloWorldApplication {
     @Autowired
     private CourseRepository courseRepository;
 
+    public static String videoesPath = "http://localhost/edu/videos/";
+    public static String videoesLocalPath = "D:\\Xampp\\htdocs\\edu\\videos";
 
     public static void main(String[] args) {
         SpringApplication.run(HelloWorldApplication.class, args);

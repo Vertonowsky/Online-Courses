@@ -1,55 +1,27 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+    <title>Kursowo | Rozdział</title>
 
-<?php
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/kurs.css"/>
+    <link rel="stylesheet" href="/css/course_container.css"/>
 
-    session_start();
+    <div th:insert="~{dependencies :: dependencies}"></div>
 
-    $isLoggedIn = isset($_SESSION['loggedIn']) && !empty($_SESSION['loggedIn']) && $_SESSION['loggedIn'];
-    
-    if (!isset($_GET['id']) || $_GET['id'] == null) {
-        echo header('Location: /edu/');
-        exit();
-    } 
-
-    $courseId = $_GET['id'];
-
-    require_once($_SERVER['DOCUMENT_ROOT'] . "/edu/php/manipulation/hehe.php");
-    require_once($_SERVER['DOCUMENT_ROOT'] . "/edu/php/database/MysqlConnection.php");
-    $mysqlConnection = new MysqlConnection();
-    $conn = $mysqlConnection->open();
-
-?>
-
-
-<html>
-    <meta charset="UTF-8">
-    <title>Kursowo | Potęgi i pierwiastki</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/edu/css/main.css"></link>
-    <link rel="stylesheet" href="/edu/css/kurs.css"></link>
-    <link rel="stylesheet" href="/edu/css/elements.css"></link>
-    <link rel="stylesheet" href="/edu/css/course_container.css"></link>
-    <link rel="stylesheet" href="/edu/css/all-styles.css"></link>
-    <link rel="stylesheet" href="/edu/css/footer.css"></link>
-    <link rel="icon" href="/edu/images/logo.png">
-
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-    <link rel="stylesheet" href="/edu/assets/font-awesome/css/all.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-
-	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    </script>
-
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
 </head>
+
 
 <body>
 
 
-
-
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header}"></div>
 
         <div id="content_course">
             <div id="course_left" class="active">
@@ -57,19 +29,36 @@
                     <div id="complete"><div id="complete_fill"></div></div>
                     <p id="course_finised">Ukończono 37%</p>
                 </div>-->
-                    
-                <ul id="all_topics">
 
-                <?php 
-                    
-                    $src = loadWholePage($conn, $courseId, $isLoggedIn);
+                <div id="all_topics" th:if="${data != null}">
 
-                    $conn = $mysqlConnection->close();
+                    <div class="chapter_menu" th:each="chapterDto : ${data}" th:id="'right_chapter_id' + ${chapterDto.chapter.id}">
+                        <div class="chapter_header">
 
-                ?>
+                            <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
+                            <div class="th_title" th:text="${chapterDto.chapter.index} < 10 ? '0' + ${chapterDto.chapter.index} + ' - ' + ${chapterDto.chapter.title} : ${chapterDto.chapter.index} + ' - ' + ${chapterDto.chapter.title}"></div>
 
-                </ul>
+                        </div>
 
+                        <div class="topic_menu" th:if="${!#lists.isEmpty(chapterDto.topicDtoList)}">
+                            <div th:each="topicDto : ${chapterDto.topicDtoList}" th:class="${topicDto.active} ?  'topic_header ' + ${topicDto.getStatusAsString()} + ' active' : 'topic_header ' + ${topicDto.getStatusAsString()}" th:onclick="${topicDto.blocked} ? '' : ' openTopic(' + ${topicDto.topic.id} + ')'" th:attr="data-id=${topicDto.topic.getId()}">
+
+                                <div class="td_left">
+                                    <i th:if="${topicDto.getStatusAsString()} == 'available'" class="far fa-circle"></i>
+                                    <i th:if="${topicDto.getStatusAsString()} == 'finished'" class="fas fa-check-circle"></i>
+                                    <i th:if="${topicDto.getStatusAsString()} == 'blocked'" class="fas fa-minus-circle"></i>
+                                    <div class="duration" th:text="'[' + ${topicDto.topic.formatDuration()} + ']'"></div>
+                                </div>
+
+                                <div class="td_right">
+                                    <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
+                                    <div class="td_title" th:text="${topicDto.topic.title}"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -79,25 +68,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <div id="course_center" class="active">
+            <div id="course_center">
 
                 <div id="video_container" tabindex="0">
                     <video id="video">
-                        <source id="source" type="video/mp4" src="<?php echo $src?>">
+                        <source id="source" type="video/mp4" th:src="${videosPath} + ${topic.location}">
                     </video>
                     <div id="volume_display_info"></div>
                     <div id="center_info" class="active"><i id="center_info_icon" class="fas fa-play"></i></div>
@@ -123,7 +98,7 @@
                                     <div class="o-play-btn__mask"></div>
                                 </i>
                             </button>
-                            <div id="video_volume" type="button" data-state="1"><i onclick="mute()" id="video_volume_icon" class=""></i>
+                            <div id="video_volume" data-state="1"><i onclick="mute()" id="video_volume_icon" class=""></i>
                                 <div id="volume_slider_container">
                                     <input id="volume_slider" type="range" min="0" max="100" class="slider_volume">
                                 </div>
@@ -139,12 +114,12 @@
                                 <h1>Predkosc odtwarzania</h1>
                                 <ul>
                                     <li onclick="changeSpeed(this, 0.25)" class="video_speed_option">0.25</li>
-                                    <li onclick="changeSpeed(this, 0.5)" class="video_speed_option">0.50</li>
+                                    <li onclick="changeSpeed(this, 0.5) " class="video_speed_option">0.50</li>
                                     <li onclick="changeSpeed(this, 0.75)" class="video_speed_option">0.75</li>
-                                    <li onclick="changeSpeed(this, 1)"    class="video_speed_option active">Normalna</li>
-                                    <li onclick="changeSpeed(this, 1.5)"  class="video_speed_option">1.5</li>
+                                    <li onclick="changeSpeed(this, 1)   " class="video_speed_option active">Normalna</li>
+                                    <li onclick="changeSpeed(this, 1.5) " class="video_speed_option">1.5</li>
                                     <li onclick="changeSpeed(this, 1.75)" class="video_speed_option">1.75</li>
-                                    <li onclick="changeSpeed(this, 2)"    class="video_speed_option">2</li>
+                                    <li onclick="changeSpeed(this, 2)   " class="video_speed_option">2</li>
                                 </ul>
                             </div>
                             <button id="video-fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
@@ -154,10 +129,9 @@
 
                 <div id="below_video_options">
 
-                    <div id="go_home" onclick="window.location = '/edu/szczegoly.php?id=' + <?php echo $_GET['id']; ?>;"> <i class="fas fa-arrow-left"></i> Powrót do strony kursu</div>
-
-                    <div id="unfinish" class="button_activity"> Oznacz jako niewykonane! <i class="fas fa-times"></i></div>
-                    <div id="finish" class="button_activity"> Oznacz jako wykonane! <i class="fas fa-check"></i></div>
+                    <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
+                    <div id="topic_title" th:text="${topic.title}"></div>
+                    <div th:if="${loggedIn}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Oznacz jako wykonane! <i class="fas fa-check"></i></div>
 
                 </div>
 
@@ -218,31 +192,32 @@
 
 
 
-        <script src="/edu/assets/jquery/jquery-1.11.3.js"></script>
-        <script src="/edu/js/manipulation.js"></script>
-    
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/manipulation.js"></script>
+
 </body>
 
 
 
 
-<script>
+    <script th:inline="javascript">
 
 
-        function openNextTopic(topic_id) {
-            var element  = document.getElementById("all_topics");
-            var position = element.scrollTop;
+        const myNav = document.getElementById("header");
+        window.onload = function () {
+            myNav.classList.add("nav_active");
+        };
 
-            window.location.href = "/edu/kurs.php?id=<?php echo $_GET['id']; ?>&topic=" + topic_id + "&p=" + position; 
+        /*<![CDATA[*/
+        let courseId = /*[[${courseId}]]*/ "";
+        function openTopic(topic_id) {
+            window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id;
         }
 
-
-        //$( window ).load(function()
-
+        /*]]>*/
 
 
 
-        
 
 
 
@@ -252,11 +227,11 @@
 
 
         function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for(var i = 0; i < ca.length; i++) {
-                var c = ca[i];
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
                 while (c.charAt(0) == ' ') {
                 c = c.substring(1);
                 }
@@ -298,20 +273,20 @@
 
 
 
-        var button_play       = document.getElementById("video-play");
-        var button_fullscreen = document.getElementById("video-fullscreen");
-        var center_info       = document.getElementById("center_info");
-        var center_info_icon  = document.getElementById("center_info_icon");
+        const button_play       = document.getElementById("video-play");
+        const button_fullscreen = document.getElementById("video-fullscreen");
+        const center_info       = document.getElementById("center_info");
+        const center_info_icon  = document.getElementById("center_info_icon");
 
-        var video_container = document.getElementById("video_container");
+        const video_container = document.getElementById("video_container");
         const video = document.getElementById("video");
 
 
-        var fullscreen = false;
-        var muted  = false;
-        var paused = true;
-        var volume = 0;
-        var delay2, timer2;
+        let fullscreen = false;
+        let muted  = false;
+        let paused = true;
+        let volume = 0;
+        let delay2, timer2;
 
 
 
@@ -505,7 +480,7 @@
 
             if (muted) {
                 muted = false;
-                var vol = getCookie("video_volume")
+                let vol = getCookie("video_volume")
                 if (vol != null) {
                     volume = vol;
                 }
@@ -529,7 +504,7 @@
 
 
 
-            var delay, timer;
+            let delay, timer;
 
             function updateVolume(vol) {
                 video.volume = vol/100;
@@ -608,8 +583,8 @@
 
 
             $(document).ready(function() {
-                var vol   = getCookie("video_volume");
-                var mute = getCookie("video_muted");
+                let vol   = getCookie("video_volume");
+                let mute = getCookie("video_muted");
                 if (mute == "true") {
                     muted = true;
                 } else {
@@ -648,7 +623,7 @@
 
 
             video.onloadedmetadata = function() {
-                var duration = video.duration;
+                let duration = video.duration;
                 if (Number.isNaN(duration)) duration = 0;
                 timeline_slider.max = parseInt(duration);
                 updateVideoTime();
@@ -659,14 +634,13 @@
 
 
             timeline_slider.addEventListener('mousemove', function(e) {
-                valueHover = calcSliderPos(e).toFixed(3);
-                setBubble(timeline_slider, valueHover);
+                setBubble(timeline_slider, calcSliderPos(e).toFixed(3));
                 bubble.classList.add("active");
             });
 
 
             timeline_slider.oninput = function() {
-                var percentage = (this.value*100)/this.max;
+                let percentage = (this.value*100)/this.max;
                 timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
                 video.currentTime = this.value;
                 video.pause();
@@ -684,7 +658,7 @@
 
             video.ontimeupdate = function() {
                 timeline_slider.value = this.currentTime;
-                var percentage = (timeline_slider.value*100)/timeline_slider.max;
+                let percentage = (timeline_slider.value*100)/timeline_slider.max;
                 timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
                 updateVideoTime();
             };
@@ -704,53 +678,43 @@
                 const newVal = Number(((val - min) * 100) / (max - min));
 
 
-                var time = integerToTime(val);
-
-                bubble.innerHTML = time;
-
-                // Sorta magic numbers based on size of the native UI thumb
+                // Insert time
+                bubble.innerHTML = secondsToTime(val);
+                // Sort magic numbers based on size of the native UI thumb
                 bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
             }
 
 
 
-            function integerToTime(integer) {
-                var time;
+            function secondsToTime(duration) {
+                let hours   = parseInt(duration/3600);
+                let minutes = parseInt((duration % 3600) / 60);
+                let seconds = parseInt(duration % 60);
 
-                var hours = "", minutes, seconds;
-                if (integer > 3600) {
-                    var czas = integer;
-                    hours = parseInt(czas/3600);
-                    czas = czas - (hours*3600);
-                    minutes = parseInt(czas/60);
-                    seconds = parseInt(czas%60);
-                    hours = hours + ":";
-                    if(minutes < 10) minutes = "0" + minutes;
-                } else {
-                    minutes = parseInt(integer/60);
-                    seconds = parseInt(integer%60);
-                }
-                if(seconds < 10) seconds = "0" + seconds;
-                time = hours + minutes + ":" + seconds;
+                if (minutes < 10) minutes = "0" + minutes;
+                if (seconds < 10) seconds = "0" + seconds;
 
-                return time;
+                if (hours > 0)
+                    return hours + ":" + minutes + ":" + seconds;
+
+                return minutes + ":" + seconds;
             }
 
 
 
 
             function updateVideoTime() {
-                var currentTime = parseInt(video.currentTime);
-                var duration    = parseInt(video.duration);
+                let currentTime = parseInt(video.currentTime);
+                let duration    = parseInt(video.duration);
 
                 if (Number.isNaN(video.currentTime)) currentTime = 0;
                 if (Number.isNaN(video.duration))    duration = 0;
 
-                var time;
-                var maxTime;
+                let time;
+                let maxTime;
                 
-                time    = integerToTime(currentTime);
-                maxTime = integerToTime(duration);
+                time    = secondsToTime(currentTime);
+                maxTime = secondsToTime(duration);
 
                 video_time.innerHTML = time + " / " + maxTime;
             }
@@ -769,10 +733,10 @@
                     console.log(video.buffered.start(i));
                     console.log(video.buffered.end(i));
                 }*/
-                
 
 
-                var percentage = (video.buffered.end(size-1)*100)/timeline_slider.max;
+
+                let percentage = (video.buffered.end(size-1)*100)/timeline_slider.max;
 
 
                 timeline_buffered_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
@@ -797,7 +761,7 @@
                 }
 
                 if (e.keyCode == 37) {
-                    var time = video.currentTime - 10;
+                    let time = video.currentTime - 10;
                     if (time < 0) time = 0;
                     video.currentTime = time;
 
@@ -808,7 +772,7 @@
 
                 
                 if (e.keyCode == 39) {
-                    var time = video.currentTime + 10;
+                    let time = video.currentTime + 10;
                     if (time > video.duration) time = video.duration;
                     video.currentTime = time;
 
@@ -819,7 +783,7 @@
 
 
                 if (e.keyCode == 38) {
-                    var vol = parseInt((video.volume*100) + 5);
+                    let vol = parseInt((video.volume*100) + 5);
                     if (vol > 100) vol = 100;
                     updateVolume(vol);
                     return;
@@ -827,7 +791,7 @@
 
 
                 if (e.keyCode == 40) {
-                    var vol = parseInt((video.volume*100) - 5);
+                    let vol = parseInt((video.volume*100) - 5);
                     if (vol < 0) vol = 0;
                     updateVolume(vol);
                     return;
@@ -839,9 +803,9 @@
             });
 
 
- 
-            var video_settings = document.getElementById("video_settings");
-            var video_speed    = document.getElementById("video_speed");
+
+            const video_settings = document.getElementById("video_settings");
+            const video_speed    = document.getElementById("video_speed");
 
             function videoSpeed() {
                 if (video_settings.classList.contains("active")) {
@@ -873,20 +837,78 @@
 
 
             function changeSpeed(element, speed) {
-                var options = document.getElementsByClassName('video_speed_option');
-                for (var i=0; i < options.length; i++) {
+                let options = document.getElementsByClassName('video_speed_option');
+                for (let i=0; i < options.length; i++) {
                     options[i].classList.remove("active");
                 }
 
                 setActive(element);
                 video.playbackRate = speed;
-
             }
 
 
 
 
 
+
+
+
+
+
+
+
+
+        function markAsFinished() {
+            let topicId = /*[[${topic.id}]]*/ "";
+            if (topicId == null || topicId == "" || topicId <= 0) {
+                alert("Wystąpił problem podczas wykonywania żądania.");
+                return;
+            }
+
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type:"POST",
+                dataType:"json",
+                data: { topicId: topicId },
+                url:"/kurs/markAsFinished",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(data) {
+
+                    const btn = document.getElementById('button_completed');
+                    const topic_headers = document.getElementsByClassName("topic_header");
+                    let topicHeaderElement = null;
+
+                    for (let i = 0; i < topic_headers.length; i++) {
+                        if (topic_headers[i].getAttribute("data-id") == topicId) { // <div class="topic_header">
+                            let children = topic_headers[i].getElementsByClassName('td_left')[0]; // <div class="td_left">
+                            if (children != null && children.querySelectorAll('i')[0] != null)
+                                topicHeaderElement = children.querySelectorAll('i')[0];
+                            break;
+                        }
+                    }
+
+                    if (data.type == 1) {
+                        btn.classList.add("active");
+                        if (topicHeaderElement != null)
+                            topicHeaderElement.className = "fas fa-check-circle";
+                    } else {
+                        btn.classList.remove("active");
+                        if (topicHeaderElement != null)
+                            topicHeaderElement.className = "far fa-circle";
+                    }
+                    //alert(data.message + ";" + data.success);
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.warn(xhr.responseText);
+                }
+            });
+        }
 
 
 

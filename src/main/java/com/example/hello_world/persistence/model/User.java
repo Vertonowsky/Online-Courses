@@ -2,9 +2,7 @@ package com.example.hello_world.persistence.model;
 
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -117,8 +115,18 @@ public class User {
         this.codes = codes;
     }
 
-    public Set<CourseOwned> getCoursesOwned() {
-        return coursesOwned;
+    public List<CourseOwned> getCoursesOwned() {
+        List<CourseOwned> arr = new ArrayList<>(coursesOwned);
+
+        //Sort owned courses by expiry date descending
+        Collections.sort(arr, new Comparator<CourseOwned>() {
+            @Override
+            public int compare(CourseOwned co1, CourseOwned co2) {
+                return co2.getExpiryDate().compareTo(co1.getExpiryDate());
+            }
+        });
+
+        return arr;
     }
 
     public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
@@ -143,7 +151,23 @@ public class User {
     }
 
 
+    public Course getCourseIfOwnedById(Integer id) {
+        for (CourseOwned item : coursesOwned) {
+            if (item.getCourse().getId().equals(id)) {
+                return item.getCourse();
+            }
+        }
+        return null;
+    }
 
+
+    public boolean isTopicFinished(Integer topicId) {
+        for (FinishedTopic ft : finishedTopics) {
+            if (ft.getTopic().getId().equals((topicId)))
+                return true;
+        }
+        return false;
+    }
 
 
 

@@ -1,7 +1,6 @@
 package com.example.hello_world.web.controller;
 
 
-import com.example.hello_world.persistence.model.FinishedTopic;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.UserAlreadyExistsException;
@@ -31,12 +30,7 @@ public class AuthController {
 
 
     @GetMapping("/logowanie")
-    public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered, HttpServletRequest request) {
-
-        String referrer = request.getHeader("Referer");
-        if(referrer!=null){
-            request.getSession().setAttribute("url_prior_login", referrer);
-        }
+    public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
@@ -124,8 +118,4 @@ public class AuthController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/list-usersaaa")
-    public Iterable<FinishedTopic> getUsers22() {
-        return userRepository.findFinishedTopics(userRepository.findByEmail("klocek@wp.pl").get());
-    }
 }

@@ -26,8 +26,7 @@ a {
 */
 .input_group {
     position: relative;
-    margin: auto;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;
     height: auto;
 }
 
@@ -579,7 +578,7 @@ a {
 
 
 .button_red:hover {
-    background: #E05452;
+    background: #EB5955;
 }
 
 

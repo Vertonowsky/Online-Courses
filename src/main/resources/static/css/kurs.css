@@ -30,27 +30,45 @@
 
 
 #content_course {
-    font-size: 0px;
-    height: 100vh;
+    width: 100%;
+    margin: 80px auto 0 auto;
     background: var(--color-white);
     text-align: center;
 }
 
 
-    #content .headline {
-        position: relative;
-        background: #2F8ABD;
-        width: 100%;
-        left: 0px;
-        height: 80px;
-        z-index: 4;
-        text-align: center;
+
+
+    #course_left {
+        position: fixed;
+        top: 0;
+        height: 100vh;
+        min-width: 400px;
+        max-width: 600px;
+        width: 22%;
+        box-shadow: 7px 0px 20px -12px #B3B3B3;
+        z-index: 1;
     }
+
+            #course_left #all_topics {
+                position: relative;
+                box-sizing: border-box;
+                list-style-type: none;
+                width: 90%;
+                height: calc(100% - 120px);
+                margin: 90px auto 20px auto;
+                padding: 0 15px 15px 15px;
+                overflow-x: hidden;
+                text-align: left;
+                background: #fff;
+                border-radius: 10px;
+            }
+
 
     #navigation_container {
         position: absolute;
-        top: 0px;
-        left: 0px;
+        top: 0;
+        left: 0;
         width: 92%;
         height: 80px;
         z-index: 5;
@@ -76,62 +94,72 @@
             }
 
 
+
+
             #below_video_options {
                 position: relative;
                 box-sizing: border-box;
                 margin-top: 15px;
-                text-align: right;
+                text-align: center;
+                font-size: 0;
             }
 
-                    .button_activity {
+
+                    #topic_type {
                         position: relative;
                         display: inline-block;
-                        vertical-align: top;
-                        box-sizing: border-box;
-                        width: 240px;
-                        right: 0px;
-                        text-align: center;
-                        border-radius: 8px;
-                        color: #fff;
-                        font-size: 15px;
-                        cursor: pointer;
-                        padding: 15px 0px;
-                        transition: all 0.3s;
+                        vertical-align: middle;
+                        font-size: 20px;
+                        color: #03D2FF;
+                        margin: 0 6px 0 15px;
                     }
 
-                    #go_home {
+                    #topic_title {
                         position: relative;
+                        display: inline-block;
+                        vertical-align: middle;
+                        font-size: 16px;
+                        margin-right: 40px;
+                    }
+
+                    #button_completed {
+                        position: relative;
+                        display: inline-block;
+                        vertical-align: middle;
                         box-sizing: border-box;
-                        float: left;
-                        text-align: center;
-                        cursor: pointer;
+                        width: 280px;
+                        padding: 15px;
                         font-size: 15px;
-                        padding: 13px 10px;
+                        cursor: pointer;
                         border-radius: 8px;
-                        border: 2px solid var(--color-title);
+                        border: 2px solid #60768F;
+                        color: #60768F;
+                        text-transform: none;
                         transition: all 0.3s;
                     }
 
-                    #go_home:hover {
-                        background: #F5F5F5;
+                    #button_completed.active {
+                        background: #6C84A1;
+                        color: #fff;
                     }
 
-                    #finish {
-                        background: var(--color-blue);
+
+                    #button_completed i {
+                        font-size: 0;
+                        width: 0;
+                        opacity: 0;
+                        padding-left: 2px;
+                        transition: all 0.3s;
                     }
 
-                    #finish:hover {
-                        background: var(--color-blue-hover);
+                    #button_completed:hover i {
+                        font-size: 15px;
+                        width: 25px;
+                        opacity: 1;
                     }
 
-                    #unfinish {
-                        background: #ED5A55;
-                        margin-right: 8px;
-                    }
 
-                    #unfinish:hover {
-                        background: #DB5C58;
-                    }
+
 
 
                     #course_finised {
@@ -150,34 +178,6 @@
 
 
 
-#course_left {
-    position: fixed;
-    top: 0px;
-    height: 100vh;
-    min-width: 490px;
-    width: 24%;
-    background: url('../images/chuj.svg');
-    background-position: center center;
-    background-size: cover;
-    z-index: 5;
-}
-
-        #course_left #all_topics {
-            position: relative;
-            box-sizing: border-box;
-            list-style-type: none;
-            width: 78%;
-            height: calc(100% - 80px);
-            margin: 40px 0px 0px 0px;
-            left: 30px;
-            overflow-x: hidden;
-            padding: 15px 15px 60px 15px;
-            text-align: left;
-            background: #fff;
-            border-radius: 10px;
-        }
-    
-            
         
 
 
@@ -218,20 +218,14 @@
     display: inline-block;
     vertical-align: top;
     box-sizing: border-box;
-    width: 1600px;
+    width: calc(100% - 560px);
     max-width: 1800px;
     height: auto;
-    left: 0px;
-    right: 0px;
+    left: 210px;
+    right: 0;
     margin: auto;
-    padding: 40px 15px 15px 15px;
+    padding: 15px;
     transition: all 0.3s;
-}
-
-
-#course_center.active {
-    width: calc(100% - 560px);
-    left: 230px;
 }
 
 
@@ -703,7 +697,7 @@
                     left: 0;
                     height: 100%;
                     width: 150%;
-                    background: rgba(22,22,22, 1);
+                    background: rgba(31, 31, 31, 1);
                     transition: all 0.3s ease-out;
                 }
 

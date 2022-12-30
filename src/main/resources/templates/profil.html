@@ -4,6 +4,7 @@
     <title>Panel użytkownika</title>
 
     <link rel="stylesheet" href="/css/profil.css"/>
+    <link rel="stylesheet" href="/css/popup.css"/>
     <link rel="stylesheet" href="/css/course_container.css">
 
     <div th:insert="~{dependencies :: dependencies}"></div>
@@ -198,7 +199,7 @@
                             <div class="date circular" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></div>
                             <div class="price circular" th:text="${payment.getAmountInt()} + 'zł'"></div>
 
-                            <div class="title circular" th:text="${payment.course.name} + 'zł'"></div>
+                            <div class="title circular" th:text="${payment.course.name}"></div>
                         </div>
 
                     </div>
@@ -229,30 +230,24 @@
 
 
 
-        <script>
+    <script>
 
-            let myNav = document.getElementById("header");
-            window.onload = function () {
-                myNav.classList.add("nav_active");
-                animateProgress();
-            };
+        let myNav = document.getElementById("header");
+        window.onload = function () {
+            myNav.classList.add("nav_active");
+            animateProgress();
+        };
 
 
+        function animateProgress() {
+            let progress_fill = document.getElementsByClassName("progress_fill");
 
-            function animateProgress() {
-                let progress_fill = document.getElementsByClassName("progress_fill");
-
-                for (let i=0; i < progress_fill.length; i++) {
-                    progress_fill[i].style.width = progress_fill[i].dataset.done + "%";
-                }
+            for (let i=0; i < progress_fill.length; i++) {
+                progress_fill[i].style.width = progress_fill[i].dataset.done + "%";
             }
+        }
 
-
-            function openCourse(courseId) {
-                window.location = "/edu/szczegoly.php?id=" + courseId;
-            }
-
-        </script>
+    </script>
 
 </body>
 </html>

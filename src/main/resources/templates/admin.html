@@ -34,8 +34,19 @@
                         <ul class="select_content">
                             <li class="select_option" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
                         </ul>
-
                     </div>
+
+                    <video id="video_template" preload="metadata">
+                        <source id="video_source" type="video/mp4">
+                    </video>
+
+
+
+                    <video id="video_refresh_duration" th:if="${#lists.isEmpty(selectedCourse)}" preload="metadata">
+                        <source id="source_refresh_duration" type="video/mp4">
+                    </video>
+
+
 
                     <div class="buttons" th:if="${!#lists.isEmpty(selectedCourse)}">
                         <div class="tablinks button_gray" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział <i class="fas fa-arrow-circle-right"></i></div>
@@ -46,17 +57,17 @@
 
 
 
-                    <div id="new_chapter" class="tabcontent">
+                    <div id="new_chapter" class="tabcontent" th:if="${selectedCourse != null}">
                         <div class="headline">Nowy rozdział:</div>
 
-                        <div class="input_group" th:if="${selectedCourse != null}">
+                        <div class="input_group">
                             <input class="input" id="new_chapter_title" type="text" placeholder="Wpisz nazwę rozdziału..">
                             <input class="input_number" id="new_chapter_index" type="number" value="1">
                         </div>
 
 
                         <div class="accept_decline">
-                            <div class="button_red" onclick="closeAllTabs()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
+                            <div class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
                             <div class="button_gray" onclick="confirm('newChapter')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
@@ -67,7 +78,7 @@
 
 
 
-                    <div id="new_topic" class="tabcontent">
+                    <div id="new_topic" class="tabcontent" th:if="${selectedCourse != null}">
 
                         <div class="headline">Wybierz rozdział:</div>
                         <div id="select_chapter" class="select_menu" style="margin-bottom: 40px;" th:fragment="chapter_select">
@@ -75,7 +86,7 @@
                             <i class="fa fa-chevron-left"></i>
 
                             <ul class="select_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
-                                <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('select_chapter', this, ${chapter.id})|" th:text="${chapter.title}"></li>
+                                <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
                             </ul>
                         </div>
 
@@ -95,13 +106,10 @@
                             <ul class="select_content">
                                 <li class="select_option" th:each="video, state : ${videos}" th:onclick="|selectOption('select_video', this, ${state.index})|" th:text="${video}"></li>
                             </ul>
-
                         </div>
 
-
-
                         <div class="accept_decline">
-                            <div class="button_red" onclick="closeAllTabs()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
+                            <div class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
                             <div class="button_gray" onclick="confirm('newTopic')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
                         </div>
                     </div>
@@ -109,7 +117,11 @@
 
 
 
-                <div id="display_panel">
+                <div th:if="${#lists.isEmpty(selectedCourse)}" id="btn_refresh_duration" class="button_gray" onclick="refreshDurations()">Zaktualizuj czas trwania filmów <i class="fas fa-arrow-circle-right"></i></div>
+
+
+
+                <div id="display_panel" th:if="${selectedCourse != null}">
 
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
 
@@ -118,7 +130,7 @@
                             <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
                                 <i class="center_icon fas fa-exclamation-circle"></i>
 
-                                <h1 class="subtitle">Kurs nie zawiera żadnych rozdziałów oraz tematów!</h1>
+                                <h1 class="subtitle">Kurs nie zawiera żadnych materiałów!</h1>
                                 <h2 class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</h2>
 
                             </div>
@@ -128,7 +140,7 @@
                         <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                             <div class="chapter_header">
 
-                                <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>
+                                <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
                                 <div class="th_index" th:text="${chapter.index}"></div>
                                 <div class="th_title" th:text="${chapter.title}"></div>
                                 <div class="th_operations">
@@ -195,11 +207,11 @@
 
                             <div class="headline">Rozdział: </div>
                             <div id="edit_select_chapter" class="select_menu" style="margin-bottom: 40px;" th:data-id="${finalChapter.id}">
-                                <div class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.title}"></div>
+                                <div class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.index} < 10 ? '0' + ${finalChapter.index}+ ' - ' + ${finalChapter.title} : ${finalChapter.index} + ' - ' + ${finalChapter.title}"></div>
                                 <i class="fa fa-chevron-left"></i>
 
                                 <ul class="select_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
-                                    <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('edit_select_chapter', this, ${chapter.id})|" th:text="${chapter.title}"></li>
+                                    <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('edit_select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
                                 </ul>
                             </div>
 
@@ -273,14 +285,18 @@
         }
 
 
+        const defaultChapterInfo = "Nie wybrano rozdziału..";
+        const defaultVideoInfo   = "Nie wybrano pliku wideo..";
+
+
 
 
 
         // Get the button that opens the modal
-        let modal_confirmation  = document.getElementById('modal_confirmation');
+        const modal_confirmation = document.getElementById('modal_confirmation');
 
         // Get the <span> element that closes the modal
-        let close_btn     = document.getElementsByClassName("close")[0];
+        const close_btn = document.getElementsByClassName("close")[0];
 
         function closeModal() {
             modal_confirmation.classList.remove("active");
@@ -292,15 +308,31 @@
         }
 
 
+        const VideoEnum = Object.freeze({"NewTopic":1, "EditTopic":2});
 
+        const video  = document.getElementById("video_template");
+        const source = document.getElementById("video_source");
+        let duration = 0;
+        let videoOperation = null;
+
+        video.onloadedmetadata = function() {
+            duration = video.duration;
+            if (Number.isNaN(duration)) duration = 0;
+            console.log(duration);
+
+            if (videoOperation == null) return;
+
+            if (videoOperation == VideoEnum.NewTopic) {
+            }
+        };
 
 
 
 
 
         const modalTitle = document.getElementById("modal_title");
-        const jsInfo = document.getElementById("js_info");
-        const jsConfirm = document.getElementById("js_confirm");
+        const jsInfo     = document.getElementById("js_info");
+        const jsConfirm  = document.getElementById("js_confirm");
 
 
         function confirm(type, id) {
@@ -334,9 +366,23 @@
                 let topic_title = document.getElementById("new_topic_input").value;
                 let topic_index = document.getElementById("new_topic_index").value;
                 let topic_video = document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML;
+                let topic_id    = document.getElementById("select_video").dataset.id;
 
-                if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
+                if (topic_title != null && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0 && topic_id != null && topic_id != "" && topic_id > 0) {
 
+                    if (source.src === "" || source.src == null) {
+                        let path = /*[[${videosPath}]]*/"";
+                        source.src = path + topic_video;
+                        video.load();
+
+                    } else {
+                        if (duration == 0) {
+                            showPopup("Ładowanie danych na temat filmu..", 0);
+                            return;
+                        }
+                    }
+
+                    videoOperation = VideoEnum.NewTopic;
                     modalTitle.innerHTML = "Potwierdź dodawanie nowego tematu!";
 
                     jsInfo.innerHTML = '' +
@@ -518,19 +564,35 @@
             }
         }
 
-        function clearInputs() {
-            document.getElementById("new_topic_input").value = "";
-            document.getElementById("new_topic_index").value = 0;
-
-            document.getElementById("new_chapter_title").value = "";
-            document.getElementById("new_chapter_index").value = 0;
-
-            document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML = "Nie wybrano pliku wideo..";
+        function resetNewChapterAndTopic() {
+            clearInputs();
+            closeAllTabs();
         }
 
         function reloadCourseInformation() {
             $("#display_panel").load('/admin/getCourseInfo/' + selected_course_id);
             $("#select_chapter").load('/admin/getChaptersInfo/' + selected_course_id);
+        }
+
+        function clearInputs() {
+            document.getElementById("new_topic_input").value = "";
+            document.getElementById("new_topic_index").value = 1;
+
+            document.getElementById("new_chapter_title").value = "";
+            document.getElementById("new_chapter_index").value = 1;
+
+            document.getElementById("select_chapter").removeAttribute("data-id");
+            document.getElementById("select_chapter").getElementsByClassName("select_btn")[0].innerHTML = defaultChapterInfo;
+            document.getElementById("select_video").removeAttribute("data-id");
+            document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML = defaultVideoInfo;
+            clearDuration();
+        }
+
+        function clearDuration() {
+            source.removeAttribute("src");
+            duration = 0;
+            videoOperation = null;
+            video.load();
         }
 
 
@@ -559,6 +621,17 @@
 
             select.classList.remove("active");
             select_content[0].classList.remove("active");
+
+
+            if (selectName === "edit_select_video") {
+                videoOperation = VideoEnum.EditTopic;
+
+                let path = /*[[${videosPath}]]*/"";
+                source.src = path + optionObject.innerHTML;
+                video.load();
+
+                console.log("haha");
+            }
         }
 
 
@@ -623,13 +696,21 @@
 
             if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
 
+
+                if (videoOperation == VideoEnum.NewTopic && duration === 0) {
+                    showPopup("Ładowanie danych na temat filmu..", 0);
+                    return;
+                }
+                if (duration < 0) duration = 0;
+
+
                 let token = $("meta[name='_csrf']").attr("content");
                 let header = $("meta[name='_csrf_header']").attr("content");
             
                 $.ajax({
                     type:"POST",
                     dataType:"json",
-                    data: { chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
+                    data: { chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video, duration: duration},
                     url:"/admin/addNewTopic",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token)
@@ -706,13 +787,21 @@
 
             if (topic_title != "" && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0) {
 
+
+                if (videoOperation == VideoEnum.EditTopic && duration === 0) {
+                    showPopup("Ładowanie danych na temat filmu..", 0);
+                    return;
+                }
+                if (duration < 0) duration = 0;
+
+
                 let token = $("meta[name='_csrf']").attr("content");
                 let header = $("meta[name='_csrf_header']").attr("content");
 
                 $.ajax({
                     type:"POST",
                     dataType:"json",
-                    data: { topicId: topicId, chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video},
+                    data: { topicId: topicId, chapterId: chapter_id, topicTitle: topic_title, topicIndex: topic_index, topicVideo: topic_video, duration: duration},
                     url:"/admin/editTopic",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token)
@@ -722,6 +811,7 @@
                         showPopup(data.message, data.success);
                         reloadCourseInformation();
                         closeModal();
+                        clearDuration();
 
                     },
                     error: function(xhr, status, error) {
@@ -807,8 +897,76 @@
         }
 
 
+        let updateDurationTotal = 0;
+        let updateDurationCounter = 0;
+
+        function refreshDurations() {
+            let list = /*[[${videos}]]*/"";
+            let videoPath = /*[[${videosPath}]]*/"";
+            let index = 0;
+            updateDurationTotal = list.length;
+
+            if (updateDurationTotal == 0 || updateDurationTotal == null) {
+                showPopup("Nie znaleziono żadnych filmów na serwerze!", 0);
+                return;
+            }
+
+            let videoElement = document.getElementById("video_refresh_duration");
+            let sourceElement = document.getElementById("source_refresh_duration");
+            updateSingleVideo(videoElement, sourceElement, videoPath, list, index);
+
+            this.updateDurationTotal = 0;
+            this.updateDurationCounter = 0;
+        }
 
 
+        function updateSingleVideo(videoElement, sourceElement, videoPath, list, index) {
+            if (index == list.length) return;
+            let videoLocation = list[index];
+
+            sourceElement.src = (videoPath + videoLocation);
+            videoElement.load();
+
+            videoElement.onloadedmetadata = function() {
+                duration = videoElement.duration;
+                if (Number.isNaN(duration)) duration = 0;
+                console.log(videoLocation + " " + duration);
+                updateDurationDatabase(videoLocation, duration);
+
+                updateSingleVideo(videoElement, sourceElement, videoPath, list, (index + 1));
+            };
+        }
+
+
+
+        function updateDurationDatabase(videoLocation, duration) {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            if (videoLocation != null && videoLocation != "" && duration != null && duration != "" && duration > 0.0) {
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    data: {videoLocation: videoLocation, duration: duration},
+                    url: "/admin/updateDuration",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function (data) {
+
+                        updateDurationCounter++;
+                        showPopup("Zaktualizowano " + updateDurationCounter + "/" + updateDurationCounter + " plików video.", 1);
+
+                    },
+                    error: function (xhr, status, error) {
+                    }
+                });
+
+            } else {
+                alert("Nieprawidłowe dane!");
+            }
+        }
 
 
 

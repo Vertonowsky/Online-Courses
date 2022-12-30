@@ -159,4 +159,27 @@ public class Course {
     public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
         this.coursesOwned = coursesOwned;
     }
+
+    public Chapter getChapterById(Integer id) {
+        for(Chapter chapter : chapters) {
+                if (chapter.getId().equals(id)) return chapter;
+        }
+        return null;
+    }
+
+    public Topic getTopicById(Integer id) {
+        for(Chapter chapter : chapters) {
+            for(Topic topic : chapter.getTopics())
+                if (topic.getId().equals(id)) return topic;
+        }
+        return null;
+    }
+
+    public Topic getFirstTopic() {
+        for (Chapter chapter : chapters) {
+            for(Topic topic : chapter.getTopics())
+                return topic;
+        }
+        return null;
+    }
 }

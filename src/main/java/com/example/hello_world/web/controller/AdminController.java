@@ -1,5 +1,6 @@
 package com.example.hello_world.web.controller;
 
+import com.example.hello_world.HelloWorldApplication;
 import com.example.hello_world.persistence.model.Chapter;
 import com.example.hello_world.persistence.model.Course;
 import com.example.hello_world.persistence.model.Topic;
@@ -35,6 +36,9 @@ public class AdminController {
     public ModelAndView openAdminView(@PathVariable(name = "id", required = false) Integer id, Model model) {
         ModelAndView mav = new ModelAndView("admin");
         model.addAttribute("courses", courseRepository.findAllCoursesNames());
+        model.addAttribute("videos", getVideoList());
+        model.addAttribute("videosPath", HelloWorldApplication.videoesPath);
+
         if (id == null) {
             return mav;
         }
@@ -45,7 +49,6 @@ public class AdminController {
         }
 
         model.addAttribute("selectedCourse", courseRepository.findById(id).get());
-        model.addAttribute("videos", getVideoList());
         return mav;
     }
 
@@ -95,7 +98,8 @@ public class AdminController {
 
     @PostMapping("/admin/addNewTopic")
     public Map<String, Object> addNewTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
-                                           @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo) {
+                                           @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo,
+                                           @RequestParam(value = "duration") Double duration) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
@@ -105,6 +109,11 @@ public class AdminController {
 
         if (topicIndex < 0) {
             map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+            return map;
+        }
+
+        if (duration < 0.0 || duration > 10000000.0) {
+            map.replace("message", "Błąd: Nieprawidłowa długość filmu.");
             return map;
         }
 
@@ -118,6 +127,7 @@ public class AdminController {
         topic.setIndex(topicIndex);
         topic.setTitle(topicTitle);
         topic.setLocation(topicVideo);
+        topic.setDuration(duration.intValue());
         topic.setChapter(chapter.get());
         topicRepository.save(topic);
 
@@ -217,7 +227,8 @@ public class AdminController {
 
     @PostMapping("/admin/editTopic")
     public Map<String, Object> editTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicId") Integer topicId, @RequestParam(value = "topicTitle") String topicTitle,
-                                           @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo) {
+                                         @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo,
+                                         @RequestParam(value = "duration") Double duration) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
@@ -227,6 +238,11 @@ public class AdminController {
 
         if (topicIndex < 0) {
             map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+            return map;
+        }
+
+        if (duration < 0.0 || duration > 10000000.0) {
+            map.replace("message", "Błąd: Nieprawidłowa długość filmu.");
             return map;
         }
 
@@ -240,10 +256,46 @@ public class AdminController {
         topic.setIndex(topicIndex);
         topic.setTitle(topicTitle);
         topic.setLocation(topicVideo);
+        topic.setDuration(duration.intValue());
+
         if (chapterRepository.findById(chapterId).isPresent())
             topic.setChapter(chapterRepository.findById(chapterId).get());
 
         topicRepository.save(topic);
+
+        map.replace("success", true);
+        map.replace("message", "Sukces: Edytowano temat!");
+        return map;
+    }
+
+
+
+
+
+
+
+    @PostMapping("/admin/updateDuration")
+    public Map<String, Object> updateDurations(@RequestParam(value = "videoLocation") String videoLocation, @RequestParam(value = "duration") Double duration) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Wystąpił nieoczekiwany problem.");
+
+        if (duration < 0.0 || duration > 10000000.0) {
+            map.put("message", "Błąd: Nieprawidłowa długość filmu.");
+            return map;
+        }
+
+        if (videoLocation.isEmpty() || !isStringValid(videoLocation)) {
+            map.put("message", "Błąd: Nazwa tematu bądź ścieżka video zawiera niedozwolone znaki.");
+            return map;
+        }
+
+        List<Topic> topics = topicRepository.findAllByVideoLocation(videoLocation);
+
+        for (Topic topic : topics) {
+            topic.setDuration(duration.intValue());
+            topicRepository.save(topic);
+        }
 
         map.replace("success", true);
         map.replace("message", "Sukces: Edytowano temat!");
@@ -348,7 +400,7 @@ public class AdminController {
 
 
     private List<String> getVideoList() {
-        File folder = new File("D:\\Xampp\\htdocs\\edu\\videos");
+        File folder = new File(HelloWorldApplication.videoesLocalPath);
         File[] listOfFiles = folder.listFiles();
         List<String> allVideos = new ArrayList<>();
 
@@ -362,5 +414,6 @@ public class AdminController {
 
         return allVideos;
     }
+
 
 }
