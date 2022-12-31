@@ -24,100 +24,6 @@
                 <div id="courses_list">
                     <h1 class="heading">Kursy</h1>
 
-
-                    <!--$ownedCourses = array();
-                    $today        = 0;
-                    $lastWeek     = 0;
-                    $lastMonth    = 0;
-
-
-                    if ($result=$conn->query($sql)) {
-                    if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                    $ownedCourses[] = intval($row['course_id']);
-                    }
-                    }
-                    }
-
-                    $now = new DateTime();
-                    $now = $now->setTime(24, 00, 00);
-
-                    $nowDate = new DateTime();
-                    $nowDate = $nowDate->format('Y-m-d H:i:s');
-
-
-                    if (sizeof($ownedCourses) <= 0) {
-                    echo '<div id="no_courses_found" class="window">
-                    <i class="center_icon fas fa-exclamation-circle"></i>
-
-                    <h1 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h1>
-                    <h2 class="desc">Zobacz naszą pełną ofertę i sam zdecyduj co Cię interesuje!
-
-                        <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
-
-                </div>
-                    ';
-                    }
-
-
-
-                    else {
-                    foreach ($ownedCourses as $courseId) {
-
-                    $sql2 = "SELECT course_complete_$courseId.*, courses.name, courses.category, owned_courses.expiry_date FROM courses, owned_courses, course_complete_$courseId WHERE course_complete_$courseId.user_id = (SELECT user_id FROM users WHERE BINARY email='".$_SESSION['email']."') AND courses.course_id=$courseId AND owned_courses.course_id=$courseId AND owned_courses.user_id = (SELECT user_id FROM users WHERE BINARY email='".$_SESSION['email']."') LIMIT 1";
-
-                    if ($result=$conn->query($sql2)) {
-                    if ($result->num_rows > 0) {
-                    $row = $result->fetch_assoc();
-
-                    //array_slice() removes first element from array which is user_id
-                    $row = array_slice($row, 2);
-                    $size = sizeof($row) -3;
-                    $finished = 0;
-
-                    foreach ($row as $key => $value) {
-                    if ($key != "name" && $key != "category" && $key != "expiry_date") {
-                    $topicId = str_replace("topic_", "", $key);
-                    if ($value != null) {
-                    $finished++;
-
-                    $finishDate = date_create($value);
-
-                    $interval = $finishDate->diff($now);
-                    $days     = $interval->format('%r%a');    // %r (negative [-], positive [blank]), %a total difference in days
-
-                    if ($days == 0) $today++;
-                    if ($days >= 0 && $days <= 7) $lastWeek++;
-                    if ($days >= 0 && $days <= 30) $lastMonth++;
-                    }
-                    }
-                    }
-
-                    $sizeHelp = $size;
-                    if ($sizeHelp == 0) $sizeHelp = 1;
-
-                    $percent = ceil(($finished/$sizeHelp)*100); //round up to integer
-
-                    $expiry = date_create($row["expiry_date"]);
-                    $expiry = $expiry->format("d.m.Y");
-
-
-
-
-
-                    //let it be percentage instead of days number
-                    $todayP     = ($today/1)*100;
-                    $lastWeekP  = ($lastWeek/7)*100;
-                    $lastMonthP = ($lastMonth/30)*100;
-
-                    if ($todayP > 100)     $todayP = 100;
-                    if ($lastWeekP > 100)  $lastWeekP = 100;
-                    if ($lastMonthP > 100) $lastMonthP = 100;
-
-
-                    ?>-->
-
-
                     <div th:if="${#lists.isEmpty(ownedCourses)}" id="no_courses_found" class="window">
                         <i class="center_icon fas fa-exclamation-circle"></i>
 
@@ -128,33 +34,33 @@
                     </div>
 
 
-                    <div th:each="ownedCourse : ${ownedCourses}" class="course_container">
+                    <div th:each="ownedCourseDto : ${ownedCourses}" class="course_container">
 
                         <div class="left">
                             <div class="photo">
-                                <img th:src="@{'/images/course_photo_' + ${ownedCourse.course.id} + '.png'}"/>
+                                <img alt="zdjecie" th:src="@{'/images/course_photo_' + ${ownedCourseDto.course.id} + '.png'}"/>
                             </div>
-                            <p class="category" th:text="'[' + ${ownedCourse.course.getCategoryAsString()} + ']'"></p>
+                            <p class="category" th:text="'[' + ${ownedCourseDto.course.getCategoryAsString()} + ']'"></p>
                         </div>
 
                         <div class="right">
                             <div class="description">
                                 <div class="title_with_shadow" >
-                                    <span class="tit_text" th:inline="text"> [[${ownedCourse.course.name}]] <div class="tit_bck"></div></span>
+                                    <span class="tit_text" th:inline="text"> [[${ownedCourseDto.course.name}]] <div class="tit_bck"></div></span>
                                 </div>
 
                                 <div class="linear_buttons">
                                     <div class="progress_background">
-                                        <div class="progress_fill" data-done="'.$percent.'"></div>
-                                        <span class="progresss_info">Ukończono '.$percent.' %</span>
+                                        <div class="progress_fill" th:attr="data-done=${ownedCourseDto.percentage}"></div>
+                                        <span class="progresss_info" th:text="'Ukończono ' + ${ownedCourseDto.percentage} + '%'"></span>
                                     </div>
-                                    <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourse.course.id}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourseDto.course.id}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="expires" th:if="${ownedCourse.expiryDate.after(#dates.createNow())}" th:text="'Ważny do: ' + ${#dates.format(ownedCourse.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
-                        <div class="expires expired" th:if="${ownedCourse.expiryDate.before(#dates.createNow())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#dates.format(ownedCourse.expiryDate, 'dd.MM.yyyy')}]]r</div>
+                        <div class="expires" th:if="${ownedCourseDto.expiryDate.after(#dates.createNow())}" th:text="'Ważny do: ' + ${#dates.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
+                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.before(#dates.createNow())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#dates.format(ownedCourse.expiryDate, 'dd.MM.yyyy')}]]r</div>
 
                     </div>
                 </div>
@@ -167,22 +73,22 @@
                         <h1 class="heading">Osiągnięte cele</h1>
 
                         <div class="progress_background">
-                            <div class="progress_fill" data-done="<?php echo $todayP ?>"></div>
-                            <span class="progresss_info">Dzisiejszy cel [<?php echo $today ?>]</span>
+                            <div class="progress_fill" th:attr="data-done=${lastDayPercentage}"></div>  <!-- Percentage progress through the same day. -->
+                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${lastDay} + ']'"></span>
                             <span class="progresss_target">1 kurs</span>
                         </div>
 
 
                         <div class="progress_background">
-                            <div class="progress_fill" data-done="<?php echo $lastWeekP ?>"></div>
-                            <span class="progresss_info">Ostatni tydzień [<?php echo $lastWeek ?>]</span>
+                            <div class="progress_fill" th:attr="data-done=${lastWeekPercentage}"></div>  <!-- Percentage progress through whole week. -->
+                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${lastWeek} + ']'"></span>
                             <span class="progresss_target">7 kursów</span>
                         </div>
 
 
                         <div class="progress_background">
-                            <div class="progress_fill" data-done="<?php echo $lastMonthP ?>"></div>
-                            <span class="progresss_info">Ostatni miesiąc [<?php echo $lastMonth ?>]</span>
+                            <div class="progress_fill" th:attr="data-done=${lastMonthPercentage}"></div>  <!-- Percentage progress through whole month. -->
+                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${lastMonth} + ']'"></span>
                             <span class="progresss_target">30 kursów</span>
                         </div>
                     </div>

@@ -182,4 +182,21 @@ public class Course {
         }
         return null;
     }
+
+    public int getTopicCount() {
+        int suma = 0;
+        for (Chapter chapter : chapters)
+            suma += chapter.getTopics().size();
+        return suma;
+    }
+
+    // Returns true if user has ever bought this course. Otherwise it returns false
+    public boolean isOwnedByUser(User user) {
+        for(CourseOwned co : user.getCoursesOwned()) {
+            if (co.getId().equals(this.id))
+                return true;
+        }
+        return false;
+    }
+
 }
