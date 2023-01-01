@@ -21,6 +21,8 @@
             START header
         -->
         <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: shadow}"></div>
+        <div th:insert="~{header :: minHeader}"></div>
 
         <div id="admin_content">
 
@@ -635,7 +637,7 @@
         }
 
 
-        window.onclick = function(event) {
+        window.addEventListener("click", function(event) {
             if (event.target.className != 'select_btn' && event.target.className != 'select_option') {
                 for (let i=0; i< all_selects.length; i++) {
                     all_selects[i].classList.remove("active");
@@ -644,8 +646,9 @@
 
             if (event.target == modal_confirmation) {
                 closeModal();
+
             }
-        }
+        });
 
 
 

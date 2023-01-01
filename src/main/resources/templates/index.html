@@ -16,6 +16,8 @@
             START header
         -->
         <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: shadow}"></div>
+        <div th:insert="~{header :: minHeader}"></div>
 
         <div id="content">
 
@@ -210,22 +212,14 @@
         loadCourses(typeFilters, categoryFilters);
     })
 
-    const header_buttons = document.getElementById("header_buttons");
     const myNav          = document.getElementById("header");
 
     window.onscroll = function () {
-        if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
+        if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40)
             myNav.classList.add("nav_active");
-
-            header_buttons.classList.remove("hidden");
-            header_buttons.classList.add("visible");
-
-        } else {
+        else
             myNav.classList.remove("nav_active");
 
-            header_buttons.classList.remove("visible");
-            header_buttons.classList.add("hidden");
-        }
     };
 
 </script>

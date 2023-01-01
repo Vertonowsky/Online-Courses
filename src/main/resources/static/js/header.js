@@ -6,19 +6,43 @@
  * Opens navigation menu on smaller devices
  * 
  */
-function openNav() {
-    let button = document.getElementById("navPanelToggle");
-    let tab = document.getElementById("navPanel");
-    void tab.offsetWidth;
-    tab.className = "";
+const navToggle = document.getElementById("navPanelToggle");
+const shadow    = document.getElementById("shadow");
+const header    = document.getElementById("header");
+const minHeader = document.getElementById("minHeader");
 
-    if (!button.classList.contains("active")) {
-        button.classList.add("active");
-        tab.classList.add('active');
-        tab.classList.add('slideInFromRight');
+function openNav() {
+    void minHeader.offsetWidth;
+    minHeader.className = "";
+
+    if (!navToggle.classList.contains("active")) {
+        navToggle.classList.add("active");
+        shadow.classList.add('active');
+        minHeader.classList.add('active');
     } else {
-        button.classList.remove("active");
-        tab.classList.remove('active');
-        tab.classList.add('slideOutToRight');
+        navToggle.classList.remove("active");
+        shadow.classList.remove("active");
+        minHeader.classList.remove('active');
     }
 }
+
+window.addEventListener("click", function(event) {
+
+    // If user clicked on navPanelToggle button, then open minHeader.
+    if (navToggle.contains(event.target)) {
+        openNav();
+        return;
+    }
+
+    // If user clicked outside minHeader and header
+    if (!minHeader.contains(event.target) && !header.contains(event.target)){
+        // If minHeader is currently visible
+        if (navToggle.classList.contains("active")) {
+            navToggle.classList.remove("active");
+            shadow.classList.remove("active");
+            minHeader.classList.remove('active');
+        }
+    }
+});
+
+
