@@ -42,6 +42,10 @@
                             <div class="photo">
                                 <img alt="zdjecie" th:src="@{'/images/course_photo_' + ${ownedCourseDto.course.id} + '.png'}"/>
                             </div>
+                            <div class="title_with_shadow_hidden">
+                                <span class="tit_text" th:inline="text"> [[${ownedCourseDto.course.name}]] <div class="tit_bck"></div></span>
+                            </div>
+                            
                             <p class="category" th:text="'[' + ${ownedCourseDto.course.getCategoryAsString()} + ']'"></p>
                         </div>
 
