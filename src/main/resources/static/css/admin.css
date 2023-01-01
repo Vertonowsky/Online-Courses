@@ -32,7 +32,7 @@
             padding: 0 0 20px 0;
         }
 
-            #form .headline {
+            .headline {
                 font-size: 16px;
                 font-weight: bold;
                 margin-bottom: 10px;
@@ -46,16 +46,16 @@
                 margin-bottom: 30px;
             }
 
-            #form .button_red {
+            .button_red {
                 display: inline-block;
                 vertical-align: top;
-                width: 260px;
+                width: 250px;
                 padding: 11px 0 11px 2px;
                 margin-right: 15px;
             }
 
-            .button_gray {
-                width: 260px;
+            .buttons .button_gray {
+                width: 220px;
                 margin-right: 15px;
             }
 
@@ -73,9 +73,17 @@
         .tabcontent {
             position: relative;
             box-sizing: border-box;
-            display: none;
-            padding: 30px;
+            visibility: hidden;
+            height: 0;
+            padding: 0;
             border-top: 1px solid var(--color-title);
+            transition: padding 0.3s, height 0.3s;
+        }
+
+        .tabcontent.active {
+            visibility: visible;
+            height: auto;
+            padding: 30px;
         }
 
 
@@ -89,6 +97,12 @@
             position: relative;
             text-align: center;
             margin-top: 40px;
+        }
+
+        .accept_decline .button_red, .accept_decline .button_gray {
+            box-sizing: border-box;
+            width: 160px;
+            transition: background 0.3s, opacity 0.3s, width 0.3s;
         }
 
 
@@ -115,7 +129,7 @@
                 outline: 0;
                 cursor: pointer;
                 border: 2px solid #C4C4C4;
-                transition: all 0.3s;
+                transition: border 0.3s;
             }
 
             .select_btn:hover {
@@ -131,7 +145,7 @@
                 color: #2A3136;
                 cursor: pointer;
                 z-index: 2;
-                transition: all 0.2s;
+                transition: transform 0.2s;
             }
 
             .select_menu.active i {
@@ -187,7 +201,7 @@
 
 
 .input_group .input {
-    width: 400px;
+    width: calc(100% - 80px);
     background: var(--color-white);
     border: 2px solid #C4C4C4;
     outline: none;
@@ -212,7 +226,7 @@
     border-radius: 0;
     color: #282B36;
     outline: none;
-    transition: all 0.3s;
+    transition: border 0.3s;
 }
 
 .input_group .input_number:hover {
@@ -258,12 +272,12 @@
         vertical-align: top;
         box-sizing: border-box;
         margin-left: 4%;
-        padding: 0 0 20px 0;
         width: 56%;
         min-height: 500px;
         max-height: 700px;
-        overflow-y: auto;
+        overflow-y: hidden;
     }
+
 
     #display_panel #introduction {
         text-align: left;
@@ -273,11 +287,35 @@
     }
 
 
+    /*
+    [Custom scroll bar]
+    */
+    #right_content::-webkit-scrollbar {
+        width: 12px;
+    }
+
+
+    /* Scroll background */
+    #right_content::-webkit-scrollbar-track {
+        background: #F0EEF0;
+        border-radius: 5px;
+    }
+
+    /* Scroll */
+    #right_content::-webkit-scrollbar-thumb {
+        background: #C3E1EB;
+        border-radius: 5px;
+    }
 
     #right_content {
         position: relative;
-        width: 96%;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 15px 0 0;
+        min-height: 500px;
+        max-height: 650px;
         text-align: center;
+        overflow-y: auto;
         margin: auto;
     }
 
@@ -429,10 +467,19 @@
                 .modal .button_red {
                     display: inline-block;
                     vertical-align: top;
-                    width: 260px;
+                    width: 240px;
                     padding: 11.4px 0 11.4px 2px;
                     margin-right: 15px;
                 }
+
+                .modal .button_gray {
+                    width: 240px;
+                }
+
+                .modal .input_group .input {
+                    width: calc(100% - 85px);
+                }
+
 
 
         #js_info {
@@ -459,13 +506,13 @@
 
         #js_info_title {
             text-align: left;
-            margin: 15px 0 0 2.5%;
+            margin: 15px 0 0 4%;
             font-size: 16px;
         }
 
         #js_info_desc {
             text-align: left;
-            margin: 5px 0 0 2.5%;
+            margin: 5px 0 0 4%;
             font-size: 14px;
         }
 
@@ -480,20 +527,6 @@
         #admin_content #form {
             width: 92%;
         }
-
-        .button_gray {
-            width: 44%;
-        }
-
-        #form .button_red {
-            width: 44%;
-        }
-
-        .input_group .input {
-            min-width: 260px;
-            width: 60%;
-        }
-
     }
 
 
@@ -501,12 +534,8 @@
 
         #form .left {
             width: 85%;
-            margin: 0 auto 0px auto;
+            margin: 0 auto 0 auto;
             display: block;
-        }
-
-        #form {
-            text-align: center;
         }
 
         #btn_refresh_duration {
@@ -514,6 +543,14 @@
             margin: 0 auto 0 auto;
             padding: 12px 25px;
         }
+
+        #form {
+            text-align: center;
+        }
+
+            .tabcontent.active {
+                padding: 40px 30px;
+            }
 
         #display_panel {
             width: 85%;
@@ -556,7 +593,7 @@
             }
 
             .modal_content .button_gray, .modal_content .button_red {
-                width: 44%;
+                width: 40%;
             }
 
             #js_info {
@@ -586,9 +623,10 @@
 
         .button_gray {
             font-size: var(--font-size-smaller);
+            padding: 11px 0 11px 2px;
         }
 
-        #form .button_red {
+        .button_red {
             font-size: var(--font-size-smaller);
         }
 
@@ -608,10 +646,9 @@
             }
 
             .input_group .input {
-                width: 70%;
+                width: calc(100% - 60px);
                 border-radius: 0;
                 padding: 12px 8px;
-                min-width: 1px;
             }
 
 
@@ -623,6 +660,10 @@
         .modal .bottom {
             padding-bottom: 30px;
         }
+
+            .modal .input_group .input {
+                width: calc(100% - 70px);
+            }
 
     }
 
@@ -645,6 +686,34 @@
 
         .buttons .button_gray:last-of-type {
             margin: 10px auto 0 auto;
+        }
+
+        .input_group .input {
+            width: calc(100% - 50px);
+            border-radius: 0;
+            padding: 12px 8px;
+        }
+
+        .input_group .input_number {
+            font-size: var(--font-size-phone);
+            width: 40px;
+        }
+
+        .tabcontent .headline {
+            text-align: left;
+        }
+
+
+        .modal .top {
+            padding-bottom: 30px;
+        }
+
+        .modal .input_group .input {
+            width: calc(100% - 55px);
+        }
+
+        #js_info {
+            padding-bottom: 40px;
         }
 
     }
@@ -671,8 +740,8 @@
             font-size: var(--font-size-phone);
         }
 
-        .tabcontent {
-            padding: 10px;
+        .tabcontent.active {
+            padding: 20px;
         }
 
             .select_btn {
@@ -687,26 +756,11 @@
                 font-size: var(--font-size-phone);
             }
 
-            .input_group .input {
-                width: calc(100% - 50px);
-                border-radius: 0;
-                padding: 12px 8px;
+
+            .accept_decline .button_red, .accept_decline .button_gray {
+                width: 45%;
+                padding: 9px 0 8px 9px;
             }
-
-            .input_group .input_number {
-                font-size: var(--font-size-phone);
-                width: 40px;
-            }
-
-
-        .preview_icons {
-            font-size: 15px;
-        }
-
-            .preview_icons .icon_save {
-                margin-right: 5px;
-            }
-
 
         .modal .top {
             padding-bottom: 30px;
@@ -722,6 +776,37 @@
 
 
         .modal .bottom {
-            padding-bottom: 10px;
+            padding-bottom: 20px;
         }
+
+
+    }
+
+
+    @media screen and (max-width: 380px) {
+
+
+        .accept_decline .button_red, .accept_decline .button_gray {
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .accept_decline .button_gray {
+            margin-top: 10px;
+        }
+
+
+
+        .modal_content .button_gray, .modal_content .button_red {
+            width: 80%;
+            margin: auto;
+            display: block;
+        }
+
+        .modal_content .button_gray {
+            margin-top: 10px;
+        }
+
+
     }

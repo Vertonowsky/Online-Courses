@@ -125,9 +125,9 @@
 
                 <div id="display_panel" th:if="${selectedCourse != null}">
 
+                    <h1 class="headline" id="introduction"> Podgląd </h1>
                     <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
 
-                        <h1 class="headline" id="introduction"> Podgląd </h1>
                         <div th:if="${!#lists.isEmpty(selectedCourse)}">
                             <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
                                 <i class="center_icon fas fa-exclamation-circle"></i>
@@ -348,7 +348,7 @@
 
                     jsInfo.innerHTML = '' +
                         '<div class="chapter_header">' +
-                        '   <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>' +
+                        '   <div class="th_type"> <i class="far fa-dot-circle"></i> </div>' +
                         '   <div class="th_index">' + chapter_index + '</div>' +
                         '   <div class="th_title">' + chapter_name + '</div>' +
                         '</div>';
@@ -370,7 +370,7 @@
                 let topic_video = document.getElementById("select_video").getElementsByClassName("select_btn")[0].innerHTML;
                 let topic_id    = document.getElementById("select_video").dataset.id;
 
-                if (topic_title != null && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0 && topic_id != null && topic_id != "" && topic_id > 0) {
+                if (topic_title != null && topic_video != "" && chapter_id != null && chapter_id != "" && chapter_id > 0 && topic_index != null && topic_index != "" && topic_index >= 0 && topic_id != null && topic_id != "" && topic_id >= 0) {
 
                     if (source.src === "" || source.src == null) {
                         let path = /*[[${videosPath}]]*/"";
@@ -542,13 +542,15 @@
             if (selected_course_id > 0) {
                 let i;
                 for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
+                    //tabcontent[i].style.block = "none";
+                    if (tabcontent[i].classList.contains("active"))
+                        tabcontent[i].classList.remove("active");
                 }
                 for (i = 0; i < tablinks.length; i++) {
                     tablinks[i].className = tablinks[i].className.replace(" active", "");
                 }
 
-                document.getElementById(cityName).style.display = "block";
+                document.getElementById(cityName).classList.add("active")
                 e.currentTarget.className += " active";
 
             } else {
@@ -559,7 +561,9 @@
 
         function closeAllTabs() {
             for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+                //tabcontent[i].style.block = "none";
+                if (tabcontent[i].classList.contains("active"))
+                    tabcontent[i].classList.remove("active");
             }
             for (let i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");

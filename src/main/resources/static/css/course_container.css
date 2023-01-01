@@ -637,6 +637,8 @@
 
 
 
+
+
             .course_container .right {
                 position: relative;
                 display: block;
@@ -685,19 +687,91 @@
             }
 
 
+            .chapter_header {
+                padding: 10px 4px;
+            }
+
+            .chapter_header .th_type,
+            .topic_header .td_type {
+                width: 20px;
+                font-size: 16px;
+            }
 
             .chapter_header .th_index,
             .topic_header .td_index {
                 width: 25px;
-                margin-left: 8px;
-                margin-right: 8px;
+                margin: 0 6px 0 4px;
             }
 
             .chapter_header .th_title,
             .topic_header .td_title {
-                width: calc(75% - 41px);
+                width: calc(75% - 45px);
             }
-                
+
+            .chapter_header .th_operations,
+            .chapter_header .td_operations {
+                width: 60px;
+            }
+
+                .preview_icons {
+                    font-size: 15px;
+                }
+
+                    .preview_icons .icon_save {
+                        margin-right: 5px;
+                    }
+
+        }
+
+
+        @media screen and (max-width:  380px) {
+
+
+            .chapter_header .th_index,
+            .topic_header .td_index {
+                width: 22px;
+            }
+
+
+            .chapter_header .th_title,
+            .topic_header .td_title {
+                width: calc(75% - 50px);
+            }
+
+
+            .chapter_header .th_operations,
+            .chapter_header .td_operations {
+                width: 50px;
+            }
+
+        }
+
+
+        @media screen and (max-width:  260px) {
+
+            .chapter_header {
+                padding: 8px 4px;
+            }
+
+            .chapter_header .th_type,
+            .topic_header .td_type {
+                display: none;
+            }
+
+            .chapter_header .th_title,
+            .topic_header .td_title {
+                width: calc(75% - 28px);
+            }
+
+            .chapter_header .th_operations,
+            .topic_header .td_operations {
+                width: 25px;
+            }
+
+            .preview_icons .icon_save {
+                margin: 0 auto;
+                padding: 0;
+            }
 
         }
 

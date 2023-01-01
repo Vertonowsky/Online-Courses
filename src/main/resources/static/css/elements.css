@@ -51,7 +51,7 @@ a {
     color: #595959;
     border: 2px solid #DBDBDB;
     outline: none; 
-    transition: all 0.3s;
+    transition: border 0.3s;
     border-radius: 10px;
 }
 
@@ -101,7 +101,6 @@ a {
 */
 
 .href {
-    list-style-type: none;
     list-style: none;
     font-size: 15px;
     margin: 0;
