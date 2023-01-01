@@ -42,6 +42,11 @@ function loadCourses(typeFilters, categoryFilters) {
                                         '<div class="photo">' +
                                             '<img src="/images/course_photo_' + element.id + '.png" />' +
                                         '</div>' +
+
+                                        '<div class="title_with_shadow_hidden">' +
+                                            '<span class="tit_text" th:inline="text">' + element.name + '<div class="tit_bck"></div></span>' +
+                                        '</div>' +
+
                                         '<p class="category">[' + element.category.charAt(0) + ((element.category).slice(1)).toLowerCase() + ']</p>' +
                                     '</div>' +
 
