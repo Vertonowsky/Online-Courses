@@ -582,7 +582,7 @@
             }
 
 
-                .chapter_header .th_index, .chapter_header .th_title, .chapter_header .th_operations
+                .chapter_header .th_index, .chapter_header .th_title, .chapter_header .th_operations,
                 .topic_header .td_index, .topic_header .td_title, .topic_header .td_operations {
                     font-size: var(--font-size-phone);
                 }
@@ -694,7 +694,7 @@
 
             .description .desc {
                 font-size: var(--font-size-phone);
-                margin-bottom: 0px;
+                margin-bottom: 0;
                 text-align: center;
             }
 
