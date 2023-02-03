@@ -27,7 +27,7 @@ Wczytanie kursu - o ile istnieje w bazie danych
         <!--
             START header
         -->
-        <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: header(active = ${true})}"></div>
 
         <div id="course_display">
 

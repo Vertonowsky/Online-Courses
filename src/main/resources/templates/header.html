@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div id="header" th:fragment="header">
+<div id="header" th:fragment="header(active)" th:class="${active} ? 'nav_active' : ''">
 
     <a th:href="@{/}" id="nav_logo"><img alt="" src="/images/logo3.png"/></a>
 

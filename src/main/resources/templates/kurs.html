@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
-    <title>Kursowo | Rozdział</title>
+    <title th:text="'Kursowo | ' + ${topic.title}"></title>
 
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/kurs.css"/>
@@ -21,14 +21,12 @@
         <!--
             START header
         -->
-        <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: header(active = ${true})}"></div>
+        <div th:insert="~{header :: shadow}"></div>
+        <div th:insert="~{header :: minHeader}"></div>
 
         <div id="content_course">
-            <div id="course_left" class="active">
-                <!--<div id="navigation_container">
-                    <div id="complete"><div id="complete_fill"></div></div>
-                    <p id="course_finised">Ukończono 37%</p>
-                </div>-->
+            <div id="course_left">
 
                 <div id="all_topics" th:if="${data != null}">
 
@@ -71,34 +69,31 @@
             <div id="course_center">
 
                 <div id="video_container" tabindex="0">
+                    <h1 id="video_controls_title" th:text="${topic.title}"></h1>
+
                     <video id="video">
                         <source id="source" type="video/mp4" th:src="${videosPath} + ${topic.location}">
                     </video>
-                    <div id="volume_display_info"></div>
-                    <div id="center_info" class="active"><i id="center_info_icon" class="fas fa-play"></i></div>
+
+                    <div id="center_volume_info"></div>
+                    <div id="center_play_info" class="active"><i id="center_play_info_icon" class="fas fa-play"></i></div>
 
 
-                    <div id="video-controls">
+
+
+                    <div id="video_controls">
                         <div id="timeline_container">
                             <input id="timeline_slider" type="range" min="0" value="0" class="timeline_slider" step="0.001">
                             <output id="bubble"></output>
                         </div>
 
 
-                        <!--<div id="timeline_buffered_container">
-                            <input id="timeline_buffered_slider" type="range" min="0" value="0" class="timeline_buffered_slider" step="0.001">
-                        </div>-->
-
-
-
 
                         <div class="left">
-                            <button id="video-play">
-                                <i class="o-play-btn__icon">
-                                    <div class="o-play-btn__mask"></div>
-                                </i>
-                            </button>
-                            <div id="video_volume" data-state="1"><i onclick="mute()" id="video_volume_icon" class=""></i>
+
+                            <div class="playpause" id="button_play"></div>
+
+                            <div id="video_volume" data-state="1"><i onclick="mute()" id="button_volume_icon" class=""></i>
                                 <div id="volume_slider_container">
                                     <input id="volume_slider" type="range" min="0" max="100" class="slider_volume">
                                 </div>
@@ -109,29 +104,33 @@
 
 
                         <div class="right">
-                            <button id="video_speed" type="button" data-state="1" onclick="videoSpeed()"><i class="fas fa-cog"></i></button>
-                            <div id="video_settings">
+
+                            <button id="button_speed" type="button" data-state="1" onclick="videoSpeed()"><i class="fas fa-cog"></i></button>
+                            <div id="settings_containers">
                                 <h1>Predkosc odtwarzania</h1>
                                 <ul>
-                                    <li onclick="changeSpeed(this, 0.25)" class="video_speed_option">0.25</li>
-                                    <li onclick="changeSpeed(this, 0.5) " class="video_speed_option">0.50</li>
-                                    <li onclick="changeSpeed(this, 0.75)" class="video_speed_option">0.75</li>
-                                    <li onclick="changeSpeed(this, 1)   " class="video_speed_option active">Normalna</li>
-                                    <li onclick="changeSpeed(this, 1.5) " class="video_speed_option">1.5</li>
-                                    <li onclick="changeSpeed(this, 1.75)" class="video_speed_option">1.75</li>
-                                    <li onclick="changeSpeed(this, 2)   " class="video_speed_option">2</li>
+                                    <li onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</li>
+                                    <li onclick="changeSpeed(this, 0.5) " class="button_speed_option">0.50</li>
+                                    <li onclick="changeSpeed(this, 0.75)" class="button_speed_option">0.75</li>
+                                    <li onclick="changeSpeed(this, 1)   " class="button_speed_option active">Normalna</li>
+                                    <li onclick="changeSpeed(this, 1.5) " class="button_speed_option">1.5</li>
+                                    <li onclick="changeSpeed(this, 1.75)" class="button_speed_option">1.75</li>
+                                    <li onclick="changeSpeed(this, 2)   " class="button_speed_option">2</li>
                                 </ul>
                             </div>
-                            <button id="video-fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
+                            <button id="button_fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
+
                         </div>
                     </div>
                 </div>
 
                 <div id="below_video_options">
 
-                    <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
-                    <div id="topic_title" th:text="${topic.title}"></div>
-                    <div th:if="${loggedIn}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Oznacz jako wykonane! <i class="fas fa-check"></i></div>
+                    <div id="topic_info">
+                        <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
+                        <div id="topic_title" th:text="${topic.title}"></div>
+                    </div>
+                    <div th:if="${loggedIn}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></div>
 
                 </div>
 
@@ -189,731 +188,880 @@
             </div>
         </div>
 
-
+        <!--
+            START footer
+        -->
+        <div th:insert="~{footer :: footer}"></div>
 
 
         <script src="/js/jquery-1.11.3.js"></script>
-        <script src="/js/manipulation.js"></script>
+        <script src="/js/header.js"></script>
 
 </body>
 
 
 
 
-    <script th:inline="javascript">
+<script th:inline="javascript">
 
 
-        const myNav = document.getElementById("header");
-        window.onload = function () {
-            myNav.classList.add("nav_active");
-        };
+    /*<![CDATA[*/
+    const courseId = /*[[${courseId}]]*/ "";
+    function openTopic(topic_id) {
+        window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id;
+    }
 
-        /*<![CDATA[*/
-        let courseId = /*[[${courseId}]]*/ "";
-        function openTopic(topic_id) {
-            window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id;
+    /*]]>*/
+
+
+    let supportsTouch = ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 ) || ( navigator.msMaxTouchPoints > 0 );
+
+
+    const button_volume_icon = document.getElementById("button_volume_icon")
+    const button_play        = document.getElementById("button_play");
+
+    const video_time      = document.getElementById("video_time");
+    const volume_slider   = document.getElementById("volume_slider");
+    const timeline_slider = document.getElementById("timeline_slider");
+    const bubble          = document.getElementById("bubble");
+
+    const center_play_info_icon = document.getElementById("center_play_info_icon");
+    const center_play_info      = document.getElementById("center_play_info");
+    const center_volume_info    = document.getElementById("center_volume_info");
+
+    const settings_container   = document.getElementById("settings_containers");
+    const volume_container     = document.getElementById("volume_slider_container");
+    const video_container      = document.getElementById("video_container");
+    const video_controls       = document.getElementById("video_controls");
+    const video_controls_title = document.getElementById("video_controls_title");
+    const video                = document.getElementById("video");
+
+
+    let mouseInsideVideo = false;
+    let fullscreen = false;
+    let muted  = false;
+    let paused = true;
+    let volume = 0;
+    let delay = 0, delay2 = 0;
+    let timer = null, timer2 = null;
+
+
+
+
+    /**
+     * Detect FullScreen toggle
+     */
+    $("#video_container").on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function() {
+        if (document.fullscreenElement) fullscreen = true;
+        else fullscreen = false;
+    });
+
+
+
+    $("#button_fullscreen").click(function() {
+        if (!fullscreen) openFullscreen(video_container);
+        if (fullscreen) closeFullscreen();
+    });
+
+
+
+    /* Open fullscreen */
+    function openFullscreen(elem) {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }
+
+
+
+    /* Close fullscreen */
+    function closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
         }
 
-        /*]]>*/
+        if (document.documentElement.scrollTop != 0)
+            document.documentElement.scrollTop = 0;
+    }
+
+
+
+    /**
+     * Enum for icon in the middle of the video
+     */
+    const IconTypes = Object.freeze({
+        PLAY: "fas fa-play",
+        PAUSE: "fas fa-pause",
+        BACKWARD: "fas fa-undo-alt",
+        FORWARD: "fas fa-redo-alt"
+    });
+
+
+    /**
+     * Shows one of the following icons in the middle
+     * of the video: [Play, Pause, Backward, Forward]
+     *
+     * Parameters:
+     *  type -> defines type of the icon
+     */
+    function showCenterInfo(type) {
+        if (type == undefined) return;
+
+        center_play_info_icon.className = type;
+
+        center_play_info.classList.add("active");
+        delay2 = 2;
+    }
 
 
 
 
 
 
+    /**
+     * Hides icon in the middle of the video with delay
+     */
+    function closeCenterWithDelay() {
+        delay2--;
+
+        if (delay2 < 0) {
+            clearTimeout(timer2);
+            timer2 = null;
+            return;
+        }
+
+        if (delay2 > 0)
+            clearTimeout(timer2);
+
+        if (delay2 == 0) {
+            center_play_info.classList.remove("active");
+            if (paused)
+                showCenterInfo(IconTypes.PLAY)
+        }
+        timer2 = setTimeout("closeCenterWithDelay()", 500);
+    }
 
 
 
 
+    /**
+     * Hides icon in the middle of the video without any delay
+     */
+    function closeCenterInfo() {
+        center_play_info.classList.remove("active");
+    }
 
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                c = c.substring(1);
+
+
+
+    $("#center_play_info").click(function() {
+        playVideo(true);
+    });
+
+    $(button_play).click(function() {
+        playVideo(true);
+    });
+
+
+
+    $(button_play).mouseover(function() {
+        if (!button_play.classList.contains("hover"))
+            button_play.classList.add("hover");
+    });
+
+
+    $(button_play).mouseout(function() {
+        if (button_play.classList.contains("hover"))
+            button_play.classList.remove("hover");
+    });
+
+
+    volume_slider.oninput = function() {
+        updateVolume(this.value);
+    };
+
+
+    button_volume_icon.addEventListener("mouseenter", function() {
+        volume_container.classList.add('hover');
+    });
+
+
+    video_controls.addEventListener("mouseleave", function() {
+        volume_container.className = "";
+    });
+
+
+
+    /**
+     * Plays or stops the video
+     *
+     * Parameters:
+     *  hidePanel -> boolean. Should control panel be hidden?
+     */
+    function playVideo(hidePanel) {
+        if (video.paused) {
+            video.play();
+            paused = false;
+            button_play.classList.add("paused");
+            showCenterInfo(IconTypes.PAUSE);
+
+            if (!hidePanel) return;
+            closeCenterInfo();
+
+            if (window.screen.width <= 1024) {
+                if (isControlPanelVisible())
+                    hideControlPanel();
+            }
+
+        } else {
+            video.pause();
+            paused = true;
+            button_play.classList.remove("paused");
+            showCenterInfo(IconTypes.PLAY);
+            showControlPanel();
+        }
+    }
+
+
+    video.onclick = function(event) {
+        //Handle SingleClick
+        if (event.detail === 1) {
+
+            if (window.screen.width <= 1024) {
+                if (isControlPanelVisible()) {
+                    hideControlPanel();
+                    closeCenterInfo();
+
+                } else {
+                    showControlPanel();
+                    if (paused) showCenterInfo(IconTypes.PLAY);
+                    else showCenterInfo(IconTypes.PAUSE);
                 }
-                if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
+                return;
+            }
+
+            playVideo(true);
+
+
+            // Handle DoubleClick
+        } else if (event.detail === 2) {
+
+
+            if (window.screen.width <= 1024) return;
+            if (!fullscreen) openFullscreen(video_container);
+            if (fullscreen) closeFullscreen();
+
+
+        }
+
+    }
+
+
+    video_container.onmouseover = function() {
+        mouseInsideVideo = true;
+    };
+
+
+
+
+    /**
+     * Shows control panel
+     */
+    function showControlPanel() {
+        if (isControlPanelVisible()) return;
+
+        video_controls.classList.remove("hidden");
+        video_controls_title.classList.remove("hidden");
+    }
+
+
+
+    /**
+     * Hides control panel
+     */
+    function hideControlPanel() {
+        if (!isControlPanelVisible()) return;
+        closeCenterInfo();
+
+        video_controls.classList.add("hidden");
+        video_controls_title.classList.add("hidden");
+    }
+
+
+
+    /**
+     * Return true or false baesed on control panel visibility
+     */
+    function isControlPanelVisible() {
+        return !video_controls.classList.contains("hidden");
+    }
+
+
+
+    /**
+     * Listen for keyboard clicking.
+     * Function handles:
+     *  space      -> Play/Pause the video
+     *  esc        -> Leave fullscreen
+     *  arrowLeft  -> Rewind the video 10 seconds backwards
+     *  arrowUp    -> Volume up
+     *  arrowRight -> Rewind the video 10 seconds forwards
+     *  arrowDown  -> Volume down
+     */
+    window.addEventListener("keydown", e => {
+        if (e.keyCode >= 37 && e.keyCode <= 40) e.preventDefault();
+
+        if (e.isComposing || e.keyCode === 229) {
+            return;
+        }
+
+        // [Left Arrow] - Go back 10 seconds
+        if (e.keyCode == 37) {
+            skipVideo(false);
+            return;
+        }
+
+
+        // [Right Arrow] - Go forward 10 seconds
+        if (e.keyCode == 39) {
+            skipVideo(true);
+            return;
+        }
+
+
+        // [Top Arrow] - Volume up
+        if (e.keyCode == 38) {
+            let vol = parseInt((video.volume*100) + 5);
+            if (vol > 100) vol = 100;
+            updateVolume(vol);
+            return;
+        }
+
+
+        // [Bottom Arrow] - Volume down
+        if (e.keyCode == 40) {
+            let vol = parseInt((video.volume*100) - 5);
+            if (vol < 0) vol = 0;
+            updateVolume(vol);
+            return;
+        }
+
+
+        // [Space] - Play/Pause video
+        if (e.keyCode == 32) {
+            e.preventDefault()
+            playVideo(true);
+        }
+    });
+
+
+
+
+    /**
+     * Listen for window resize and show control panel if it is hidden
+     */
+    window.addEventListener("resize", () => {
+        supportsTouch = ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 ) || ( navigator.msMaxTouchPoints > 0 );
+
+        if (paused) return;
+
+        if (!isControlPanelVisible())
+            showControlPanel();
+    } );
+
+
+
+
+    /**
+     * Skips video forwards or backwards
+     *
+     * Parameters:
+     *  forward -> [Boolean]. True  stands for rewinding the video 10 seconds forwards
+     *                        False stands for rewinding the video 10 seconds backwards
+     */
+    function skipVideo(forward) {
+        let time = 0;
+        if (forward) {
+            time = video.currentTime + 10;
+            if (time > video.duration) time = video.duration;
+            showCenterInfo(IconTypes.FORWARD);
+
+        } else {
+            time = video.currentTime - 10;
+            if (time < 0) time = 0;
+            showCenterInfo(IconTypes.BACKWARD);
+        }
+
+        video.currentTime = time;
+        closeCenterWithDelay();
+    }
+
+
+
+
+    /**
+     * Listen for inactivity. If user is inactive for more than 2.5 seconds, then hide control panel
+     */
+    let inactivityTime = function() {
+        let time;
+        window.onload = resetTimer;
+        window.onmousemove = resetTimer;
+        window.onmousedown = resetTimer;  // catches touchscreen presses as well
+        window.ontouchstart = resetTimer; // catches touchscreen swipes as well
+        window.ontouchmove = resetTimer;  // required by some devices
+        window.onclick = resetTimer;      // catches touchpad clicks as well
+        window.onkeydown = resetTimer;
+
+        document.onkeydown = resetTimer;
+
+        function hidePanelAndCursor() {
+            //Don't do anything if the video is paused
+            if (paused) return;
+
+            if (isControlPanelVisible()) hideControlPanel();
+            if (mouseInsideVideo) video_container.style.cursor = "none";
+        }
+
+        function resetTimer() {
+            if (window.screen.width > 1024) {
+                if (mouseInsideVideo) {
+                    video_container.style.cursor = "default";
+
+                    if (!isControlPanelVisible())
+                        showControlPanel();
                 }
             }
-            return "";
+
+            clearTimeout(time);
+            time = setTimeout(hidePanelAndCursor, 2500)
+        }
+    };
+
+
+
+
+    $(window).load(function() {
+        inactivityTime();
+    });
+
+
+
+
+    /**
+     * Updates GUI with current time and full duration
+     */
+    function updateVideoTime() {
+        let currentTime = parseInt(video.currentTime);
+        let duration    = parseInt(video.duration);
+
+        if (Number.isNaN(video.currentTime)) currentTime = 0;
+        if (Number.isNaN(video.duration))    duration = 0;
+
+        let time;
+        let maxTime;
+
+        time    = secondsToTime(currentTime);
+        maxTime = secondsToTime(duration);
+
+        video_time.innerHTML = time + " / " + maxTime;
+    }
+
+
+
+    /**
+     * Calculates video time to "hh:mm:ss" format
+     */
+    function secondsToTime(duration) {
+        let hours   = parseInt(duration/3600);
+        let minutes = parseInt((duration % 3600) / 60);
+        let seconds = parseInt(duration % 60);
+
+        if (minutes < 10) minutes = "0" + minutes;
+        if (seconds < 10) seconds = "0" + seconds;
+
+        if (hours > 0)
+            return hours + ":" + minutes + ":" + seconds;
+
+        return minutes + ":" + seconds;
+    }
+
+
+    /**
+     * Hides volume icon in the middle with delay
+     */
+    function closeVolumeInfo() {
+        delay--;
+
+        if (delay < 0) {
+            clearTimeout(timer);
+            timer = null;
+            return;
         }
 
+        if (delay > 0)
+            clearTimeout(timer);
+
+        if (delay == 0)
+            center_volume_info.classList.remove("active");
+
+        timer = setTimeout("closeVolumeInfo()", 500);
+    }
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        const button_play       = document.getElementById("video-play");
-        const button_fullscreen = document.getElementById("video-fullscreen");
-        const center_info       = document.getElementById("center_info");
-        const center_info_icon  = document.getElementById("center_info_icon");
-
-        const video_container = document.getElementById("video_container");
-        const video = document.getElementById("video");
-
-
-        let fullscreen = false;
-        let muted  = false;
-        let paused = true;
-        let volume = 0;
-        let delay2, timer2;
-
-
-
-        center_info.onclick = function() {
-            playVideo();
+    /**
+     * Toggle volume mute
+     */
+    function mute() {
+        if (!muted) {
+            muted = true;
+            volume = 0;
+            video.volume = volume/100;
+            updateVolumeSlider(volume);
+            document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+            button_volume_icon.className = "fas fa-volume-mute";
+            return;
         }
 
-        button_play.onclick = function(){
-            playVideo();
-        };
+        if (muted) {
+            muted = false;
+            let vol = getCookie("video_volume")
+            if (vol != null) {
+                volume = vol;
+            }
+            updateVolumeSlider(volume);
+            document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+            button_volume_icon.className = "fas fa-volume-up";
+            video.volume = volume/100;
+            return;
+        }
+    }
 
-        video.onclick = function(){
-            playVideo();
+
+
+    function updateVolumeSlider(vol) {
+        volume_slider.value = vol;
+        volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + vol + '%, #787D80 ' + vol + '%, #787D80 100%)';
+    }
+
+
+
+
+    /**
+     * Changes the video volume
+     *
+     * Parameters:
+     *  vol -> [Int] new volume of the video
+     */
+    function updateVolume(vol) {
+        video.volume = vol/100;
+        volume = vol;
+
+
+        if (vol == 0) {
+            button_volume_icon.className = "fas fa-volume-mute";
+            muted = true;
         }
 
-        video.ondblclick = function(){
-            if (!fullscreen) openFullscreen(video_container);
-            if (fullscreen) closeFullscreen();
+        if (vol > 0) {
+            if (muted) {
+                button_volume_icon.className = "fas fa-volume-up";
+                muted = false;
+            }
         }
 
-        button_fullscreen.onclick = function(){
-            if (!fullscreen) openFullscreen(video_container);
-            if (fullscreen) closeFullscreen();
-        };
+        document.cookie = "video_volume=" + volume + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+        document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+
+        updateVolumeSlider(vol);
+        center_volume_info.classList.add("active");
+        center_volume_info.innerHTML = vol + "%";
+
+        delay = 3;
+        closeVolumeInfo();
+    }
 
 
 
 
-        $('#video_container').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function() {
-            if (document.fullscreenElement) {
-                fullscreen = true;
-            } else {
-                fullscreen = false;
+    /**
+     * Open video speed menu
+     */
+    function videoSpeed() {
+        if (settings_container.classList.contains("active")) settings_container.classList.remove("active");
+        else settings_container.classList.add("active");
+    }
+
+
+    /**
+     * Set clicked speed option element to active.
+     */
+    function setSpeedElementActive(element) {
+        if (element.classList.contains("active")) element.classList.remove("active");
+        else element.classList.add("active");
+    }
+
+
+    /**
+     * Change video speed
+     *
+     * Paramters:
+     *  element -> [Object] represents clicked option
+     *  speed   -> [Double] new speed
+     */
+    function changeSpeed(element, speed) {
+        let options = document.getElementsByClassName('button_speed_option');
+        for (let i=0; i < options.length; i++) {
+            options[i].classList.remove("active");
+        }
+
+        setSpeedElementActive(element);
+        video.playbackRate = speed;
+    }
+
+
+
+
+
+
+    /**
+     * Marks topic as finished. Sends ajax request to
+     * Controller and then data is proceeded by Java.
+     */
+    function markAsFinished() {
+        let topicId = /*[[${topic.id}]]*/ "";
+        if (topicId == null || topicId == "" || topicId <= 0) {
+            alert("Wystąpił problem podczas wykonywania żądania.");
+            return;
+        }
+
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            type:"POST",
+            dataType:"json",
+            data: { topicId: topicId },
+            url:"/kurs/markAsFinished",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token)
+            },
+            success: function(data) {
+
+                const btn = document.getElementById('button_completed');
+                const topic_headers = document.getElementsByClassName("topic_header");
+                let topicHeaderElement = null;
+
+                for (let i = 0; i < topic_headers.length; i++) {
+                    if (topic_headers[i].getAttribute("data-id") == topicId) { // <div class="topic_header">
+                        let children = topic_headers[i].getElementsByClassName('td_left')[0]; // <div class="td_left">
+                        if (children != null && children.querySelectorAll('i')[0] != null)
+                            topicHeaderElement = children.querySelectorAll('i')[0];
+                        break;
+                    }
+                }
+
+                if (data.type == 1) {
+                    btn.classList.add("active");
+                    if (topicHeaderElement != null)
+                        topicHeaderElement.className = "fas fa-check-circle";
+                } else {
+                    btn.classList.remove("active");
+                    if (topicHeaderElement != null)
+                        topicHeaderElement.className = "far fa-circle";
+                }
+                //alert(data.message + ";" + data.success);
+
+            },
+            error: function(xhr, status, error) {
+                alert(error);
+                console.warn(xhr.responseText);
             }
         });
+    }
 
 
 
 
+    /**
+     * Load cookies to check whether user muted the video
+     * or set custom volume.
+     */
+    $(document).ready(function() {
+        let vol   = getCookie("video_volume");
+        let mute  = getCookie("video_muted");
+        if (mute == "true" ? muted = true : muted = false);
+
+        if (vol != "") {
+            volume = vol;
+            if (muted) volume = 0;
+        } else if (vol == "") volume = 50;
+
+        video.volume = volume/100;
+        updateVolumeSlider(volume);
+        center_volume_info.innerHTML = volume_slider.value + "%";
+
+        if (muted) button_volume_icon.className = "fas fa-volume-mute";
+        else if (!muted) button_volume_icon.className = "fas fa-volume-up";
+    });
 
 
 
 
-
-        function showCenterInfo(type, visible) {
-            if (type == "pause") {
-                center_info_icon.className = "fas fa-pause";
-                center_info.style.padding = "18px";
+    /**
+     * Get the cookie with specified name. Returns
+     * empty string [""] if doesn't find any
+     *
+     * Parameters:
+     *  cname -> name of the cookie
+     */
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-
-            if (type == "play") {
-                center_info_icon.className = "fas fa-play";
-                center_info.style.padding = "18px 18px 18px 22px";
-            }
-
-            if (type == "back") {
-                center_info_icon.className = "fas fa-undo-alt";
-            }
-
-            if (type == "forward") {
-                center_info_icon.className = "fas fa-redo-alt";
-            }
-
-            center_info.classList.add("active");
-            delay2 = 2;
-        }
-
-
-
-        function closeCenterInfo() {
-            delay2--;
-            
-            if (delay2 < 0) {
-                clearTimeout(timer2);
-                timer2 = null;
-                return;
-            }
-            
-            if (delay2 > 0) {
-                //show popup
-                clearTimeout(timer2);
-            }
-            
-            if (delay2 == 0) {
-                center_info.classList.remove("active");
-            }
-            timer2 = setTimeout("closeCenterInfo()", 500);
-        }
-
-
-
-        function closeVolumeInfo() {
-            delay--;
-            
-            if (delay < 0) {
-                clearTimeout(timer);
-                timer = null;
-                return;
-            }
-            
-            if (delay > 0) {
-                //show popup
-                clearTimeout(timer);
-            }
-            
-            if (delay == 0) {
-                volume_display_info.classList.remove("active");
-            }
-            timer = setTimeout("closeVolumeInfo()", 500);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        function playVideo() {
-            if (video.paused) {
-                video.play();
-                paused = false;
-                button_play.classList.add("o-play-btn--playing");
-                showCenterInfo("pause");
-                closeCenterInfo();
-            }
-            else {
-                video.pause();
-                paused = true;
-                button_play.className = " ";
-                showCenterInfo("play");
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
             }
         }
+        return "";
+    }
 
-        
 
 
 
 
 
-        /* Open fullscreen */
-        function openFullscreen(elem) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-        }
+    /**
+     * Loads timeline when video is successfully loaded
+     */
+    function initializeVideo() {
+        let duration = video.duration;
+        if (Number.isNaN(duration)) duration = 0;
+        timeline_slider.max = parseInt(duration);
+        updateVideoTime();
+        timeline_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) 100%)';
+    }
 
+    document.addEventListener("DOMContentLoaded", initializeVideo, false);
 
 
-        /* Close fullscreen */
-        function closeFullscreen() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                document.msExitFullscreen();
-            }
-        }
 
+    timeline_slider.addEventListener('mousemove', function(e) {
+        setBubble(timeline_slider, calcSliderPos(e).toFixed(3));
+        bubble.classList.add("active");
+    });
 
 
-        function mute() {
-            if (!muted) {
-                muted = true;
-                volume = 0;
-                volume_slider.value = volume;
-                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume + '%, #414345 ' + volume + '%, #414345 100%)';
-                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-                volume_icon.className = "fas fa-volume-mute";
-                video.volume = volume/100;
-                console.log(muted);
-                return;
-            }
+    timeline_slider.ontouchstart = function(e) {
+        showBubbleOnTouchScreenDevices(e)
+    }
 
-            if (muted) {
-                muted = false;
-                let vol = getCookie("video_volume")
-                if (vol != null) {
-                    volume = vol;
-                }
-                volume_slider.value = volume;
-                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume + '%, #414345 ' + volume + '%, #414345 100%)';
-                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-                volume_icon.className = "fas fa-volume-up";
-                video.volume = volume/100;
-                console.log(muted);
-                return;
-            }
-        }
+    timeline_slider.ontouchmove = function(e) {
+        showBubbleOnTouchScreenDevices(e)
+    }
 
+    function showBubbleOnTouchScreenDevices(e) {
+        if (!supportsTouch) return;
+        setBubble(timeline_slider, calcSliderPosForTouchScreenDevices(e).toFixed(3));
+        bubble.classList.add("active");
+    }
 
 
+    timeline_slider.oninput = function() {
+        let percentage = (this.value*100)/this.max;
+        timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
+        video.currentTime = this.value;
+        video.pause();
+    }
 
+    timeline_slider.onmouseup = function() {
+        if (!paused) playVideo(true);
+    }
 
+    timeline_slider.ontouchend = function() {
+        if (!paused) playVideo(false);
+    }
 
 
+    timeline_slider.addEventListener('mouseleave', function(e) {
+        bubble.classList.remove("active");
+    });
 
+    timeline_slider.addEventListener('touchend', function(e) {
+        bubble.classList.remove("active");
+    });
 
 
+    /**
+     * Updates timeline
+     */
+    video.ontimeupdate = function() {
+        timeline_slider.value = this.currentTime;
+        let percentage = (timeline_slider.value*100)/timeline_slider.max;
+        timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
+        updateVideoTime();
+    };
 
-            let delay, timer;
 
-            function updateVolume(vol) {
-                video.volume = vol/100;
-                volume = vol;
 
+    function calcSliderPos(e) {
+        return (e.offsetX / e.target.clientWidth) *  parseInt(e.target.getAttribute('max'), 10);
+    }
 
-                if (vol == 0) {
-                    volume_icon.className = "fas fa-volume-mute";
-                    muted = true;
-                }
+    function calcSliderPosForTouchScreenDevices(e) {
+        const rect    = e.target.getBoundingClientRect();
+        const offsetX = (e.touches[0].clientX - window.pageXOffset - rect.left);
+        return (offsetX / e.target.clientWidth) *  parseInt(e.target.getAttribute('max'), 10);
+    }
 
-                if (vol > 0) {
-                    if (muted) {
-                        volume_icon.className = "fas fa-volume-up";
-                        muted = false;
-                    }
-                }
 
-                document.cookie = "video_volume=" + volume + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-                document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-
-                volume_slider.value = vol;
-                volume_slider.style.background = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + vol + '%, #414345 ' + vol + '%, #414345 100%)';
-                volume_display_info.classList.add("active");
-                volume_display_info.innerHTML = vol + "%";
-
-                delay = 3;
-                closeVolumeInfo();
-            }
-
-
-
-
-
-
-
-
-
-            const volume_container   = document.getElementById("volume_slider_container");
-            const game_volume        = document.getElementById("video_volume");
-            const volume_icon        = document.getElementById("video_volume_icon")
-            const volume_slider      = document.getElementById("volume_slider");
-            const volume_slider_info = document.getElementById("volume_display_info");
-            const video_controls     = document.getElementById("video-controls");
-
-
-            const timeline_slider    = document.getElementById("timeline_slider");
-            const bubble             = document.getElementById("bubble");
-
-            const video_time         = document.getElementById("video_time");
-
-
-            const timeline_buffered_slider    = document.getElementById("timeline_buffered_slider");
-
-
-            volume_slider.oninput = function() {
-                updateVolume(this.value);
-            };
-
-
-            volume_icon.addEventListener("mouseenter", function() {
-                volume_container.classList.add('active');
-            });
-
-
-            video_controls.addEventListener("mouseleave", function() {
-                volume_container.className = "";
-            });
-
-
-
-
-
-
-
-
-
-            $(document).ready(function() {
-                let vol   = getCookie("video_volume");
-                let mute = getCookie("video_muted");
-                if (mute == "true") {
-                    muted = true;
-                } else {
-                    muted = false;
-                }
-
-                if (vol != "") {
-                    volume = vol;
-                    if (muted) volume = 0;
-                } else if (muted == "" || vol == "") {
-                    volume = 50;
-                }
-
-                video.volume = volume/100;
-                volume_slider.value = volume;
-                volume_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + volume_slider.value + '%, #414345 ' + volume_slider.value + '%, #414345 100%)';
-                volume_slider_info.innerHTML = volume_slider.value + "%";
-
-                if (muted) volume_icon.className = "fas fa-volume-mute";
-                else if (!muted) volume_icon.className = "fas fa-volume-up";
-            });
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            video.onloadedmetadata = function() {
-                let duration = video.duration;
-                if (Number.isNaN(duration)) duration = 0;
-                timeline_slider.max = parseInt(duration);
-                updateVideoTime();
-                timeline_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) 100%)';
-            };
-
-
-
-
-            timeline_slider.addEventListener('mousemove', function(e) {
-                setBubble(timeline_slider, calcSliderPos(e).toFixed(3));
-                bubble.classList.add("active");
-            });
-
-
-            timeline_slider.oninput = function() {
-                let percentage = (this.value*100)/this.max;
-                timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
-                video.currentTime = this.value;
-                video.pause();
-            }
-
-            timeline_slider.onmouseup = function() {
-                if (!paused) playVideo();
-            }
-
-
-            timeline_slider.addEventListener('mouseleave', function(e) {
-                bubble.classList.remove("active");
-            });
-
-
-            video.ontimeupdate = function() {
-                timeline_slider.value = this.currentTime;
-                let percentage = (timeline_slider.value*100)/timeline_slider.max;
-                timeline_slider.style.background = 'linear-gradient(to right, #26C6FE 0%, #26C6FE ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
-                updateVideoTime();
-            };
-
-
-
-            function calcSliderPos(e) {
-                return (e.offsetX / e.target.clientWidth) *  parseInt(e.target.getAttribute('max'),10);
-            }
-
-
-            function setBubble(range, val) {
-                if (val < 0) val = 0;
-                if (parseFloat(val) > range.max) val = range.max;
-                const min = range.min ? range.min : 0;
-                const max = range.max ? range.max : 100;
-                const newVal = Number(((val - min) * 100) / (max - min));
-
-
-                // Insert time
-                bubble.innerHTML = secondsToTime(val);
-                // Sort magic numbers based on size of the native UI thumb
-                bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
-            }
-
-
-
-            function secondsToTime(duration) {
-                let hours   = parseInt(duration/3600);
-                let minutes = parseInt((duration % 3600) / 60);
-                let seconds = parseInt(duration % 60);
-
-                if (minutes < 10) minutes = "0" + minutes;
-                if (seconds < 10) seconds = "0" + seconds;
-
-                if (hours > 0)
-                    return hours + ":" + minutes + ":" + seconds;
-
-                return minutes + ":" + seconds;
-            }
-
-
-
-
-            function updateVideoTime() {
-                let currentTime = parseInt(video.currentTime);
-                let duration    = parseInt(video.duration);
-
-                if (Number.isNaN(video.currentTime)) currentTime = 0;
-                if (Number.isNaN(video.duration))    duration = 0;
-
-                let time;
-                let maxTime;
-                
-                time    = secondsToTime(currentTime);
-                maxTime = secondsToTime(duration);
-
-                video_time.innerHTML = time + " / " + maxTime;
-            }
-
-
-
-
-
-
-            function updateBufferedTime() {
-                var size = video.buffered.length;
-
-                console.log(size);
-
-                /*for (var i=0; i<size; i++) {
-                    console.log(video.buffered.start(i));
-                    console.log(video.buffered.end(i));
-                }*/
-
-
-
-                let percentage = (video.buffered.end(size-1)*100)/timeline_slider.max;
-
-
-                timeline_buffered_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + percentage + '%, rgba(200, 200, 200, 0.5) ' + percentage + '%, rgba(200, 200, 200, 0.5) 100%)';
-
-
-            }
-
-
-
-
-
-
-
-
-
-
-            video_container.addEventListener("keydown", e => {
-                if (e.keyCode >= 37 && e.keyCode <= 40) e.preventDefault();
-
-                if (e.isComposing || e.keyCode === 229) {
-                    return;
-                }
-
-                if (e.keyCode == 37) {
-                    let time = video.currentTime - 10;
-                    if (time < 0) time = 0;
-                    video.currentTime = time;
-
-                    showCenterInfo("back");
-                    closeCenterInfo();
-                    return;
-                }
-
-                
-                if (e.keyCode == 39) {
-                    let time = video.currentTime + 10;
-                    if (time > video.duration) time = video.duration;
-                    video.currentTime = time;
-
-                    showCenterInfo("forward");
-                    closeCenterInfo();
-                    return;
-                }
-
-
-                if (e.keyCode == 38) {
-                    let vol = parseInt((video.volume*100) + 5);
-                    if (vol > 100) vol = 100;
-                    updateVolume(vol);
-                    return;
-                }
-
-
-                if (e.keyCode == 40) {
-                    let vol = parseInt((video.volume*100) - 5);
-                    if (vol < 0) vol = 0;
-                    updateVolume(vol);
-                    return;
-                }
-
-                if (e.keyCode == 32) {
-                    playVideo();
-                }
-            });
-
-
-
-            const video_settings = document.getElementById("video_settings");
-            const video_speed    = document.getElementById("video_speed");
-
-            function videoSpeed() {
-                if (video_settings.classList.contains("active")) {
-                    video_settings.classList.remove("active");
-                    return;
-                }
-
-                if (!video_settings.classList.contains("active")) {
-                    video_settings.classList.add("active");
-                    return;
-                }
-            }
-
-
-
-            function setActive(element) {
-                if (element.classList.contains("active")) {
-                    element.classList.remove("active");
-                    return;
-                }
-
-                if (!element.classList.contains("active")) {
-                    element.classList.add("active");
-                    return;
-                }
-            }
-
-
-
-
-            function changeSpeed(element, speed) {
-                let options = document.getElementsByClassName('video_speed_option');
-                for (let i=0; i < options.length; i++) {
-                    options[i].classList.remove("active");
-                }
-
-                setActive(element);
-                video.playbackRate = speed;
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        function markAsFinished() {
-            let topicId = /*[[${topic.id}]]*/ "";
-            if (topicId == null || topicId == "" || topicId <= 0) {
-                alert("Wystąpił problem podczas wykonywania żądania.");
-                return;
-            }
-
-            let token = $("meta[name='_csrf']").attr("content");
-            let header = $("meta[name='_csrf_header']").attr("content");
-
-            $.ajax({
-                type:"POST",
-                dataType:"json",
-                data: { topicId: topicId },
-                url:"/kurs/markAsFinished",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(header, token)
-                },
-                success: function(data) {
-
-                    const btn = document.getElementById('button_completed');
-                    const topic_headers = document.getElementsByClassName("topic_header");
-                    let topicHeaderElement = null;
-
-                    for (let i = 0; i < topic_headers.length; i++) {
-                        if (topic_headers[i].getAttribute("data-id") == topicId) { // <div class="topic_header">
-                            let children = topic_headers[i].getElementsByClassName('td_left')[0]; // <div class="td_left">
-                            if (children != null && children.querySelectorAll('i')[0] != null)
-                                topicHeaderElement = children.querySelectorAll('i')[0];
-                            break;
-                        }
-                    }
-
-                    if (data.type == 1) {
-                        btn.classList.add("active");
-                        if (topicHeaderElement != null)
-                            topicHeaderElement.className = "fas fa-check-circle";
-                    } else {
-                        btn.classList.remove("active");
-                        if (topicHeaderElement != null)
-                            topicHeaderElement.className = "far fa-circle";
-                    }
-                    //alert(data.message + ";" + data.success);
-
-                },
-                error: function(xhr, status, error) {
-                    alert(error);
-                    console.warn(xhr.responseText);
-                }
-            });
-        }
-
-
+    /**
+     * Loads bubble with time above timeline
+     *
+     * Parameters:
+     *  range -> [Object] timeline
+     *  val   -> current possition
+     */
+    function setBubble(range, val) {
+        if (val < 0) val = 0;
+        if (parseFloat(val) > range.max) val = range.max;
+        const min = range.min ? range.min : 0;
+        const max = range.max ? range.max : 100;
+        const newVal = Number(((val - min) * 100) / (max - min) / 100);
+
+        let offsetWidth = range.offsetWidth;  // width of the timeline
+        let halfBubble = bubble.offsetWidth / 2;  // half width of the bubble
+        let finalPosition = newVal * offsetWidth;  // percentage of the timeline [newVal] * full timeline width [offsetWidth]
+
+        // If exceeds the container from the left side then make it start at left boundary
+        if (finalPosition - halfBubble <= 0) finalPosition = halfBubble;
+        // If exceeds the container from the right side then make it end at the very end boundary
+        else if (finalPosition + halfBubble >= offsetWidth) finalPosition = offsetWidth - halfBubble;
+
+
+
+        // Insert time
+        bubble.innerHTML = secondsToTime(val);
+        // Sort magic numbers based on size of the native UI thumb
+        bubble.style.left = `${finalPosition}px`;
+    }
 
 
 </script>
-
 
 </html>

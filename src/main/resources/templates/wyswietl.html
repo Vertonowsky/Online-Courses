@@ -25,7 +25,7 @@ Wczytanie advantages
         <!--
         START header
         -->
-        <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: header(active = ${true})}"></div>
         <div th:insert="~{header :: shadow}"></div>
         <div th:insert="~{header :: minHeader}"></div>
 
@@ -357,13 +357,8 @@ Wczytanie advantages
 
 
     const discount_input = document.getElementById('discount_code_input');
-    const myNav = document.getElementById("header");
     const body  = document.querySelector("body");
 
-
-    window.onload = function (){
-        myNav.classList.add("nav_active");
-    };
 
 
 

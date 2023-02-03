@@ -2,10 +2,7 @@
 
 
 /**
- * 
- *     --[ START ]--
- * Popup configuration 
- * 
+ * Popup configuration
  */
     
 const popup = document.getElementById('popup_info');
@@ -16,13 +13,9 @@ let timer;
  
 
 /**
- * 
- * showPopup() function description
- * 
  * Parameters:
  *  text -> information displayed to user
  *  status -> 0 = negative, 1 = positive (mostly to format colors)
- * 
  */
 function showPopup(text1, status1) {
     delay  = 5;
@@ -50,12 +43,8 @@ function showPopup(text1, status1) {
 
 
 /**
- * 
- * conf() function description
- * 
  * If popup is being displayed - update current text
  * Else - create popup with choosen style
- * 
  */
 function conf() {
     delay--;
@@ -77,11 +66,7 @@ function conf() {
  
 
 /**
- * 
- * on popup close [X] description
- * 
- * Hide popup from user
- * 
+ * On popup close [X] click, hide popup from user
  */
 const closePopup = document.getElementById("popup_close");
 closePopup.onclick = function() {

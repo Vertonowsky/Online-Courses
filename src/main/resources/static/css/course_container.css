@@ -581,6 +581,10 @@
                 font-size: var(--font-size-phone);
             }
 
+            #course_left #all_topics .topic_header  {
+                width: 98%;
+            }
+
 
                 .chapter_header .th_index, .chapter_header .th_title, .chapter_header .th_operations,
                 .topic_header .td_index, .topic_header .td_title, .topic_header .td_operations {
@@ -646,6 +650,10 @@
                     display: flex;
                 }
 
+                .td_left .duration {
+                    font-size: 12px;
+                }
+
 
         .course_container .right {
             width: 100%;
@@ -699,8 +707,6 @@
             }
 
 
-
-
             .course_container .expires {
                 right: 0;
                 left: 0;
@@ -712,6 +718,15 @@
             .chapter_header {
                 padding: 10px 4px;
             }
+
+            #course_left .chapter_header {
+                padding: 14px 4px;
+            }
+
+                #course_left .th_type {
+                    margin-right: 6px;
+                }
+
 
             .chapter_header .th_type,
             .topic_header .td_type {
@@ -782,6 +797,11 @@
             .chapter_header .th_title,
             .topic_header .td_title {
                 width: calc(75% - 28px);
+            }
+
+            #course_left #all_topics .chapter_header .th_title {
+                padding-left: 7px;
+                width: 100%;
             }
 
             .chapter_header .th_operations,

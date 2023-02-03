@@ -61,7 +61,7 @@ public class ProfileController {
             // Make it be percentage
             int lastDayPercentage = Math.min(lastDay * 100, 100);
             int lastWeekPercentage = Math.min((int)((lastWeek / (double)7) * 100), 100);
-            int lastMonthPercentage = Math.min((int)((lastWeek / (double)30) * 100), 100);
+            int lastMonthPercentage = Math.min((int)((lastMonth / (double)30) * 100), 100);
 
 
 

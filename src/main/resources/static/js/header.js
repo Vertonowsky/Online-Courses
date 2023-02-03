@@ -1,10 +1,5 @@
 /**
- * 
- *       --[ START ]--
- * openNav() function description
- *  
  * Opens navigation menu on smaller devices
- * 
  */
 const navToggle = document.getElementById("navPanelToggle");
 const shadow    = document.getElementById("shadow");

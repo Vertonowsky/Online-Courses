@@ -15,7 +15,7 @@
         <!--
             START header
         -->
-        <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: header(active = ${false})}"></div>
         <div th:insert="~{header :: shadow}"></div>
         <div th:insert="~{header :: minHeader}"></div>
 
@@ -212,14 +212,13 @@
         loadCourses(typeFilters, categoryFilters);
     })
 
-    const myNav          = document.getElementById("header");
+    const myNav = document.getElementById("header");
 
     window.onscroll = function () {
         if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40)
             myNav.classList.add("nav_active");
         else
             myNav.classList.remove("nav_active");
-
     };
 
 </script>

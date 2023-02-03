@@ -5,17 +5,12 @@ let typeFilters      = [];
 
 
 /**
- * 
- *           --[ START ]--
- * loadCourses() function description
- *  
  * Loads all course data from database including 
  * chosen flters
  * 
  * Parameters:
  *  category_filters -> filters describing type of the course
  *  subject_filters  -> filters describing course subject
- * 
  */
 function loadCourses(typeFilters, categoryFilters) {
             
@@ -80,13 +75,6 @@ function loadCourses(typeFilters, categoryFilters) {
         }
     });
 }
-/**
- * 
- *      --[ END ]--
- * loadCourses() function 
- * 
- */
-
 
 
 
@@ -97,17 +85,12 @@ function loadCourses(typeFilters, categoryFilters) {
 
 
 /**
- * 
- *                 --[ START ]--
- * updateCoursesHeading() function description
- *  
  * Updates heading of displayed courses, counts courses,
  * shows current category filter
  * 
  * Parameters:
  *  size            -> specifies amount of loaded courses
  *  subject_filters -> filters describing course subject
- * 
  */
 function updateCoursesHeading(size, categoryFilters) {
     let top_panel = document.getElementById('top_panel');
@@ -134,14 +117,6 @@ function updateCoursesHeading(size, categoryFilters) {
 
     top_panel.innerHTML = text;
 }
-/**
- * 
- *         --[ END ]--
- * updateCoursesHeading() function 
- * 
- */
-
-
 
 
 
@@ -149,12 +124,7 @@ function updateCoursesHeading(size, categoryFilters) {
 
 
 /**
- * 
- *           --[ START ]--
- * openFilters() function description
- *  
  * Opens filters menu for smaller devices
- * 
  */
 function openFilters() {
     let button     = document.getElementById("filtersToggle");
@@ -172,9 +142,3 @@ function openFilters() {
         tab.classList.remove('active');
     }
 }
-/**
- * 
- *      --[ END ]--
- * openFilters() function 
- * 
- */

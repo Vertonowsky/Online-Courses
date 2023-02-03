@@ -175,7 +175,7 @@ body {
         [Custom scroll bar]
         */
         .activity_section::-webkit-scrollbar {
-            width: 12px;
+            width: 10px;
         }
 
 

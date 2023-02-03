@@ -1,7 +1,7 @@
 
-        /*
-            FUNCTION RESPOSIBLE FOR CHECKING 
-            IF INSERTED DATA MATCHES REGEXP
+        /**
+         * FUNCTION RESPOSIBLE FOR CHECKING
+         * IF INSERTED DATA MATCHES REGEXP
         */
         function checkInputData(index, type, data) {
             let complete = false;
@@ -134,10 +134,6 @@
         
         
         /**
-         * 
-         *                 --[ START ]--
-         * sendAuthenticationData() function description
-         *  
          * Listens for login and register action and validates
          * data inserted by user
          * 
@@ -148,7 +144,6 @@
          *  login -> user's login
          *  password -> user's password
          *  terms -> returns true if user accepted terms of use
-         * 
          */
         function sendAuthenticationData(type, form, email, password, passwordRepeat, terms) {
             let correctData = 0; // Count correct data

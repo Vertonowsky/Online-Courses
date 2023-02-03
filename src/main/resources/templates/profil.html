@@ -16,7 +16,7 @@
         <!--
             START header
         -->
-        <div th:insert="~{header :: header}"></div>
+        <div th:insert="~{header :: header(active = ${true})}"></div>
         <div th:insert="~{header :: shadow}"></div>
         <div th:insert="~{header :: minHeader}"></div>
 
