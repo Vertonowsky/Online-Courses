@@ -416,10 +416,8 @@
             if (!hidePanel) return;
             closeCenterInfo();
 
-            if (window.screen.width <= 1024) {
-                if (isControlPanelVisible())
-                    hideControlPanel();
-            }
+            if (!supportsTouch) return;
+            if (isControlPanelVisible()) hideControlPanel();
 
         } else {
             video.pause();
@@ -435,7 +433,7 @@
         //Handle SingleClick
         if (event.detail === 1) {
 
-            if (window.screen.width <= 1024) {
+            if (supportsTouch) {
                 if (isControlPanelVisible()) {
                     hideControlPanel();
                     closeCenterInfo();
@@ -455,7 +453,7 @@
         } else if (event.detail === 2) {
 
 
-            if (window.screen.width <= 1024) return;
+            if (supportsTouch) return;
             if (!fullscreen) openFullscreen(video_container);
             if (fullscreen) closeFullscreen();
 
@@ -569,8 +567,6 @@
      * Listen for window resize and show control panel if it is hidden
      */
     window.addEventListener("resize", () => {
-        supportsTouch = ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 ) || ( navigator.msMaxTouchPoints > 0 );
-
         if (paused) return;
 
         if (!isControlPanelVisible())
@@ -631,7 +627,7 @@
         }
 
         function resetTimer() {
-            if (window.screen.width > 1024) {
+            if (!supportsTouch) {
                 if (mouseInsideVideo) {
                     video_container.style.cursor = "default";
 
