@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="expires" th:if="${ownedCourseDto.expiryDate.after(#dates.createNow())}" th:text="'Ważny do: ' + ${#dates.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
-                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.before(#dates.createNow())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#dates.format(ownedCourse.expiryDate, 'dd.MM.yyyy')}]]r</div>
+                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.before(#dates.createNow())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#dates.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')}]]r</div>
 
                     </div>
                 </div>

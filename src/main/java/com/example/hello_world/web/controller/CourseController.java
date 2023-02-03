@@ -197,6 +197,7 @@ public class CourseController {
         model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
         model.addAttribute("videosPath", HelloWorldApplication.videoesPath);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseOwned", (user != null && user.isCourseOwnedAndValid(course)));
         model.addAttribute("course", course);
         model.addAttribute("topic", selectedTopic);
         model.addAttribute("selectedTopicFinished", selectedTopicFinished);
@@ -226,8 +227,13 @@ public class CourseController {
             }
 
             User user = optionalUser.get();
-            Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
+            Course c = optionalTopic.get().getChapter().getCourse();
+            if (!user.isCourseOwnedAndValid(c)) {
+                map.replace("message", "Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
+                return map;
+            }
 
+            Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
             if (foundTopic.isEmpty()) {
                 FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
                 finishedTopicRepository.save(ft);

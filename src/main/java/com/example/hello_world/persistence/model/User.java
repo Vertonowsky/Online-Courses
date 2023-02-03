@@ -151,13 +151,13 @@ public class User {
     }
 
 
-    public Course getCourseIfOwnedById(Integer id) {
-        for (CourseOwned item : coursesOwned) {
-            if (item.getCourse().getId().equals(id)) {
-                return item.getCourse();
-            }
+    public boolean isCourseOwnedAndValid(Course course) {
+        for (CourseOwned courseOwned : coursesOwned) {
+            if (!courseOwned.getCourse().equals(course)) continue;
+            if (courseOwned.getExpiryDate().compareTo(new Date(System.currentTimeMillis())) < 0) continue;
+            return true;
         }
-        return null;
+        return false;
     }
 
 

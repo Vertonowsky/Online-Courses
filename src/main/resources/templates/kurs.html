@@ -129,7 +129,7 @@
                         <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
                         <div id="topic_title" th:text="${topic.title}"></div>
                     </div>
-                    <div th:if="${loggedIn}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></div>
+                    <div th:if="${loggedIn && courseOwned}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></div>
 
                 </div>
 
