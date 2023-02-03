@@ -125,7 +125,8 @@ public class CourseController {
 
 
     @GetMapping("/kurs/{courseId}")
-    public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId, Model model) {
+    public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId,
+                                        @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
         if (auth.getPrincipal() instanceof MyUserDetails currentUserName) {
@@ -257,7 +258,6 @@ public class CourseController {
 
 
     public boolean isCourseStillValid(User user, Integer courseId) {
-
         for (CourseOwned item : user.getCoursesOwned()) {
             if (!item.getCourse().getId().equals(courseId)) continue;
 

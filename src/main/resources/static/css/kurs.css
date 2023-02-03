@@ -562,58 +562,57 @@
                 }
 
 
-                #settings_containers {
+                #speed_container {
                     position: absolute;
-                    top: -340px;
-                    right: 20px;
+                    top: -290px;
+                    right: 10px;
                     background: rgba(31, 31, 31, 0.9);
                     padding: 0;
-                    transition: all 0.3s;
                     opacity: 0;
                     visibility: hidden;
+                    transition: all 0.3s;
                 }
 
-
-                #settings_containers.active {
+                #speed_container.active {
                     opacity: 1;
                     visibility: visible;
                 }
 
-                
+                    #speed_container h1 {
+                        font-size: 15px;
+                        color: var(--color-white);
+                        font-weight: normal;
+                        margin: 0;
+                        padding: 12px;
+                        text-align: left;
+                        border-bottom: 1px solid #4F4F4F;
+                    }
 
-                        #settings_containers h1 {
-                            font-size: 15px;
-                            color: var(--color-white);
-                            margin: 0;
-                            padding: 15px;
-                            text-align: left;
-                            border-bottom: 1px solid #4F4F4F;
-                        }
+                    #speed_container ul {
+                        list-style-type: none;
+                        padding: 0;
+                        margin: 0;
+                    }
 
-                        #settings_containers ul {
-                            list-style-type: none;
-                            padding: 0;
-                            margin: 0;
-                        }
+                    #speed_container li {
+                        position: relative;
+                        box-sizing: border-box;
+                        cursor: pointer;
+                        margin-top: 3px;
+                        width: 100%;
+                        font-size: 14px;
+                        text-align: center;
+                        padding: 7px 0;
+                        color: #F0F0F0;
+                        transition: all 0.3s;
+                    }
 
-                        #settings_containers li {
-                            position: relative;
-                            box-sizing: border-box;
-                            cursor: pointer;
-                            margin-top: 3px;
-                            width: 100%;
-                            text-align: center;
-                            padding: 10px 0;
-                            color: #F0F0F0;
-                            transition: all 0.3s;
-                        }
-
-                        #settings_containers li.active {
+                        #speed_container li.active {
                             background: #F0F0F0;
                             color: #1F1F1F;
                         }
 
-                        #settings_containers li:hover {
+                        #speed_container li:hover {
                             background: #F0F0F0;
                             color: #1F1F1F;
                         }
@@ -790,7 +789,7 @@
 
 
             #below_video_options {
-                margin-top: 0px;
+                margin-top: 0;
             }
 
 
@@ -816,6 +815,26 @@
                 opacity: 1;
                 width: 80px;
             }
+
+
+
+        #speed_container {
+            top: -90px;
+        }
+
+            #speed_container h1 {
+                font-size: 14px;
+                padding: 12px 12px;
+                text-align: center;
+            }
+
+            #speed_container li {
+                margin: 5px 0;
+                width: 80px;
+                display: inline-block;
+                font-size: 13px;
+            }
+
 
 
     }

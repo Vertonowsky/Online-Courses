@@ -71,8 +71,7 @@
                 <div id="video_container" tabindex="0">
                     <h1 id="video_controls_title" th:text="${topic.title}"></h1>
 
-                    <video id="video">
-                        <source id="source" type="video/mp4" th:src="${videosPath} + ${topic.location}">
+                    <video id="video" onloadeddata="initializeVideo()" th:src="${videosPath} + ${topic.location}">
                     </video>
 
                     <div id="center_volume_info"></div>
@@ -105,8 +104,8 @@
 
                         <div class="right">
 
-                            <button id="button_speed" type="button" data-state="1" onclick="videoSpeed()"><i class="fas fa-cog"></i></button>
-                            <div id="settings_containers">
+                            <button id="button_speed" type="button" data-state="1" onclick="toggleSpeedContainer()"><i class="fas fa-cog"></i></button>
+                            <div id="speed_container">
                                 <h1>Predkosc odtwarzania</h1>
                                 <ul>
                                     <li onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</li>
@@ -208,10 +207,15 @@
     /*<![CDATA[*/
     const courseId = /*[[${courseId}]]*/ "";
     function openTopic(topic_id) {
-        window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id;
-    }
+        if (all_topics.scrollTop > 0)
+            window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id + "&s=" + all_topics.scrollTop;
+        else
+            window.location.href = "/kurs/" + courseId + "?topicId=" + topic_id;
 
+    }
     /*]]>*/
+
+
 
 
     let supportsTouch = ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 ) || ( navigator.msMaxTouchPoints > 0 );
@@ -229,11 +233,12 @@
     const center_play_info      = document.getElementById("center_play_info");
     const center_volume_info    = document.getElementById("center_volume_info");
 
-    const settings_container   = document.getElementById("settings_containers");
+    const speed_container      = document.getElementById("speed_container");
     const volume_container     = document.getElementById("volume_slider_container");
     const video_container      = document.getElementById("video_container");
     const video_controls       = document.getElementById("video_controls");
     const video_controls_title = document.getElementById("video_controls_title");
+    const all_topics           = document.getElementById("all_topics");
     const video                = document.getElementById("video");
 
 
@@ -246,6 +251,10 @@
     let timer = null, timer2 = null;
 
 
+
+    if (video.readyState >= 2) {
+        initializeVideo();
+    }
 
 
     /**
@@ -791,11 +800,15 @@
 
 
     /**
-     * Open video speed menu
+     * Toggle video speed menu
      */
-    function videoSpeed() {
-        if (settings_container.classList.contains("active")) settings_container.classList.remove("active");
-        else settings_container.classList.add("active");
+    function toggleSpeedContainer() {
+        if (!speed_container.classList.contains("active")) speed_container.classList.add("active");
+        else closeSpeedContainer();
+    }
+
+    function closeSpeedContainer() {
+        if (speed_container.classList.contains("active")) speed_container.classList.remove("active");
     }
 
 
@@ -909,6 +922,15 @@
 
         if (muted) button_volume_icon.className = "fas fa-volume-mute";
         else if (!muted) button_volume_icon.className = "fas fa-volume-up";
+
+
+
+        // Current page
+        let url_string = window.location.href;
+        let url = new URL(url_string);
+        let s = url.searchParams.get("s");
+        if (!(s == undefined || parseInt(s) <= 0 || parseInt(s) > all_topics.scrollHeight)) all_topics.scrollTop = parseInt(s);
+
     });
 
 
@@ -952,8 +974,6 @@
         updateVideoTime();
         timeline_slider.style.background  = 'linear-gradient(to right, var(--color-white) 0%, var(--color-white) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) ' + timeline_slider.value + '%, rgba(200, 200, 200, 0.5) 100%)';
     }
-
-    document.addEventListener("DOMContentLoaded", initializeVideo, false);
 
 
 
