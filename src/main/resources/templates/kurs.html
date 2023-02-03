@@ -106,16 +106,16 @@
 
                             <button id="button_speed" type="button" data-state="1" onclick="toggleSpeedContainer()"><i class="fas fa-cog"></i></button>
                             <div id="speed_container">
-                                <h1>Predkosc odtwarzania</h1>
-                                <ul>
-                                    <li onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</li>
-                                    <li onclick="changeSpeed(this, 0.5) " class="button_speed_option">0.50</li>
-                                    <li onclick="changeSpeed(this, 0.75)" class="button_speed_option">0.75</li>
-                                    <li onclick="changeSpeed(this, 1)   " class="button_speed_option active">Normalna</li>
-                                    <li onclick="changeSpeed(this, 1.5) " class="button_speed_option">1.5</li>
-                                    <li onclick="changeSpeed(this, 1.75)" class="button_speed_option">1.75</li>
-                                    <li onclick="changeSpeed(this, 2)   " class="button_speed_option">2</li>
-                                </ul>
+                                <h1>Predkość odtwarzania</h1>
+                                <div id="option_list">
+                                    <div onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</div>
+                                    <div onclick="changeSpeed(this, 0.5) " class="button_speed_option">0.50</div>
+                                    <div onclick="changeSpeed(this, 0.75)" class="button_speed_option">0.75</div>
+                                    <div onclick="changeSpeed(this, 1)   " class="button_speed_option active">Normalna</div>
+                                    <div onclick="changeSpeed(this, 1.5) " class="button_speed_option">1.5</div>
+                                    <div onclick="changeSpeed(this, 1.75)" class="button_speed_option">1.75</div>
+                                    <div onclick="changeSpeed(this, 2)   " class="button_speed_option">2</div>
+                                </div>
                             </div>
                             <button id="button_fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
 
@@ -466,10 +466,23 @@
             if (!fullscreen) openFullscreen(video_container);
             if (fullscreen) closeFullscreen();
 
-
         }
 
     }
+
+
+    $(document).click(function(e) {
+        if (e.target == null) return;  // Check if there is any target
+        if (!speed_container.classList.contains("active")) return;  // Check if speed container is opened
+        if (document.getElementById("button_speed").contains(e.target)) return; // Check if the click wasn't on button
+
+        // Check if click was outside the speed container. If so, then close it.
+        if (!document.getElementById("speed_container").contains(e.target))
+            closeSpeedContainer();
+
+    });
+
+
 
 
     video_container.onmouseover = function() {
@@ -497,6 +510,7 @@
     function hideControlPanel() {
         if (!isControlPanelVisible()) return;
         closeCenterInfo();
+        closeSpeedContainer()
 
         video_controls.classList.add("hidden");
         video_controls_title.classList.add("hidden");
