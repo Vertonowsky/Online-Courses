@@ -30,9 +30,9 @@
                         <i class="center_icon fas fa-exclamation-circle"></i>
 
                         <h1 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h1>
-                        <h2 class="desc">Zobacz naszą pełną ofertę i sam zdecyduj co Cię interesuje!
-                            <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
-                        </h2>
+                        <h2 class="desc">Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!</h2>
+                        <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
+
                     </div>
 
 
@@ -104,8 +104,14 @@
 
                 <div id="payment_history" class="window">
                     <h1 class="heading">Historia transakcji</h1>
-                    <div class="activity_section">
 
+                    <div th:if="${#lists.isEmpty(paymentHistory)}" id="no_payment_history_found">
+                        <i class="center_icon fas fa-hourglass-half"></i>
+                        <h1 class="desc">Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!</h1>
+                    </div>
+
+
+                    <div class="activity_section" th:if="${!#lists.isEmpty(paymentHistory)}">
 
                         <div class="activity" th:each="payment : ${paymentHistory}">
                             <div class="date circular" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></div>
