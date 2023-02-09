@@ -3,6 +3,7 @@
 <head>
     <title>Animacja </title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.0/css/all.css"/>
     <link rel="stylesheet" href="/css/animation.css"/>
 
 </head>
@@ -14,12 +15,12 @@
 
         <div id="blobs">
 
-            <div class="blob">
+            <div class="blob bb">
                 <svg viewBox="0 0 200 200">
                     <defs>
-                        <linearGradient id="gradient" gradientTransform="rotate(-90 .5 .5)">
-                            <stop offset="0%" style="stop-color: #306DBE"></stop>
-                            <stop offset="100%" style="stop-color: #1EAAE6;"></stop>
+                        <linearGradient id="gradient" gradientTransform="rotate(-45 .5 .5)">
+                            <stop offset="0%" style="stop-color: #74D1F5"></stop>
+                            <stop offset="100%" style="stop-color: #0EBFF4;"></stop>
                         </linearGradient>
                     </defs>
                     <path fill="url(#gradient)" transform="translate(100 100)">
@@ -38,12 +39,12 @@
             </div>
 
 
-            <div class="blob2">
+            <div class="blob2 bb">
                 <svg viewBox="0 0 200 200">
                     <defs>
                         <linearGradient id="gradient2" gradientTransform="rotate(135 .5 .5)">
-                            <stop offset="0%" style="stop-color: #389FDE"></stop>
-                            <stop offset="100%" style="stop-color: #6BC6F4;"></stop>
+                            <stop offset="0%" style="stop-color: #53CAF3"></stop>
+                            <stop offset="100%" style="stop-color: #74D1F5;"></stop>
                         </linearGradient>
                     </defs>
                     <path fill="url(#gradient2)" transform="translate(100 100)">
@@ -64,12 +65,12 @@
 
 
 
-            <div class="blob3">
+            <div class="blob3 bb">
                 <svg viewBox="0 0 200 200">
                     <defs>
                         <linearGradient id="gradient3" gradientTransform="rotate(-45 .5 .5)">
-                            <stop offset="0%" style="stop-color: #85E9F2"></stop>
-                            <stop offset="100%" style="stop-color: #50BDF4;"></stop>
+                            <stop offset="0%" style="stop-color: #29C3F3"></stop>
+                            <stop offset="100%" style="stop-color: #6DCEF3;"></stop>
                         </linearGradient>
                     </defs>
                     <path fill="url(#gradient3)" transform="translate(100 100)">
@@ -90,12 +91,12 @@
 
 
 
-            <div class="blob4">
+            <div class="blob4 bb">
                 <svg viewBox="0 0 200 200">
                     <defs>
-                        <linearGradient id="gradient4" gradientTransform="rotate(-45 .5 .5)">
-                            <stop offset="0%" style="stop-color: #389FDE"></stop>
-                            <stop offset="100%" style="stop-color: #50BDF4;"></stop>
+                        <linearGradient id="gradient4" gradientTransform="rotate(180 .5 .5)">
+                            <stop offset="0%" style="stop-color: #74D1F5;"></stop>
+                            <stop offset="100%" style="stop-color: #0EBFF4"></stop>
                         </linearGradient>
                     </defs>
                     <path fill="url(#gradient4)" transform="translate(100 100)">
@@ -114,34 +115,52 @@
                 </svg>
             </div>
 
+
+
+            <div id="about">
+
+                <div class="straight_line"></div>
+
+                <h1 class="title">Profesjonalne Kursy Online</h1>
+                <div class="desc"><p>Autorski program kursów przygotowujących do egzaminu ósmoklasisty zapewniający skuteczny wynik.</p></div>
+
+                <a th:href="@{lista-kursow}" class="button_transparent">Nasza oferta<i class="fas fa-arrow-circle-right"></i></a>
+
+            </div>
+
+            <div id="animated_arrow">
+                <i class="arrow_down fas fa-chevron-down"></i>
+                <i class="arrow_down fas fa-chevron-down"></i>
+                <i class="arrow_down fas fa-chevron-down"></i>
+            </div>
+
         </div>
 
 
-        </div>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
 
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
+        <span class="floating_square"></span>
 
     </div>
+
 
 
 
@@ -149,48 +168,17 @@
         <script>
 
             const banner = document.getElementById("banner");
-            function createSquare() {
-                const elements = banner.getElementsByTagName("span");
+            document.addEventListener("mousemove", (e) => {
 
-                for (let i = 0; i < elements.length; i++) {
-                    let circle = elements[i];
+                banner.querySelectorAll(".bb").forEach(square => {
+                    const x = (window.innerWidth - e.pageX * 2) / 100;
+                    const y = (window.innerHeight - e.pageY * 2) / 100;
 
-                    let size = Math.random() * 50;
-                    if (size < 10) size = 10;
+                    console.log(x);
 
-                    circle.style.width = 20 + size + "px";
-                    circle.style.height = 20 + size + "px";
-
-                    let rand = Math.random() * 100;
-                    if (rand < 50) rand = 50;
-
-                    if (i > 3)
-                        circle.style.animationDelay = getRandomInt(i-2, i+2) + "s";
-
-                    circle.style.top = innerHeight + rand + "px";
-                    circle.style.left = Math.random() * innerWidth + "px";
-                }
-
-
-
-                //banner.appendChild(circle);
-
-                // setTimeout(() => {
-                //     circle.remove();
-                // }, 20000);
-
-            }
-
-            //setInterval(createSquare, 1000);
-
-
-
-            function getRandomInt(min, max) {
-                min = Math.ceil(min);
-                max = Math.floor(max);
-                return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-            }
-
+                    square.style.transform = "translateX(" + x + "px) translateY(" + y + "px)";
+                });
+            });
 
         </script>
 
