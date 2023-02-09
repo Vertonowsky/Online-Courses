@@ -138,7 +138,7 @@ body {
 
 
 
-span {
+#banner .floating_square {
     position: absolute;
     pointer-events: none;
     background: #B4E4F3;
@@ -151,7 +151,7 @@ span {
 
 
 
-span:nth-child(1) {
+#banner .floating_square:nth-child(1) {
     width: 20px;
     height: 20px;
     left: calc(62% - 20px);
@@ -159,7 +159,7 @@ span:nth-child(1) {
     animation-duration: 16s;
 }
 
-span:nth-child(2) {
+#banner .floating_square:nth-child(2) {
     width: 70px;
     height: 70px;
     left: calc(70% - 70px);
@@ -167,7 +167,7 @@ span:nth-child(2) {
 }
 
 
-span:nth-child(3) {
+#banner .floating_square:nth-child(3) {
     width: 40px;
     height: 40px;
     left: calc(23% - 40px);
@@ -175,7 +175,7 @@ span:nth-child(3) {
 }
 
 
-span:nth-child(4) {
+#banner .floating_square:nth-child(4) {
     width: 80px;
     height: 80px;
     left: calc(42% - 80px);
@@ -184,7 +184,7 @@ span:nth-child(4) {
 }
 
 
-span:nth-child(5) {
+#banner .floating_square:nth-child(5) {
     width: 35px;
     height: 35px;
     left: calc(10% - 35px);
@@ -193,7 +193,7 @@ span:nth-child(5) {
 }
 
 
-span:nth-child(6) {
+#banner .floating_square:nth-child(6) {
     width: 55px;
     height: 55px;
     left: calc(55% - 55px);
@@ -201,7 +201,7 @@ span:nth-child(6) {
 }
 
 
-span:nth-child(7) {
+#banner .floating_square:nth-child(7) {
     width: 70px;
     height: 70px;
     left: calc(85% - 70px);
@@ -209,7 +209,7 @@ span:nth-child(7) {
 }
 
 
-span:nth-child(8) {
+#banner .floating_square:nth-child(8) {
     width: 100px;
     height: 100px;
     left: calc(75% - 100px);
@@ -217,7 +217,7 @@ span:nth-child(8) {
 }
 
 
-span:nth-child(9) {
+#banner .floating_square:nth-child(9) {
     width: 60px;
     height: 60px;
     left: calc(25% - 60px);
@@ -225,7 +225,7 @@ span:nth-child(9) {
 }
 
 
-span:nth-child(10) {
+#banner .floating_square:nth-child(10) {
     width: 30px;
     height: 30px;
     left: calc(42% - 70px);
@@ -233,7 +233,7 @@ span:nth-child(10) {
 }
 
 
-span:nth-child(11) {
+#banner .floating_square:nth-child(11) {
     width: 20px;
     height: 20px;
     left: calc(5% - 20px);
@@ -241,7 +241,7 @@ span:nth-child(11) {
 }
 
 
-span:nth-child(12) {
+#banner .floating_square:nth-child(12) {
     width: 46px;
     height: 46px;
     left: calc(50% - 46px);
@@ -249,28 +249,28 @@ span:nth-child(12) {
 }
 
 
-span:nth-child(13) {
+#banner .floating_square:nth-child(13) {
     width: 20px;
     height: 20px;
     left: calc(90% - 20px);
     animation-delay: 13s;
 }
 
-span:nth-child(14) {
+#banner .floating_square:nth-child(14) {
     width: 60px;
     height: 60px;
     left: calc(17% - 60px);
     animation-delay: 14s;
 }
 
-span:nth-child(15) {
+#banner .floating_square:nth-child(15) {
     width: 35px;
     height: 35px;
     left: calc(28% - 35px);
     animation-delay: 14.5s;
 }
 
-span:nth-child(16) {
+#banner .floating_square:nth-child(16) {
     width: 75px;
     height: 75px;
     left: calc(70% - 75px);
@@ -278,7 +278,7 @@ span:nth-child(16) {
 }
 
 
-span:nth-child(16) {
+#banner .floating_square:nth-child(17) {
     width: 60px;
     height: 60px;
     left: calc(85% - 60px);
@@ -286,13 +286,20 @@ span:nth-child(16) {
 }
 
 
-span:nth-child(16) {
+#banner .floating_square:nth-child(18) {
     width: 80px;
     height: 80px;
-    left: calc(65% - 80px);
+    left: calc(35% - 80px);
     animation-delay: 17s;
 }
 
+
+#banner .floating_square:nth-child(19) {
+    width: 40px;
+    height: 40px;
+    left: calc(7% - 40px);
+    animation-delay: 18s;
+}
 
 
 
@@ -324,10 +331,10 @@ span:nth-child(16) {
 }
 
 .bb {
+    position: absolute;
 }
 
-.blob {
-    position: absolute;
+.blob1 {
     width: 45%;
     top: -10%;
     left: 10%;
@@ -338,7 +345,6 @@ span:nth-child(16) {
 
 
 .blob2 {
-    position: absolute;
     width: 15%;
     height: 15%;
     top: 60%;
@@ -349,7 +355,6 @@ span:nth-child(16) {
 
 
 .blob3 {
-    position: absolute;
     width: 45%;
     height: 45%;
     top: 5%;
@@ -361,7 +366,6 @@ span:nth-child(16) {
 
 
 .blob4 {
-    position: absolute;
     width: 10%;
     height: 10%;
     top: 10%;
