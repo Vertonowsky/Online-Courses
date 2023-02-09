@@ -29,14 +29,6 @@ body {
 }
 
 
-    .straight_line {
-        position: relative;
-        width: 150px;
-        height: 5px;
-        margin-bottom: 5px;
-        background: #fff;
-        display: none;
-    }
 
     #about .title {
         font-size: 50px;
@@ -96,45 +88,6 @@ body {
         }
 
 
-        #about .title_with_shadow {
-            position: relative;
-            width: 160px;
-            font-size: 17px;
-            margin: 0 0 7px 0;
-        }
-
-        .tit_bck {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            left: -10px;
-            top: 0;
-            background: linear-gradient(90deg, rgba(240,240,240,1) 20%, rgba(235,235,235,0) 100%);
-            z-index: 0;
-        }
-
-        #about .tit_text {
-            position: relative;
-            margin: 0;
-            z-index: 1;
-        }
-
-        .social_link {
-            position: relative;
-            display: inline-block;
-            font-size: 16px;
-            color: var(--color-title);
-        }
-
-        .dot {
-            position: relative;
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-            background: #03A7DC;
-            margin: 0 15px;
-        }
 
 
 
