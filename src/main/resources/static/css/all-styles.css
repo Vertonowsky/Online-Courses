@@ -22,13 +22,17 @@
 * {
     font-family: 'Poppins', sans-serif;
     line-height: 1.2;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
+    a {
+        text-decoration: none;
+    }
 
-b {
-    color: #03A7DC;
-    font-weight: normal;
-}
+    b {
+        color: #03A7DC;
+        font-weight: normal;
+    }
 
 
 

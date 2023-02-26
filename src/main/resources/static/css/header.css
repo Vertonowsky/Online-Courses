@@ -11,12 +11,12 @@
     left: 0;
     right: 0;
     width: 100%;
-    height: 70px;
+    min-height: 70px;
     text-align: center;
     background: transparent;
     border-bottom: 2px solid transparent;
     transition: all 0.4s;
-    padding: 14px 80px;
+    padding: 10px 80px;
     z-index: 30;
     font-size: 0;
 }
@@ -26,6 +26,7 @@
     background: #fff;
     border-bottom: 2px solid #E0E0E0;
     z-index: 30;
+    height: 70px;
 }
 
 
@@ -46,15 +47,41 @@
 
     #nav_logo {
         cursor: pointer;
-        z-index: 2;
+        display: flex;
+        align-items: center;
         height: 38px;
         margin: auto 0;
+        background: #F0FAFF;
+        padding: 7px 10px;
+        border-radius: 12px;
+        transition: all 0.3s;
+        z-index: 2;
     }
+
+    #header.nav_active #nav_logo {
+        background: transparent;
+    }
+
+    #header.nav_active #nav_logo span {
+        color: #03A7DC;
+    }
+
 
          #nav_logo img {
             position: relative;
             height: 100%;
-        }
+         }
+
+         #nav_logo span {
+             margin-left: 5px;
+             font-size: 16px;
+             color: #00B8F2;
+         }
+
+         #nav_logo:hover {
+             box-shadow: 0 0 8px 1px #F5FCFF;
+             background: #F5FCFF;
+         }
 
 
         #header .header_nav_buttons {
@@ -64,18 +91,21 @@
             margin: auto auto auto 250px;
             transition: all 0.3s;
         }
+
     
             #header .header_button {
                 position: relative;
                 align-self: flex-start;
                 box-sizing: border-box;
-                color: var(--color-title);
+                color: #F5F5F5;
                 text-decoration: none;
-                border-bottom: 2px solid transparent;
-                font-size: 16px;
-                font-weight: normal;
-                padding: 0 6px 4px 6px;
+                background: transparent;
+                font-size: 15px;
+                /*padding: 0px 6px 4px 6px;*/
+                border-bottom: 2px solid #DBECFF;
+                padding: 8px 12px;
                 margin: 6px 20px 0 0;
+                opacity: 0.99;
                 transition: border-bottom 0.3s;
                 -moz-transition: border-bottom 0.3s;
                 -webkit-transition: border-bottom 0.3s;
@@ -84,7 +114,7 @@
 
 
             #header .header_button:hover, #minHeader .header_button:hover {
-                border-bottom: 2px solid var(--color-title);
+                border-bottom: 2px solid #F0FBFF;
             }
 
 
@@ -96,6 +126,14 @@
                 margin-right: 5px;
             }
 
+            #header.nav_active .header_button {
+                color: var(--color-default);
+                border-bottom: 2px solid transparent;
+            }
+
+            #header.nav_active .header_button:hover {
+                border-bottom: 2px solid var(--color-default);
+            }
 
 
 
@@ -106,6 +144,8 @@
 
         #header .header_auth_buttons {
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
             .login_button {
@@ -113,22 +153,40 @@
                 box-sizing: border-box;
                 display: inline-block;
                 font-size: 15px;
-                font-weight: bold;
                 width: 120px;
                 text-transform: uppercase;
                 padding: 10px 15px;
                 margin-right: 10px;
-                color: var(--color-title);
+                color: #fff;
+                border-radius: 10px;
+                border: 2px solid #DBECFF;
                 text-align: center;
+                opacity: 0.99;
                 transition: all 0.3s;
             }
 
                 .login_button:hover  {
-                    color: var(--color-light-blue);
+                    background: rgba(196, 241, 255, 0.2);
+                    border: 2px solid #B5EDFF;
                 }
 
                 #header.nav_active .login_button {
+                    border: 2px solid transparent;
+                    color: var(--color-default);
+                    font-weight: bold;
                     margin-right: 0;
+                }
+
+                #header.nav_active .login_button:hover {
+                    background: transparent;
+                    color: #03A7DC;
+                }
+
+                #header.nav_active .register_button {
+                    box-shadow: none;
+                    color: #fff;
+                    font-weight: bold;
+                    background: #60768F;
                 }
 
 
@@ -138,10 +196,9 @@
                 display: inline-block;
                 align-items: center;
                 font-size: 15px;
-                font-weight: bold;
                 text-transform: uppercase;
-                color: #F5F5F5;
-                background: var(--color-blue);
+                background: #5BD8FF;
+                color: #fff;
                 border-radius: 10px;
                 padding: 11px 0;
                 width: 170px;
@@ -150,8 +207,8 @@
             }
 
                 .register_button:hover {
-                    box-shadow: 0 0 12px 1px #E6E6E6;
-                    background: var(--color-blue-hover)
+                    box-shadow: 0 0 8px 1px #63D9FF;
+                    background: #6BDCFF;
                 }
 
                 .register_button i {
