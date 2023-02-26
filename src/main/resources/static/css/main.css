@@ -115,7 +115,7 @@
 #banner .floating_square {
     position: absolute;
     pointer-events: none;
-    background: #5BB2E3;
+    background: #43B8E8;
     border-radius: 20%;
     animation: animate 20s linear infinite;
     top: 100vh;
@@ -429,7 +429,7 @@
     #index_video {
         position: relative;
         border-radius: 8px;
-        width: 700px;
+        width: 650px;
         box-shadow: 0 0 20px 1px #E3E3E3;
         z-index: 2;
     }
@@ -442,18 +442,31 @@
         position: absolute;
         width: 750px;
         height: 750px;
-        top: 150px;
+        top: 80px;
         right: 0;
         z-index: 1;
     }
 
+    #section_introduction .right .desc {
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 20%;
+        width: 70%;
+        z-index: 2;
+    }
+
     #section_introduction .right h1 {
         color: #1E4675;
+        width: 100%;
         z-index: 3;
     }
 
     #section_introduction .right p {
         color: #1E4675;
+        width: 100%;
         z-index: 30;
     }
 
