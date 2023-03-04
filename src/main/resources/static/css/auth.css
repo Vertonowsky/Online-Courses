@@ -34,13 +34,26 @@
                     position: absolute;
                     box-sizing: border-box;
                     cursor: pointer;
-                    top: 40px;
+                    background: transparent;
+                    top: 20px;
                     left: 20px;
                     font-size: 18px;
                     font-weight: bold;
                     text-transform: uppercase;
                     color: #fff;
                     transition: all 0.3s;
+                }
+
+                #auth_content .left #nav_logo span {
+                    transition: color 0.3s;
+                }
+
+                #auth_content .left #nav_logo:hover{
+                    box-shadow: none;
+                }
+
+                #auth_content .left #nav_logo:hover span {
+                    color: #03C2FF;
                 }
 
                 #left_title {
