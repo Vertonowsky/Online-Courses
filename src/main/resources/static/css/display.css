@@ -311,12 +311,14 @@
             padding-top: 67px;
             padding-bottom: 60px;
             z-index: 0;
+            background: transparent;
         }
 
 
-            #display_content .inner {
+            #display_content #banner .inner {
                 width: 1400px;
                 text-align: left;
+                margin: auto;
             }
 
                 #display_content .inner .panel_left {
@@ -402,12 +404,12 @@
                                 text-decoration: line-through;
                                 text-decoration-thickness: 2px;
                                 text-decoration-color: #787878;
-                                font-size: var(--font-size-normal);
+                                font-size: 20px;
                                 margin-left: 5px;
                             }
 
                             .plan_container .price_promotion {
-                                font-size: var(--font-size-normal);
+                                font-size: 20px;
                                 margin-left: 5px;
                                 color: #33B3E8;
                             }
