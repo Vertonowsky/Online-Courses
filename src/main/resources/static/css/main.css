@@ -800,6 +800,31 @@
 
         @media screen and (max-width: 1500px) {
 
+            #banner .blob1 {
+                min-width: 650px;
+                top: -5%;
+                left: 5%;
+            }
+
+            #banner .blob2 {
+                min-width: 250px;
+                height: 15%;
+                left: 10%;
+            }
+
+            #banner .blob3 {
+                min-width: 570px;
+                top: 12%;
+                left: 25%;
+            }
+
+            #banner .blob4 {
+                min-width: 150px;
+            }
+
+
+
+
             #section_introduction {
                 width: 90%;
                 margin: auto;
@@ -1039,6 +1064,24 @@
 
         @media screen and (max-width: 850px) {
 
+            #banner .blob1 {
+                min-width: 460px;
+            }
+
+            #banner .blob2 {
+                min-width: 180px;
+            }
+
+            #banner .blob3 {
+                min-width: 470px;
+            }
+
+            #banner .blob4 {
+                min-width: 100px;
+            }
+
+
+
             #about {
                 top: 25%;
             }
@@ -1075,6 +1118,34 @@
 
         
         @media screen and (max-width: 768px) {
+
+            #banner .floating_square:nth-child(8) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(9) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(10) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(14) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(17) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(18) {
+                display: none;
+            }
+
+            #banner .floating_square:nth-child(19) {
+                display: none;
+            }
 
 
             #section_introduction {
@@ -1206,6 +1277,28 @@
 
 
         @media screen and (max-width: 580px) {
+
+            #banner .blob1 {
+                min-width: 400px;
+                top: 5%;
+                left: -15%;
+            }
+
+            #banner .blob2 {
+                min-width: 150px;
+            }
+
+            #banner .blob3 {
+                min-width: 420px;
+                top: 15%;
+                left: 0;
+            }
+
+            #banner .blob4 {
+                min-width: 90px;
+            }
+
+
 
             #about .desc {
                 width: 90%;
