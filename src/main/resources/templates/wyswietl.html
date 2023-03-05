@@ -143,7 +143,6 @@ Wczytanie advantages
                 <div id="test">
 
                 </div>
-                <!--<img alt="" id="bg_image" th:src="@{'/images/bg.png'}"/>-->
                 <h1 id="below_introduction"> Tego nauczysz się w naszym kursie:</h1>
 
                 <div id="all_topics" th:if="${course != null}">
@@ -151,17 +150,17 @@ Wczytanie advantages
                     <div class="chapter_menu" th:each="chapter : ${course.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                         <div class="chapter_header">
 
-                            <div class="th_type"> <i class="fab fa-gg-circle"></i> </div>
-                            <div class="th_title" th:text="${chapter.title}"></div>
+                            <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
+                            <div class="th_title" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index} + ' - ' + ${chapter.title}"></div>
 
                         </div>
 
                         <div class="topic_menu" th:if="${chapter.topics != null}">
-                            <div class="topic_header" th:each="topic : ${chapter.topics}" th:id="'right_topic_id_' + ${topic.id}">
+                            <div class="topic_header" th:each="topic : ${chapter.topics}">
 
                                 <div class="td_left">
                                     <i class="fab fa-gg-circle"></i>
-                                    <div class="duration">[12:33]</div>
+                                    <div class="duration" th:text="'[' + ${topic.formatDuration()} + ']'"></div>
                                 </div>
 
                                 <div class="td_right">

@@ -516,7 +516,7 @@
 
             #display_content #all_topics {
                 position: relative;
-                margin: -375px auto 0 auto;
+                margin: -385px auto 0 auto;
                 padding-bottom: 60px;
                 height: auto;
                 width: 1000px;
@@ -524,12 +524,12 @@
 
                 #display_content .chapter_header {
                     text-align: left;
-                    background: #fff;
+                    padding-left: 20px;
                 }
 
                     #display_content .th_type {
                         width: 20px;
-                        margin: 0 10px 0 0;
+                        margin: 0 4px 0 0;
                     }
 
                     #display_content .th_title {
@@ -539,7 +539,7 @@
 
 
                 #display_content .topic_header {
-                    padding: 12px 8px;
+                    margin: 5px auto 10px auto;
                     background: #fff;
                 }
 
@@ -550,7 +550,8 @@
 
                     #display_content .td_type {
                         width: 20px;
-                        margin: 0 10px 0 0;
+                        margin: 0 4px 0 0;
+                        font-size: 17px;
                     }
 
 
