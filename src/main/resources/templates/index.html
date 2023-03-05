@@ -303,7 +303,23 @@
 
     const myNav = document.getElementById("header");
 
+    window.addEventListener("click", function(event) {
+
+        // If user clicked on navPanelToggle button, then open minHeader.
+        if (navToggle.contains(event.target)) {
+            if (!header.classList.contains("nav_active")) {
+                header.classList.add("nav_active");
+            }
+            else {
+                if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) return;
+                header.classList.remove("nav_active");
+            }
+        }
+    });
+
     window.onscroll = function () {
+        if (minHeader.classList.contains('active')) return;
+
         if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40)
             myNav.classList.add("nav_active");
         else
@@ -312,6 +328,8 @@
 
 
     window.onload = function () {
+        if (minHeader.classList.contains('active')) return;
+
         if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40)
             myNav.classList.add("nav_active");
         else

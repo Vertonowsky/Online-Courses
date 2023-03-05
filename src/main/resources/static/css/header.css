@@ -11,7 +11,6 @@
     left: 0;
     right: 0;
     width: 100%;
-    min-height: 70px;
     text-align: center;
     background: transparent;
     border-bottom: 2px solid transparent;
@@ -35,24 +34,29 @@
         display: none;
         transition: all 0.3s;
         font-size: 25px;
-        color: #808080;
+        color: #fff;
         cursor: pointer;
         margin: auto 0;
         z-index: 30;
     }
 
-    #navPanelToggle:hover, #navPanelToggle.active {
+    #header.nav_active #navPanelToggle {
+        color: #808080;
+    }
+
+    #header.nav_active #navPanelToggle:hover, #navPanelToggle.active {
         color: #999999;
     }
 
     #nav_logo {
         cursor: pointer;
+        box-sizing: border-box;
         display: flex;
         align-items: center;
-        height: 38px;
+        height: 42px;
         margin: auto 0;
         background: #F0FAFF;
-        padding: 7px 10px;
+        padding: 5px 10px;
         border-radius: 12px;
         transition: all 0.3s;
         z-index: 2;
@@ -86,6 +90,7 @@
 
         #header .header_nav_buttons {
             position: relative;
+            box-sizing: border-box;
             display: flex;
             justify-items: center;
             margin: auto auto auto 250px;
@@ -238,10 +243,16 @@
         }
 
         #minHeader .register_button {
+            color: #fff;
+            font-weight: bold;
+            background: #60768F;
             width: 150px;
         }
 
         #minHeader .login_button {
+            border: 2px solid transparent;
+            color: var(--color-default);
+            font-weight: bold;
             width: auto;
             padding: 10px 15px;
         }
@@ -417,7 +428,8 @@
     position: fixed;
     display: none;
     visibility: hidden;
-    top: 50px;
+    top: 0;
+    padding-top: 50px;
     right: -300px;
     width: 300px;
     height: 100%;
@@ -594,7 +606,7 @@
         @media screen and (max-width: 1024px) {
 
             #header .header_nav_buttons {
-                margin-left: 70px;
+                margin-left: 50px;
             }
 
         }
@@ -608,6 +620,7 @@
             }
 
                 #header.nav_active {
+                    height: 50px;
                 }
 
 
@@ -635,6 +648,21 @@
             }
 
     
+        }
+
+
+        @media screen and (max-width: 580px) {
+
+            #header.nav_active {
+                height: 50px;
+            }
+
+            #nav_logo {
+                height: 34px;
+            }
+
+
+
         }
 
 
