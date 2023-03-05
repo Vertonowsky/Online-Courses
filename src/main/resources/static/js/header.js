@@ -19,6 +19,7 @@ function openNav() {
         shadow.classList.remove("active");
         minHeader.classList.remove('active');
     }
+
 }
 
 window.addEventListener("click", function(event) {
