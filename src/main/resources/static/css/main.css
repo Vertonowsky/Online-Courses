@@ -649,6 +649,37 @@
 
 
 
+#terms_content {
+    position: relative;
+    box-sizing: border-box;
+    width: 1200px;
+    margin: 140px auto 100px auto;
+}
+
+    #terms_content h1 {
+        width: 100%;
+        text-align: center;
+        color: #0E0E0E;
+        font-size: 28px;
+        margin-bottom: 60px;
+    }
+
+    #terms_content .term_title:first-child {
+        margin-top: 0;
+    }
+
+    #terms_content .term_title {
+        font-weight: bold;
+        font-size: 18px;
+        color: #0E0E0E;
+        margin: 20px 0 10px 0;
+    }
+
+        #terms_content .term_desc {
+            color: var(--color-default);
+            margin-bottom: 7px;
+        }
+
 
 
 
