@@ -11,58 +11,57 @@ let typeFilters      = [];
  * Parameters:
  *  category_filters -> filters describing type of the course
  *  subject_filters  -> filters describing course subject
+ *  limit -> 0 means no limit. Any higher number stands for limiting the number of results
  */
-function loadCourses(typeFilters, categoryFilters) {
+function loadCourses(typeFilters, categoryFilters, limit) {
             
     $.ajax({
         type:"GET",
         dataType:"json",
-        data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters) },
+        data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters), "limit": limit},
         url:"/manipulation/loadCourses",
         success: function(data) {
 
-            console.log(data);
-
             let lista = data;
             if (lista.length == 0) {
-                document.getElementById("courses_list").innerHTML = "<div id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>";  
+                document.getElementById("courses_list").innerHTML = "<div id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>";
             }
 
+            else if (lista.length > 0) {
+                let text = "";
+                $.each(lista, function (index, element) {
 
-            let text = "";
-            $.each(lista, function(index, element) {
+                    text = text + '<div class="course_container">' +
+                        '<div class="left">' +
+                        '<div class="photo">' +
+                        '<img src="/images/course_photo_' + element.id + '.png" />' +
+                        '</div>' +
 
-                text = text + '<div class="course_container">'+
-                                    '<div class="left">' +
-                                        '<div class="photo">' +
-                                            '<img src="/images/course_photo_' + element.id + '.png" />' +
-                                        '</div>' +
+                        '<div class="title_with_shadow_hidden">' +
+                        '<span class="tit_text" th:inline="text">' + element.name + '<div class="tit_bck"></div></span>' +
+                        '</div>' +
 
-                                        '<div class="title_with_shadow_hidden">' +
-                                            '<span class="tit_text" th:inline="text">' + element.name + '<div class="tit_bck"></div></span>' +
-                                        '</div>' +
+                        '<p class="category">[' + element.category.charAt(0) + ((element.category).slice(1)).toLowerCase() + ']</p>' +
+                        '</div>' +
 
-                                        '<p class="category">[' + element.category.charAt(0) + ((element.category).slice(1)).toLowerCase() + ']</p>' +
-                                    '</div>' +
+                        '<div class="right">' +
+                        '<div class="description">' +
 
-                                    '<div class="right">' +
-                                        '<div class="description">' +
+                        '<div class="title_with_shadow">' +
+                        '<span class="tit_text"><div class="tit_bck"></div>' + element.name + '</span>' +
+                        '</div>' +
+                        '<p class="desc ">' + element.description + '</p>' +
 
-                                            '<div class="title_with_shadow">' +
-                                                '<span class="tit_text"><div class="tit_bck"></div>' + element.name +'</span>' +
-                                            '</div>' +
-                                            '<p class="desc ">' + element.description + '</p>' +
+                        '<a class="button_gray" href="/wyswietl/' + element.id + '">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>' +
 
-                                            '<a class="button_gray" href="/wyswietl/' + element.id + '">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
 
-                                        '</div>' +
-                                    '</div>' + 
-                                '</div>';
-            
-            });
+                });
 
-
-            if (lista.length > 0) document.getElementById("courses_list").innerHTML = text;
+                document.getElementById("courses_list").innerHTML = text;
+            }
 
             //show heading above all courses list
             if (document.getElementById('top_panel') != null) updateCoursesHeading(lista.length, categoryFilters);

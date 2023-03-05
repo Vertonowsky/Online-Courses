@@ -23,14 +23,19 @@ public class ManipulationController {
 
 
     @GetMapping("/manipulation/loadCourses")
-    public Iterable<Course> loadCourses(@RequestParam String typeFilters, @RequestParam String categoryFilters) throws JsonProcessingException {
+    public Iterable<Course> loadCourses(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
+        if (limit < 0) limit = 0;
         List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
         List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
         categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
 
-        if (typeParamList.size() == 0 && categoryParamList.size() == 0) return courseRepository.findAll(); //return all courses if no filters are applied
+        if (typeParamList.size() == 0 && categoryParamList.size() == 0) {
+            Iterable<Course> courses = courseRepository.findAll(); //return all courses if no filters are applied
+            if (limit > 0) return limitNumberOfIterable(courses, limit);
+            return courses;
+        }
 
 
         //change category filters from List<String> to List<Category> [Enum type]
@@ -46,6 +51,30 @@ public class ManipulationController {
             }
         }
 
-        return courseRepository.findAllWithCondition(typeParamList, list);
+        Iterable<Course> courses = courseRepository.findAllWithCondition(typeParamList, list);
+        if (limit > 0) return limitNumberOfIterable(courses, limit);
+        return courses;
     }
+
+
+    private ArrayList<Course> limitNumberOfIterable(Iterable<Course> iterable, int limit) {
+        ArrayList<Course> array = new ArrayList<>();
+        int size = 0;
+        for (Course c : iterable) {
+            if (size < limit) {
+                array.add(c);
+                size++;
+            }
+            if (size == limit) break;
+        }
+        return array;
+    }
+
+
+
+
 }
+
+
+
+
