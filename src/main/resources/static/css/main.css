@@ -978,7 +978,8 @@
 
             #courses #right_panel {
                 position: absolute;
-                top: 90px;
+                top: 190px;
+                width: 90%;
                 overflow: hidden;
                 visibility: hidden;
                 opacity: 0;
@@ -1110,10 +1111,6 @@
                 width: 90%;
             }
 
-            #courses #right_panel {
-                width: 100%;
-            }
-
         }
 
         
@@ -1218,7 +1215,7 @@
 
 
             #courses {
-                padding-top: 80px;
+                padding-top: 100px;
             }
 
             #courses #top_panel {
@@ -1234,7 +1231,7 @@
                 }
 
                 #courses #right_panel {
-                    top: 50px;
+                    top: 150px;
                 }
 
                 #courses #right_panel .title {
@@ -1361,10 +1358,6 @@
         
         
         @media screen and (max-width: 480px) {
-        
-            #courses {
-                padding-top: 80px;
-            }
 
             #top_panel .heading {
                 width: 100%;
