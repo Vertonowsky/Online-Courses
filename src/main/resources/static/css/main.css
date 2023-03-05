@@ -489,6 +489,7 @@
 
 #section_advantages .left {
     position: relative;
+    box-sizing: border-box;
     width: 50%;
     padding: 20px 0 20px 50px;
 }
@@ -605,11 +606,6 @@
             color: var(--color-title);
         }
 
-        #courses_list {
-            position: relative;
-            width: 100%;
-            font-size: 0;
-        }
 
                 #section3 .dots {
                     position: relative;
@@ -802,12 +798,118 @@
 
 
 
+        @media screen and (max-width: 1500px) {
+
+            #section_introduction {
+                width: 90%;
+                margin: auto;
+                padding: 250px 0 200px 0;
+            }
+
+                #section_introduction .left {
+                    box-sizing: border-box;
+                    width: 50%;
+                }
+
+                #index_video {
+                    width: 100%;
+                }
+
+                #section_introduction .left .blob {
+                    width: 70%;
+                    height: 70%;
+                    top: 17%;
+                    left: -10%;
+                }
+
+            #section_introduction .right {
+                box-sizing: border-box;
+                width: 45%;
+                margin-left: 5%;
+            }
+
+
+            #section_advantages {
+                width: 90%;
+            }
+
+
+        }
+
 
 
         @media screen and (max-width: 1200px) {
 
+            #section_introduction {
+                padding: 150px 0 150px 0;
+            }
+
+            #section_introduction .left .blob {
+                width: 80%;
+                height: 80%;
+                top: 10%;
+                left: -15%;
+            }
+
+
+            #section_introduction .right {
+                display: flex;
+                align-items: center;
+            }
+
+
+            #section_introduction .right h1 {
+                margin-top: 0;
+                font-size: 24px;
+            }
+
+
+            #section_advantages {
+                height: 300px;
+            }
+
+            #section_advantages .left {
+                width: 40%;
+                padding: 15px 0 15px 30px;
+            }
+
+                #section_advantages .left h1 {
+                    font-size: 22px;
+                }
+
+                #section_advantages .left p {
+                    font-size: 14px;
+                    width: 95%;
+                }
+
+            #section_advantages .right {
+                width: 60%;
+            }
+
+                #section_advantages .right .square_block i {
+                    font-size: 35px;
+                }
+
+                #section_advantages .right .square_block p {
+                    width: 85%;
+                    font-size: 14px;
+                    margin: 20px 0 0 0;
+                }
+
+
+
+
+
+
+
+
+
+            #section3 .inner {
+                width: 90%;
+            }
+
             #courses .inner {
-                width: 800px;
+                width: 90%;
                 flex-direction: column-reverse;
             }
     
@@ -885,14 +987,81 @@
             #courses #right_panel li:last-child {
                 margin: 0;
             }
-        
-
 
         }
-        
-        
-        @media screen and (max-width: 850px) {    
 
+
+
+
+        @media screen and (max-width: 1024px) {
+
+            #about {
+                width: 100%;
+            }
+
+            #about .title {
+                font-size: 35px;
+            }
+
+            #about .desc {
+                font-size: 15px;
+            }
+
+
+
+            #section_introduction {
+                padding: 120px 0 150px 0;
+            }
+
+            #section_introduction .left .blob {
+                top: 6%;
+                left: -20%;
+            }
+
+            #section_introduction .right {
+                display: flex;
+                align-items: center;
+            }
+
+            #section_introduction .right h1 {
+                margin-top: 0;
+                font-size: 20px;
+            }
+
+            #section_introduction .right .desc {
+                font-size: 15px;
+            }
+
+        }
+
+
+
+
+        @media screen and (max-width: 850px) {
+
+            #about {
+                top: 25%;
+            }
+
+            #about .desc {
+                width: 70%;
+                text-align: center;
+            }
+
+                #about .title {
+                    width: 95%;
+                    margin: auto;
+                    font-size: 27px;
+                }
+
+                #about p {
+                    width: 100%;
+                    font-size: 14px;
+                }
+
+            #banner #animated_arrow {
+                bottom: 30px;
+            }
 
             #courses .inner {
                 width: 90%;
@@ -903,8 +1072,79 @@
             }
 
         }
+
         
         @media screen and (max-width: 768px) {
+
+
+            #section_introduction {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            #section_introduction .left {
+                width: 90%;
+                margin: auto;
+            }
+
+            #section_introduction .left .blob {
+                width: 84%;
+                height: 84%;
+                top: -9%;
+                left: 5%;
+            }
+
+            #section_introduction .right {
+                width: 75%;
+                margin: 50px auto 0 auto;
+            }
+
+
+            #section_advantages {
+                height: auto;
+                flex-direction: column;
+            }
+
+            #section_advantages .left {
+                box-sizing: border-box;
+                width: 100%;
+                padding: 30px 0 50px 30px;
+            }
+
+                #section_advantages .left h1 {
+                    margin-top: 0;
+                    font-size: 20px;
+                }
+
+                #section_advantages .left p {
+                    font-size: 13px;
+                    width: 80%;
+                }
+
+            #section_advantages .right {
+                width: 100%;
+                height: 250px;
+            }
+
+                #section_advantages .right .square_block i {
+                    font-size: 26px;
+                }
+
+                #section_advantages .right .square_block p {
+                    width: 85%;
+                    font-size: 13px;
+                    margin: 15px 0 0 0;
+                }
+
+                #section_advantages .right .square_block:nth-child(3) {
+                    border-top-right-radius: 0;
+                }
+
+                #section_advantages .right .square_block:nth-child(6) {
+                    border-bottom-right-radius: 0;
+                }
+
+
 
             #courses {
                 padding-top: 80px;
@@ -963,9 +1203,71 @@
             }
 
         }
+
+
+        @media screen and (max-width: 580px) {
+
+            #about .desc {
+                width: 90%;
+                margin-top: 10px;
+            }
+
+                #about .title {
+                    width: 97%;
+                }
+
+            #banner #animated_arrow {
+                bottom: 15%;
+            }
+
+            #section_introduction {
+                width: 95%;
+                padding: 100px 0 80px 0;
+            }
+
+                #section_introduction .left {
+                    width: 100%;
+                    margin: auto;
+                }
+
+                    #section_introduction .left .blob {
+                        display: none;
+                    }
+
+                #section_introduction .right {
+                    width: 85%;
+                }
+
+
+            #section_advantages {
+                width: 100%;
+                border-radius: 0;
+            }
+
+            #section_advantages .left {
+                width: 90%;
+                margin: auto;
+                padding: 30px 0 30px 0;
+            }
+
+            #section_advantages .left h1 {
+                text-align: center;
+            }
+
+            #section_advantages .left p {
+                width: 100%;
+                text-align: center;
+            }
+
+
+            #section3 {
+                padding-top: 100px;
+            }
+
+        }
         
         
-        @media screen and (max-width:  480px) {
+        @media screen and (max-width: 480px) {
         
             #courses {
                 padding-top: 80px;
@@ -980,5 +1282,35 @@
                     font-size: var(--font-size-smaller);
                 }
 
+        }
+
+
+        @media screen and (max-width: 380px) {
+
+            #section_advantages .right {
+                height: 320px;
+            }
+
+            #section_advantages .right .square_block {
+                width: 50%;
+                height: 33.33%;
+            }
+
+            #section_advantages .right .square_block:nth-child(2n - 1) {
+                background: transparent;
+            }
+
+            #section_advantages .right .square_block:nth-child(1), #section_advantages .right .square_block:nth-child(4), #section_advantages .right .square_block:nth-child(5) {
+                background: #2EB1E8;
+            }
+
+        }
+
+
+        @media screen and (max-width: 320px) {
+
+            #button_all_courses {
+                width: 90%;
+            }
 
         }
