@@ -125,7 +125,7 @@
             if (className === "checkbox_type") $box.is(":checked") ? typeFilters.push(name) : typeFilters.splice(typeFilters.indexOf(name), 1);
             if (className === "checkbox_category") $box.is(":checked") ? categoryFilters.push(name) : categoryFilters.splice(categoryFilters.indexOf(name), 1);
 
-            loadCourses(typeFilters, categoryFilters);
+            loadCourses(typeFilters, categoryFilters, 0);
 
 		});
 		/* END CheckBox backend */
