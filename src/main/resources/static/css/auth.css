@@ -152,17 +152,19 @@
                 }
 
                         #auth_container .href {
-                            font-size: var(--font-size-normal);
                             left: 0;
                             width: 190px;
                             padding-left: 10px;
                             text-align: center;
                         }
 
+                        #auth_container .list_link {
+                            color: #03A7DC;
+                        }
+
                         #auth_container .button_blue {
                             padding: 14px 0;
                             width: 180px;
-                            border: 2px solid #F0F0F0;
                             outline: 0;
                             border: 0;
                             right: 0;
