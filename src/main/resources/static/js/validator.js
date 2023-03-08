@@ -1,4 +1,7 @@
 
+        const passStrength = document.getElementById("password_strength");
+        const passInside   = document.getElementById("password_strength_inside");
+
         /**
          * FUNCTION RESPOSIBLE FOR CHECKING
          * IF INSERTED DATA MATCHES REGEXP
@@ -7,10 +10,6 @@
             let complete = false;
             let msg = [];
             let n   = 0;
-
-
-            let passStrength = document.getElementById("password_strength");
-            let passInside   = document.getElementById("password_strength_inside");
             
 
             /**
@@ -25,6 +24,7 @@
              */
             if (type === "password" || type === "passwordRepeat") {
                 let width = 100;
+                let errors = 0;
                 n   = 4;
                 msg = Array(n);
                 
@@ -32,45 +32,58 @@
                 msg[1] = "<i class='fas fa-check ok'></i> Duża litera<br>";
                 msg[2] = "<i class='fas fa-check ok'></i> Cyfra<br>";
                 msg[3] = "<i class='fas fa-check ok'></i> Znak specjalny<br>";
-                
+                if (type === "passwordRepeat") {
+                    msg[4] = "<i class='fas fa-check ok'></i> Identyczne hasła<br>";
+                    n++;
+                }
+
                 if (data.length <= 0) {
                     width -= 10;
                 }
 
                 if (data.length < 8) {
                     width -= 15;
+                    errors++;
                     msg[0] = "<i class='fas fa-times error'></i> Minimum 8 znaków<br>";
                 } 
                 
                 if (!data.match(/[A-Z]/)) {
                     width -= 25;
+                    errors++;
                     msg[1] = "<i class='fas fa-times error'></i> Duża litera<br>";
                 }
                 
                 if (!data.match(/[0-9]/)) {
                     width -= 25;
+                    errors++;
                     msg[2] = "<i class='fas fa-times error'></i> Cyfra<br>";
                 }
                 
-                if (!data.match(/[$&+,:;=?@#|<>.^*()%!-]/)) {
+                if (!data.match(/[$&+,:;=?@#|<>.^*()%!-'"\]\[]/)) {
                     width -= 25;
+                    errors++;
                     msg[3] = "<i class='fas fa-times error'></i> Znak specjalny<br>";
                 }
 
+                let pass = document.getElementById("register_data_password").value;
+                let repeatPass = document.getElementById("register_data_password_repeat").value;
+                if ((type === "passwordRepeat" && data !== pass) || (type === "password" && pass !== repeatPass && repeatPass != "")) {
+                    passInside.style.background = "#DC2A03";
+                    msg[4] = "<i class='fas fa-times error'></i> Identyczne hasła<br>";
+                    errors++;
+                }
 
-                if (type === "password") {
+                if (type === "password" || type === "passwordRepeat" && data === pass) {
                     passStrength.style.visibility = "visible";
                     passInside.style.width = width + "%";
-                    
-                    
+
                     if (width < 25) passInside.style.background = "#DC2A03";
                     if (width >= 25 && width < 75) passInside.style.background = "#DC9F03";
                     if (width >= 75 && width < 100) passInside.style.background = "#1CBA03";
-                    if (width == 100) passInside.style.background = "var(--color-light-blue)";
+                    if (width == 100 && errors == 0) passInside.style.background = "var(--color-light-blue)";
+
+                    if (width == 100 && errors == 0) complete = true;
                 }
-
-                if (width == 100) complete = true;
-
             }
             
 
@@ -124,7 +137,16 @@
              */
             showToolTip(index, msg, complete);
             return complete;
-            
+        }
+
+        function checkInputDataRepeatPass(index, password, repeatPass) {
+
+            let complete = checkInputData(index, "password", repeatPass);
+            if (password === repeatPass) return;
+
+            passInside.style.background = "#DC2A03";
+
+
         }
         
         
