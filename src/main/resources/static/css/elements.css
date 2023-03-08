@@ -150,18 +150,23 @@ body {
 */
 .tooltip {
     position: absolute;
-    width: 22px;
-    font-size: 22px;
+    box-sizing: border-box;
     top: 27%;
     right: -30px;
-    color: var(--color-light-red);
     visibility: hidden;
 }
 
+.tooltip .tooltip_icon {
+    position: relative;
+    box-sizing: border-box;
+    display: inline;
+    font-size: 22px;
+    color: #FF7270;
+}
 
 .tooltip .tooltip_text {
     position: absolute;
-    width: 160px;
+    width: 165px;
     bottom: 125%;
     left: -80px;
     line-height: 17px;
@@ -176,10 +181,10 @@ body {
     opacity: 0;
     transition: all 0.3s;
 }
-    
+
 
         .tooltip_text .error {
-            color: var(--color-light-red);
+            color: #FF7270;
         }
         
         .tooltip_text .ok {
@@ -191,7 +196,7 @@ body {
     content: "";
     position: absolute;
     text-align: left;
-    left: 46.5%;
+    left: 45.5%;
     top: 100%;
     border-width: 7px;
     border-style: solid;
@@ -199,7 +204,7 @@ body {
 }
 
 
-.tooltip:hover .tooltip_text {
+.tooltip_icon:hover + .tooltip_text {
     visibility: visible;
     opacity: 1;
 }
