@@ -1,7 +1,6 @@
 package com.example.hello_world.web.controller;
 
 import com.example.hello_world.Category;
-import com.example.hello_world.HelloWorldApplication;
 import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.CourseRepository;
@@ -12,6 +11,7 @@ import com.example.hello_world.security.MyUserDetails;
 import com.example.hello_world.web.dto.ChapterDto;
 import com.example.hello_world.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -22,6 +22,10 @@ import java.util.*;
 
 @RestController
 public class CourseController {
+
+
+    @Value("${course.videos.path}")
+    private String courseVideoesPath;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -195,7 +199,7 @@ public class CourseController {
 
 
         model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
-        model.addAttribute("videosPath", HelloWorldApplication.videoesPath);
+        model.addAttribute("videosPath", courseVideoesPath);
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseOwned", (user != null && user.isCourseOwnedAndValid(course)));
         model.addAttribute("course", course);

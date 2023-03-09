@@ -1,6 +1,5 @@
 package com.example.hello_world.web.controller;
 
-import com.example.hello_world.HelloWorldApplication;
 import com.example.hello_world.persistence.model.Chapter;
 import com.example.hello_world.persistence.model.Course;
 import com.example.hello_world.persistence.model.Topic;
@@ -8,6 +7,7 @@ import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,6 +21,12 @@ import java.util.regex.Pattern;
 public class AdminController {
 
     private final String STRING_PATTERN = "[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ ~!@#$%^&*()-_=+'?,.<>\\[\\]{}|]*";
+
+    @Value("${course.videos.path}")
+    private String courseVideoesPath;
+
+    @Value("${local.videos.path}")
+    private String localVideoesPath;
 
     @Autowired
     CourseRepository courseRepository;
@@ -37,7 +43,7 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("admin");
         model.addAttribute("courses", courseRepository.findAllCoursesNames());
         model.addAttribute("videos", getVideoList());
-        model.addAttribute("videosPath", HelloWorldApplication.videoesPath);
+        model.addAttribute("videosPath", courseVideoesPath);
 
         if (id == null) {
             return mav;
@@ -400,7 +406,7 @@ public class AdminController {
 
 
     private List<String> getVideoList() {
-        File folder = new File(HelloWorldApplication.videoesLocalPath);
+        File folder = new File(localVideoesPath);
         File[] listOfFiles = folder.listFiles();
         List<String> allVideos = new ArrayList<>();
 
