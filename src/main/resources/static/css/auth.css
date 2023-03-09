@@ -191,6 +191,30 @@
                             }
 
 
+                        #passwords_equality {
+                            position: relative;
+                            font-size: 15px;
+                            background: #FF7270;
+                            color: #fff;
+                            height: 0;
+                            padding: 0;
+                            margin: 0;
+                            border-radius: 5px;
+                            text-align: center;
+                            visibility: hidden;
+                            opacity: 0;
+                            transition: all 0.3s;
+                        }
+
+                        #passwords_equality.active {
+                            height: auto;
+                            padding: 8px 0;
+                            margin: 5px 0 15px 0;
+                            visibility: visible;
+                            opacity: 1;
+                        }
+
+
 
 
 
