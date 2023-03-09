@@ -67,7 +67,7 @@
                             INPUT GROUP - Input with its elements
                         -->
                         <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" id="login_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, 'email', this.value)">
+                            <input th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" id="login_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
                             <label> Email: </label>
 
                             <!--
@@ -85,7 +85,7 @@
                             INPUT GROUP - Input with its elements
                         -->
                         <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="login_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, 'passwordLogin', this.value)">
+                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="login_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
                             <label> Hasło: </label>
 
                             <!--
@@ -148,7 +148,7 @@
 
 
     $("#login_form").submit(function(e) {
-        if (!checkInputData(0, "email", document.getElementById("login_data_email").value) || !checkInputData(1, "passwordLogin", document.getElementById("login_data_password").value))
+        if (!checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value) || !checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
     });
 
@@ -162,8 +162,8 @@
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            checkInputData(0, "email", document.getElementById("login_data_email").value);
-            checkInputData(1, "passwordLogin", document.getElementById("login_data_password").value);
+            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
         }
     /*]]>*/
 
