@@ -101,6 +101,4 @@ public class ProfileController {
         }
         return new ModelAndView("redirect:/");
     }
-
-
 }
