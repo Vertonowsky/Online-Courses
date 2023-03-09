@@ -10,6 +10,7 @@
     top: 0;
     left: 0;
     right: 0;
+    height: 70px;
     width: 100%;
     text-align: center;
     background: transparent;
@@ -309,13 +310,14 @@
             visibility: hidden;
             box-sizing: border-box;
             background: #fff;
-            top: 56px;
+            top: 48px;
             opacity: 0;
             min-width: 160px;
             left: -50%;
             width: 150%;
             transition: all 0.1s;
             border-radius: 8px;
+            border-top-right-radius: 0;
             box-shadow: 0 0 2px 2px #E0E0E0;
         }
 
@@ -387,7 +389,6 @@
         }
 
         .dropdown:hover .dropbtn {
-            height: 54px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
             border-bottom: none;
