@@ -410,7 +410,8 @@ public class AdminController {
         File[] listOfFiles = folder.listFiles();
         List<String> allVideos = new ArrayList<>();
 
-        if (listOfFiles != null) {
+
+        if (listOfFiles.length > 0) {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
                     allVideos.add(file.getName());
