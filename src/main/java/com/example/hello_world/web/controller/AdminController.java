@@ -407,6 +407,8 @@ public class AdminController {
 
     private List<String> getVideoList() {
         File folder = new File(localVideoesPath);
+        if (!folder.exists()) return new ArrayList<>();
+
         File[] listOfFiles = folder.listFiles();
         List<String> allVideos = new ArrayList<>();
 
