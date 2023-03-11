@@ -587,6 +587,7 @@
 
 #section3 {
     position: relative;
+    min-height: 600px;
     width: 100%;
     background: #fff;
     padding: 150px 0 150px 0;
