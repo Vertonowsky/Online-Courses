@@ -300,24 +300,17 @@
     box-sizing: border-box;
     height: auto;
     width: 100%;
-    margin: auto;
+    margin: 70px auto 0 auto;
     text-align: center;
     font-size: 0;
 }
 
-        #display_content #banner {
-            height: 100%;
-            width: 100%;
-            padding-top: 67px;
-            padding-bottom: 60px;
-            z-index: 0;
-            background: transparent;
-        }
 
 
-            #display_content #banner .inner {
+            #display_content .inner {
                 width: 1400px;
                 text-align: left;
+                padding-bottom: 60px;
                 margin: auto;
             }
 
@@ -1357,6 +1350,19 @@
 
         #display_content .inner .panel_right {
             display: none;
+        }
+
+        .plan_container .price_block {
+            font-size: 22px;
+        }
+
+
+        .plan_container .price_old {
+            font-size: 17px;
+        }
+
+        .plan_container .price_promotion {
+            font-size: 17px;
         }
 
 

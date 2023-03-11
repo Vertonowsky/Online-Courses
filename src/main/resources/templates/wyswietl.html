@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/display.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
 
+    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-    <div th:insert="~{dependencies :: dependencies}"></div>
 </head>
 <body>
 
@@ -33,106 +34,104 @@ Wczytanie advantages
 
         <div id="display_content">
 
-            <div id="banner">
-                <div class="inner">
+            <div class="inner">
 
-                    <div class="panel_left">
+                <div class="panel_left">
 
-                        <div class="heading" th:text="${course.name}"></div>
-                        <div class="desc" th:text="${course.description}"></div>
+                    <div class="heading" th:text="${course.name}"></div>
+                    <div class="desc" th:text="${course.description}"></div>
 
-                        <div id="plans">
+                    <div id="plans">
 
-                            <div class="plan_container">
+                        <div class="plan_container">
 
-                                <h1 class="title">Wersja próbna</h1>
-                                <div class="prices">
-                                    <div class="price_block">0 zł</div>
-                                </div>
-
-                                <ul class="adv_list">
-
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> 3-miesięczny dostęp do kursu </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Swobodę uczenia się o dowolnej porze </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Starannie wyselekcjonowane zadania </div>
-                                    </li>
-                                    <li class="unavailable">
-                                        <div class="left"><i class="fas fa-times"></i></div>
-                                        <div class="right"> Ponad 70 godzin materiałów wideo </div>
-                                    </li>
-                                    <li class="unavailable">
-                                        <div class="left"><i class="fas fa-times"></i></div>
-                                        <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
-                                    </li>
-                                </ul>
-
-                                <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
-
+                            <h1 class="title">Wersja próbna</h1>
+                            <div class="prices">
+                                <div class="price_block">0 zł</div>
                             </div>
 
-                            <div class="plan_container premium">
+                            <ul class="adv_list">
 
-                                <h1 class="title">Wersja premium</h1>
-                                <div class="prices">
-                                    <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
-                                    <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>-->
-                                </div>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                </li>
+                                <li class="unavailable">
+                                    <div class="left"><i class="fas fa-times"></i></div>
+                                    <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                </li>
+                                <li class="unavailable">
+                                    <div class="left"><i class="fas fa-times"></i></div>
+                                    <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                </li>
+                            </ul>
 
-                                <ul class="adv_list">
-
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> 3-miesięczny dostęp do kursu </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Swobodę uczenia się o dowolnej porze </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Starannie wyselekcjonowane zadania </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> Ponad 70 godzin materiałów wideo </div>
-                                    </li>
-                                    <li class="available">
-                                        <div class="left"><i class="fas fa-check"></i></div>
-                                        <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
-                                    </li>
-                                </ul>
-
-                                <a class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
-
-                            </div>
+                            <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
 
                         </div>
 
-                    </div>
+                        <div class="plan_container premium">
 
-                    <div class="panel_right">
-                        <div class="photo">
-                            <img alt="" th:src="@{'/images/zasob1.png'}"/>
+                            <h1 class="title">Wersja premium</h1>
+                            <div class="prices">
+                                <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
+                                <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>-->
+                            </div>
+
+                            <ul class="adv_list">
+
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                </li>
+                                <li class="available">
+                                    <div class="left"><i class="fas fa-check"></i></div>
+                                    <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                </li>
+                            </ul>
+
+                            <a class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
+
                         </div>
+
                     </div>
 
                 </div>
+
+                <div class="panel_right">
+                    <div class="photo">
+                        <img alt="" th:src="@{'/images/zasob1.png'}"/>
+                    </div>
+                </div>
+
             </div>
 
 
