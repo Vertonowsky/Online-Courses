@@ -32,6 +32,31 @@
 }
 
 
+#loader {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 5px solid transparent; /* Blue */
+    border-top: 5px solid #fff; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1.5s linear infinite;
+}
+
+#loader.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 
 
 #content_course {
