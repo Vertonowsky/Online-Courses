@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+    <title th:text="'Błąd ' + ${statusCode}"></title>
+
+    <link rel="stylesheet" href="/css/main.css"/>
+
+    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+
+</head>
+
+<body>
+
+        <!--
+            START header
+        -->
+        <div th:insert="~{header :: header(active = ${true})}"></div>
+        <div th:insert="~{header :: shadow}"></div>
+        <div th:insert="~{header :: minHeader}"></div>
+
+        <div id="content_error">
+            <div id="2">
+                <h1 th:text="${statusCode}"></h1>
+                <h2 th:text="${title}"></h2>
+                <h3 th:text="${description}"></h3>
+                <a href="/">Go back to home page</a>
+            </div>
+
+
+            <!--
+                START footer
+            -->
+            <div th:insert="~{footer :: footer}"></div>
+        </div>
+
+</body>
+
+</html>
