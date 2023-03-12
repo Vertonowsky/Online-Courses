@@ -858,6 +858,8 @@
         font-size: 17px;
         margin: 0 0 20px 0;
         color: #626266;
+        width: 80%;
+        max-width: 550px;
     }
 
     #error_info #button_main_page {
@@ -1348,6 +1350,26 @@
                     font-size: 18px;
                 }
 
+
+
+            #error_info h1 {
+                font-size: 100px;
+                margin-bottom: 0;
+            }
+
+            #error_info h2 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            #error_info h3 {
+                font-size: 15px;
+            }
+
+            #error_info #button_main_page {
+                padding: 12px 6px;
+            }
+
         }
 
 
@@ -1470,6 +1492,31 @@
                 #terms_content .term_desc {
                     font-size: 13px;
                 }
+
+
+
+            #error_info h1 {
+                font-size: 90px;
+            }
+
+            #error_info h2 {
+                font-size: 18px;
+                margin: 0 0 15px 0;
+            }
+
+            #error_info h3 {
+                font-size: 14px;
+                width: 85%;
+                max-width: 500px;
+            }
+
+            #error_info #button_main_page {
+                width: 85%;
+                max-width: 270px;
+                margin-top: 15px;
+                font-size: var(--font-size-smaller);
+                padding: 12px 6px;
+            }
 
         }
         
