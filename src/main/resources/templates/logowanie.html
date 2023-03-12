@@ -148,7 +148,11 @@
 
 
     $("#login_form").submit(function(e) {
-        if (!checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value) || !checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))
+        let correctData = 0; // Count correct data
+        if (checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value)) correctData++;
+        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))  correctData++;
+
+        if (correctData != 2)
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
     });
 
