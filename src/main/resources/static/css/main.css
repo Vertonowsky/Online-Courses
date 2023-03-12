@@ -819,25 +819,27 @@
 #content_error {
     position: relative;
     box-sizing: border-box;
-    height: 100vh;
     width: 100%;
     padding-top: 70px;
     text-align: center;
 }
 
-#content_error #2 {
+#content_error #error_info {
+    position: relative;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     flex-direction: column;
     color: #414143;
+    min-height: 70vh;
+    padding-top: 20px;
 }
 
-    #content_error h1 {
-        color: #414143;
-        font-size: 120px;
-        margin: 20px 0 0 0;
+    #error_info h1 {
+        font-size: 130px;
+        margin: 0 0 10px 0;
         text-shadow:
-                1px 0px 1px #E6E6E6, 0px 1px 1px #E6E6E6,
+                1px 0   1px #E6E6E6, 0   1px 1px #E6E6E6,
                 2px 1px 1px #E6E6E6, 1px 2px 1px #E6E6E6,
                 3px 2px 1px #E6E6E6, 2px 3px 1px #E6E6E6,
                 4px 3px 1px #E6E6E6, 3px 4px 1px #E6E6E6,
@@ -846,13 +848,23 @@
                 7px 6px 1px #E6E6E6;
     }
 
-    #content_error h2 {
+    #error_info h2 {
         font-size: 25px;
         text-transform: uppercase;
-        margin: 0 0 20px 0;
+        margin: 0 0 10px 0;
     }
 
+    #error_info h3 {
+        font-size: 17px;
+        margin: 0 0 20px 0;
+        color: #626266;
+    }
 
+    #error_info #button_main_page {
+        width: 270px;
+        margin: 20px 0 0 0;
+        padding: 13px 6px;
+    }
 
 
 
