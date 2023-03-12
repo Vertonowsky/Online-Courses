@@ -19,19 +19,19 @@
         <div th:insert="~{header :: minHeader}"></div>
 
         <div id="content_error">
-            <div id="2">
+            <div id="error_info">
                 <h1 th:text="${statusCode}"></h1>
                 <h2 th:text="${title}"></h2>
                 <h3 th:text="${description}"></h3>
-                <a href="/">Go back to home page</a>
+
+                <a th:href="@{/}" id="button_main_page" class="button_gray">Wróć do strony głównej <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-
-
-            <!--
-                START footer
-            -->
-            <div th:insert="~{footer :: footer}"></div>
         </div>
+
+        <!--
+            START footer
+        -->
+        <div th:insert="~{footer :: footer}"></div>
 
 </body>
 
