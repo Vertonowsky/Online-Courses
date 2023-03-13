@@ -14,13 +14,6 @@
 </head>
 <body>
 
-
-        <!--
-            START popup
-        -->
-        <div th:insert="~{popup :: popup}"></div>
-
-
         <div id="auth_content">
 
             <div class="left">
@@ -155,7 +148,7 @@
                     </div>
 
 
-
+                    <!--
                     <div id="other_login_methods">
 
                         <div class="other_login_button">
@@ -167,6 +160,7 @@
                         </div>
 
                     </div>
+                    -->
 
                 </div>
                 <!--
@@ -179,11 +173,17 @@
             <a th:href="@{/logowanie}" id="button_go_next">Logowanie <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
 
 
-            <div id="respond">
+            <!--
+                START popup
+            -->
+            <div th:insert="~{popup :: popup}"></div>
+
+            <!--<div id="respond">
                 <i class="fas fa-exclamation-triangle"></i>
                 <label id="respond_text"></label>
                 <i id="close_respond" class="fas fa-times" onclick="closePopup()"></i>
             </div>
+            -->
 
         </div>
 

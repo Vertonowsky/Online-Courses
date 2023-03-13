@@ -12,8 +12,7 @@
     height: auto;
     width: 600px;
     padding: 50px 30px 30px 30px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 20%;
     left: 10%;
     text-align: left;
 }
@@ -143,9 +142,18 @@
                     margin-bottom: 15px;
                 }
 
-                #under_inputs {
+                /*#under_inputs {
                     display: flex;
                     justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                }*/
+
+                #under_inputs {
+                    display: flex;
+                    justify-content: center;
+                    flex-wrap: wrap;
                     align-items: center;
                     width: 100%;
                     height: 100%;
@@ -208,7 +216,7 @@
 
                         #passwords_equality.active {
                             height: auto;
-                            padding: 8px 0;
+                            padding: 8px 6px;
                             margin: 5px 0 15px 0;
                             visibility: visible;
                             opacity: 1;
@@ -466,8 +474,12 @@
         @media screen and (max-width: 580px) {
 
             #auth_container {
-                width: 90%;
+                width: 100%;
             }
+
+                #auth_container .title_with_shadow {
+                    width: 90%;
+                }
 
                 #auth_container .button_blue {
                     position: relative;
