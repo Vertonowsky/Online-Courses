@@ -31,10 +31,10 @@
                     <div class="headline">Wybierz kurs:</div>
 
                     <div id="select_course" class="select_menu" style="margin-bottom: 30px;">
-                        <div class="select_btn" onclick="toggleSelect('select_course')" th:text="${selectedCourse == null} ? 'Nie wybrano kursu..' : ${selectedCourse.name}" ></div>
+                        <button class="select_btn" onclick="toggleSelect('select_course')" th:text="${selectedCourse == null} ? 'Nie wybrano kursu..' : ${selectedCourse.name}" ></button>
                         <i class="fa fa-chevron-left"></i>
                         <ul class="select_content">
-                            <li class="select_option" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
+                            <li class="select_option" tabindex="0" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
                         </ul>
                     </div>
 
@@ -51,8 +51,8 @@
 
 
                     <div class="buttons" th:if="${!#lists.isEmpty(selectedCourse)}">
-                        <div class="tablinks button_gray" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział <i class="fas fa-arrow-circle-right"></i></div>
-                        <div class="tablinks button_gray" onclick="openTab(event, 'new_topic')">Dodaj nowy temat <i class="fas fa-arrow-circle-right"></i></div>
+                        <button class="tablinks button_gray" onclick="openTab(event, 'new_chapter')">Dodaj nowy rozdział <i class="fas fa-arrow-circle-right"></i></button>
+                        <button class="tablinks button_gray" onclick="openTab(event, 'new_topic')">Dodaj nowy temat <i class="fas fa-arrow-circle-right"></i></button>
                     </div>
 
 
@@ -60,17 +60,17 @@
 
 
                     <div id="new_chapter" class="tabcontent" th:if="${selectedCourse != null}">
-                        <div class="headline">Nowy rozdział:</div>
+                        <h3 class="headline">Nowy rozdział:</h3>
 
                         <div class="input_group">
-                            <input class="input" id="new_chapter_title" type="text" placeholder="Wpisz nazwę rozdziału..">
-                            <input class="input_number" id="new_chapter_index" type="number" value="1">
+                            <input class="input" id="new_chapter_title" type="text" placeholder="Wpisz nazwę rozdziału.." maxlength="50">
+                            <input class="input_number" id="new_chapter_index" type="number" value="1" min="0">
                         </div>
 
 
                         <div class="accept_decline">
-                            <div class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
-                            <div class="button_gray" onclick="confirm('newChapter')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
+                            <button class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></button>
+                            <button class="button_gray" onclick="confirm('newChapter')">Dodaj <i class="fas fa-arrow-circle-right"></i></button>
                         </div>
                     </div>
 
@@ -82,97 +82,99 @@
 
                     <div id="new_topic" class="tabcontent" th:if="${selectedCourse != null}">
 
-                        <div class="headline">Wybierz rozdział:</div>
+                        <h3 class="headline">Wybierz rozdział:</h3>
                         <div id="select_chapter" class="select_menu" style="margin-bottom: 40px;" th:fragment="chapter_select">
-                            <div class="select_btn" onclick="toggleSelect('select_chapter')">Nie wybrano rozdziału..</div>
+                            <button class="select_btn" onclick="toggleSelect('select_chapter')">Nie wybrano rozdziału..</button>
                             <i class="fa fa-chevron-left"></i>
 
                             <ul class="select_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
-                                <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
+                                <li class="select_option" tabindex="0" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
                             </ul>
                         </div>
 
 
-                        <div class="headline">Nowy temat:</div>
+                        <h3 class="headline">Nowy temat:</h3>
                         <div class="input_group" style="margin-bottom: 40px;">
-                            <input id="new_topic_input" type="text" class ="input" placeholder="Wpisz nazwę tematu..">
-                            <input class="input_number" id="new_topic_index" type="number" value="1">
+                            <input id="new_topic_input" type="text" class ="input" placeholder="Wpisz nazwę tematu.." maxlength="50">
+                            <input class="input_number" id="new_topic_index" type="number" value="1" min="0">
                         </div>
 
 
-                        <div class="headline">Materiał wideo:</div>
+                        <h3 class="headline">Materiał wideo:</h3>
                         <div id="select_video" class="select_menu" style="margin-bottom: 30px;">
-                            <div class="select_btn" onclick="toggleSelect('select_video')">Nie wybrano pliku wideo..</div>
+                            <button class="select_btn" onclick="toggleSelect('select_video')">Nie wybrano pliku wideo..</button>
                             <i class="fa fa-chevron-left"></i>
 
                             <ul class="select_content">
-                                <li class="select_option" th:each="video, state : ${videos}" th:onclick="|selectOption('select_video', this, ${state.index})|" th:text="${video}"></li>
+                                <li class="select_option" tabindex="0" th:each="video, state : ${videos}" th:onclick="|selectOption('select_video', this, ${state.index})|" th:text="${video}"></li>
                             </ul>
                         </div>
 
                         <div class="accept_decline">
-                            <div class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
-                            <div class="button_gray" onclick="confirm('newTopic')">Dodaj <i class="fas fa-arrow-circle-right"></i></div>
+                            <button class="button_red" onclick="resetNewChapterAndTopic()">Anuluj <i class="fas fa-arrow-circle-right"></i></button>
+                            <button class="button_gray" onclick="confirm('newTopic')">Dodaj <i class="fas fa-arrow-circle-right"></i></button>
                         </div>
                     </div>
                 </div>
 
 
 
-                <div th:if="${#lists.isEmpty(selectedCourse)}" id="btn_refresh_duration" class="button_gray" onclick="refreshDurations()">Zaktualizuj czas trwania filmów <i class="fas fa-arrow-circle-right"></i></div>
+                <button th:if="${#lists.isEmpty(selectedCourse)}" id="btn_refresh_duration" class="button_gray" onclick="refreshDurations()">Zaktualizuj czas trwania filmów <i class="fas fa-arrow-circle-right"></i></button>
 
 
 
                 <div id="display_panel" th:if="${selectedCourse != null}">
 
-                    <h1 class="headline" id="introduction"> Podgląd </h1>
-                    <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}" th:fragment="course_preview">
+                    <div id="display_content" th:fragment="course_preview">
 
-                        <div th:if="${!#lists.isEmpty(selectedCourse)}">
-                            <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
-                                <i class="center_icon fas fa-exclamation-circle"></i>
+                        <h2 class="headline" id="introduction"> Podgląd </h2>
+                        <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
 
-                                <h1 class="subtitle">Kurs nie zawiera żadnych materiałów!</h1>
-                                <h2 class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</h2>
+                            <div th:if="${!#lists.isEmpty(selectedCourse)}">
+                                <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
+                                    <i class="center_icon fas fa-exclamation-circle"></i>
 
-                            </div>
-                        </div>
+                                    <h3 class="subtitle">Kurs nie zawiera żadnych materiałów!</h3>
+                                    <p class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</p>
 
-
-                        <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
-                            <div class="chapter_header">
-
-                                <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
-                                <div class="th_index" th:text="${chapter.index}"></div>
-                                <div class="th_title" th:text="${chapter.title}"></div>
-                                <div class="th_operations">
-                                    <div class="preview_icons">
-                                        <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editChapter', ${chapter.id})|"></i>
-                                        <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteChapter', ${chapter.id})|"></i>
-                                    </div>
                                 </div>
-
                             </div>
 
 
-                            <div class="topic_menu" th:if="${chapter.topics != null}">
-                                <div class="topic_header" th:each="topic : ${chapter.topics}" th:id="'right_topic_id_' + ${topic.id}">
+                            <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
+                                <div class="chapter_header">
 
-                                    <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
-                                    <div class="td_index" th:text="${topic.index}"></div>
-                                    <div class="td_title" th:text="${topic.title}"></div>
-                                    <div class="td_operations">
+                                    <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
+                                    <div class="th_index" th:text="${chapter.index}"></div>
+                                    <div class="th_title" th:text="${chapter.title}"></div>
+                                    <div class="th_operations">
                                         <div class="preview_icons">
-                                            <i class="fas fa-pencil-alt icon_save" th:onclick="|confirm('editTopic', ${topic.id})|"></i>
-                                            <i class="fas fa-trash icon_delete" th:onclick="|confirm('deleteTopic', ${topic.id})|"></i>
+                                            <button class="icon_save"><i class="fas fa-pencil-alt" th:onclick="|confirm('editChapter', ${chapter.id})|"></i></button>
+                                            <button class="icon_delete"><i class="fas fa-trash" th:onclick="|confirm('deleteChapter', ${chapter.id})|"></i></button>
                                         </div>
                                     </div>
 
                                 </div>
+
+
+                                <div class="topic_menu" th:if="${chapter.topics != null}">
+                                    <div class="topic_header" th:each="topic : ${chapter.topics}" th:id="'right_topic_id_' + ${topic.id}">
+
+                                        <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
+                                        <div class="td_index" th:text="${topic.index}"></div>
+                                        <div class="td_title" th:text="${topic.title}"></div>
+                                        <div class="td_operations">
+                                            <div class="preview_icons">
+                                                <button class="icon_save"><i class="fas fa-pencil-alt" th:onclick="|confirm('editTopic', ${topic.id})|"></i></button>
+                                                <button class="icon_delete"><i class="fas fa-trash" th:onclick="|confirm('deleteTopic', ${topic.id})|"></i></button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -189,7 +191,7 @@
                 <span class="close"><i class="fas fa-times"></i></span>
 
                 <div class="top">
-                    <h1 class="title" id="modal_title"> Potwierdź akcje!</h1>
+                    <h2 class="title" id="modal_title"> Potwierdź akcje!</h2>
                 </div>
 
 
@@ -199,8 +201,8 @@
                         <div th:fragment="editChapter" th:if="${editChapter != null}">
                             <div class="headline">Nazwa i indeks rozdziału:</div>
                             <div class="input_group" th:if="${editChapter != null}">
-                                <input class="input" id="edit_chapter_title" type="text" th:value="${editChapter.title}" placeholder="Wpisz nazwę rozdziału..">
-                                <input class="input_number" id="edit_chapter_index" type="number" th:value="${editChapter.index}">
+                                <input class="input" id="edit_chapter_title" type="text" th:value="${editChapter.title}" placeholder="Wpisz nazwę rozdziału.." maxlength="50">
+                                <input class="input_number" id="edit_chapter_index" type="number" th:value="${editChapter.index}" min="0">
                             </div>
                         </div>
 
@@ -209,21 +211,21 @@
 
                             <div class="headline">Rozdział: </div>
                             <div id="edit_select_chapter" class="select_menu" style="margin-bottom: 40px;" th:data-id="${finalChapter.id}">
-                                <div class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.index} < 10 ? '0' + ${finalChapter.index}+ ' - ' + ${finalChapter.title} : ${finalChapter.index} + ' - ' + ${finalChapter.title}"></div>
+                                <button class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.index} < 10 ? '0' + ${finalChapter.index}+ ' - ' + ${finalChapter.title} : ${finalChapter.index} + ' - ' + ${finalChapter.title}"></button>
                                 <i class="fa fa-chevron-left"></i>
 
                                 <ul class="select_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
-                                    <li class="select_option" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('edit_select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
+                                    <li class="select_option" tabindex="0" th:each="chapter : ${selectedCourse.chapters}" th:onclick="|selectOption('edit_select_chapter', this, ${chapter.id})|" th:text="${chapter.index} < 10 ? '0' + ${chapter.index} + ' - ' + ${chapter.title} : ${chapter.index}  + ' - ' + ${chapter.title}"></li>
                                 </ul>
                             </div>
 
                             <div class="headline">Materiał wideo:</div>
                             <div id="edit_select_video" class="select_menu" style="margin-bottom: 40px;">
-                                <div class="select_btn" onclick="toggleSelect('edit_select_video')" th:text="${editTopic.location}"></div>
+                                <button class="select_btn" onclick="toggleSelect('edit_select_video')" th:text="${editTopic.location}"></button>
                                 <i class="fa fa-chevron-left"></i>
 
                                 <ul class="select_content">
-                                    <li class="select_option" th:each="video, state : ${videos}" th:onclick="|selectOption('edit_select_video', this, ${state.index})|" th:text="${video}"></li>
+                                    <li class="select_option" tabindex="0" th:each="video, state : ${videos}" th:onclick="|selectOption('edit_select_video', this, ${state.index})|" th:text="${video}"></li>
                                 </ul>
 
                             </div>
@@ -231,16 +233,16 @@
 
                             <div class="headline">Nazwa oraz indeks tematu:</div>
                             <div class="input_group">
-                                <input id="edit_topic_input" type="text" class ="input" th:value="${editTopic.title}" placeholder="Wpisz nazwę tematu..">
-                                <input class="input_number" id="edit_topic_index" type="number" th:value="${editTopic.index}">
+                                <input id="edit_topic_input" type="text" class ="input" th:value="${editTopic.title}" placeholder="Wpisz nazwę tematu.." maxlength="50">
+                                <input class="input_number" id="edit_topic_index" type="number" th:value="${editTopic.index}" min="0">
                             </div>
 
                         </div>
 
                     </div>
 
-                    <div class="button_red" onclick="closeModal()">Anuluj <i class="fas fa-arrow-circle-right"></i></div>
-                    <div id="js_confirm" class="button_gray">Potwierdź <i class="fas fa-arrow-circle-right"></i></div>
+                    <button class="button_red" onclick="closeModal()">Anuluj <i class="fas fa-arrow-circle-right"></i></button>
+                    <button id="js_confirm" class="button_gray">Potwierdź <i class="fas fa-arrow-circle-right"></i></button>
 
                 </div>
             </div>
@@ -351,7 +353,7 @@
                     jsConfirm.setAttribute('onclick', 'addNewChapter()');
 
                 } else {
-                    alert("Wypełnij wszystkie dane!");
+                    alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
                     return;
                 }
             }
@@ -388,13 +390,13 @@
                         '   <div class="td_index">' + topic_index + '</div>' +
                         '   <div class="td_title">' + topic_title + '</div>' +
                         '</div>' +
-                        '<h1 id="js_info_title"> Materiał wideo: </h1>' +
+                        '<h3 id="js_info_title"> Materiał wideo: </h3>' +
                         '<p  id="js_info_desc">' + topic_video + '</p>';
 
                     jsConfirm.setAttribute('onclick', 'addNewTopic()');
 
                 } else {
-                    alert("Wypełnij wszystkie dane!");
+                    alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
                     return;
                 }
             }
@@ -683,7 +685,7 @@
                     }
                 });
             } else {
-                alert("Wypełnij wszystkie dane!");
+                alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
             }
         }
 
@@ -730,7 +732,7 @@
                     }
                 });
             } else {
-                alert("Wypełnij wszystkie dane!");
+                alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
             }
         }
 
@@ -771,7 +773,7 @@
                     }
                 });
             } else {
-                alert("Wypełnij wszystkie dane!");
+                alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
             }
         }
 
@@ -821,7 +823,7 @@
                     }
                 });
             } else {
-                alert("Wypełnij wszystkie dane!");
+                alert("Wypełnij wszystkie dane bądź sprawdź ich poprawność!");
             }
         }
 
