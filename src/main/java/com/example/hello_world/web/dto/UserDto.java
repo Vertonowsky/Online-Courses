@@ -1,5 +1,7 @@
 package com.example.hello_world.web.dto;
 
+import com.example.hello_world.RegistrationMethod;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,10 +12,10 @@ public class UserDto {
 
 
 
+    private RegistrationMethod registrationMethod = RegistrationMethod.DEFAULT;
     private String email;
     private String password;
     private String passwordRepeat;
-
     private boolean terms;
 
 
@@ -49,6 +51,15 @@ public class UserDto {
         this.terms = terms;
     }
 
+    public RegistrationMethod getRegistrationMethod() {
+        return registrationMethod;
+    }
+
+    public void setRegistrationMethod(RegistrationMethod registrationMethod) {
+        this.registrationMethod = registrationMethod;
+    }
+
+
     public UserDto() {
     }
 
@@ -57,6 +68,14 @@ public class UserDto {
         this.password = password;
         this.passwordRepeat = passwordRepeat;
         this.terms = terms;
+    }
+
+    public UserDto(String email, String password, String passwordRepeat, boolean terms, RegistrationMethod registrationMethod) {
+        this.email = email;
+        this.password = password;
+        this.passwordRepeat = passwordRepeat;
+        this.terms = terms;
+        this.registrationMethod = registrationMethod;
     }
 
 
