@@ -1,6 +1,8 @@
 package com.example.hello_world.persistence.model;
 
 
+import com.example.hello_world.RegistrationMethod;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -17,10 +19,15 @@ public class User {
     //@Column(name="salt", nullable = false, length = 32)
     //String salt;
 
+
+    @Column(nullable = false, length = 32, columnDefinition = "varchar(32) default 'DEFAULT'")
+    @Enumerated(value = EnumType.STRING)
+    private RegistrationMethod registrationMethod = RegistrationMethod.DEFAULT;
+
     @Column(nullable = false, length = 60)
     private String email;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = true, length = 64)
     private String password;
 
 
@@ -61,10 +68,18 @@ public class User {
         this.password = password;
     }
 
+
+    public User(String email, RegistrationMethod registrationMethod) {
+        this.email = email;
+        this.password = null;
+        this.registrationMethod = registrationMethod;
+    }
+
+
+
     public Integer getId() {
         return id;
     }
-
 
     public String getEmail() {
         return email;
@@ -150,6 +165,14 @@ public class User {
         this.finishedTopics = finishedTopics;
     }
 
+
+    public RegistrationMethod getRegistrationMethod() {
+        return registrationMethod;
+    }
+
+    public void setRegistrationMethod(RegistrationMethod registrationMethod) {
+        this.registrationMethod = registrationMethod;
+    }
 
     public boolean isCourseOwnedAndValid(Course course) {
         for (CourseOwned courseOwned : coursesOwned) {
