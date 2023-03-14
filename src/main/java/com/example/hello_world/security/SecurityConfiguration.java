@@ -41,6 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/list-users").permitAll()
                 .antMatchers("/logowanie2").permitAll()
                 .antMatchers("/registration").permitAll()
+                .antMatchers("/oauth_login").permitAll()
                 .antMatchers("/").permitAll()
                 .and()
                     .formLogin()
@@ -57,8 +58,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
+                    .permitAll()
+                .and()
+                    .oauth2Login()
+                    .loginPage("/logowanie")
                     .permitAll();
         }
+
+
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
