@@ -933,7 +933,6 @@
             videoElement.onloadedmetadata = function() {
                 duration = videoElement.duration;
                 if (Number.isNaN(duration)) duration = 0;
-                console.log(videoLocation + " " + duration);
                 updateDurationDatabase(videoLocation, duration);
 
                 updateSingleVideo(videoElement, sourceElement, videoPath, list, (index + 1));
@@ -959,7 +958,7 @@
                     success: function (data) {
 
                         updateDurationCounter++;
-                        showPopup("Zaktualizowano " + updateDurationCounter + "/" + updateDurationCounter + " plików video.", 1);
+                        showPopup("Zaktualizowano " + updateDurationCounter + "/" + updateDurationTotal + " plików video.", 1);
 
                     },
                     error: function (xhr, status, error) {
