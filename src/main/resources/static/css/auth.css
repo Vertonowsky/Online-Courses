@@ -242,15 +242,20 @@
                         .other_login_button {
                             position: relative;
                             box-sizing: border-box;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
                             width: calc(100% - 4px);
                             height: auto;
                             background: transparent;
                             border: 2px solid #E6E6E6;
                             border-radius: 10px;
                             margin-bottom: 10px;
-                            padding: 15px 15px 15px 45px;
-                            cursor: pointer;
+                            font-size: 15px;
                             text-align: center;
+                            padding: 14px;
+                            color: var(--color-default);
+                            cursor: pointer;
                             transition: all 0.3s;
                         }
 
@@ -262,19 +267,10 @@
                             background: #F5F5F5;
                         }
 
-                                .other_login_button .text {
-                                    position: relative;
-                                    display: inline-block;
-                                    text-align: left;
-                                    font-size: var(--font-size-normal);
-                                    color: var(--color-title);
-                                }
 
                                     .other_login_button .img {
-                                        position: absolute;
-                                        top: 50%;
-                                        transform: translateY(-50%);
-                                        left: -35px;
+                                        position: relative;
+                                        display: inline-block;
                                         height: 30px;
                                         width: 30px;
                                         margin-right: 8px;
