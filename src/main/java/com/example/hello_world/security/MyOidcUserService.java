@@ -1,6 +1,8 @@
 package com.example.hello_world.security;
 
 import com.example.hello_world.RegistrationMethod;
+import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
@@ -12,12 +14,16 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MyOidcUserService extends OidcUserService {
 
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,7 +38,7 @@ public class MyOidcUserService extends OidcUserService {
 
 
     private OidcUser processOidcUser(OidcUserRequest userRequest, OidcUser oidcUser) {
-        GoogleUserInfo googleUser = new GoogleUserInfo(oidcUser.getAttributes());
+        CustomOidcUser googleUser = new CustomOidcUser(oidcUser);
 
         try {
             userService.registerNewUserAccount(new UserDto(googleUser.getEmail(), null, null, true, RegistrationMethod.GOOGLE));
@@ -41,9 +47,13 @@ public class MyOidcUserService extends OidcUserService {
             System.out.println("Uzytkownik jest juz zarejestrowany. Przystepuje do logowania.");
         }
 
-        // see what other data from userRequest or oidcUser you need
+        Optional<User> user = userRepository.findByEmail(googleUser.getEmail());
+        if (user.isPresent()) {
+            googleUser.setActive(user.get().isActive());
+            googleUser.setAuthorities(user.get().getRoles());
+        }
 
-        return oidcUser;
+        return googleUser;
     }
 
 }
