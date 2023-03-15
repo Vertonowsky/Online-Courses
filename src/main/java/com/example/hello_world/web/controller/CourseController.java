@@ -7,7 +7,6 @@ import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.FinishedTopicRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.security.MyUserDetails;
 import com.example.hello_world.web.dto.ChapterDto;
 import com.example.hello_world.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,23 +102,19 @@ public class CourseController {
 
     @GetMapping("/wyswietl/{id}")
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        MyUserDetails currentUserName = null;
-        if (auth.getPrincipal() instanceof MyUserDetails) {
-            currentUserName = (MyUserDetails) auth.getPrincipal();
-
-            Optional<User> optionalUser = userRepository.findByEmail(currentUserName.getUsername());
-            if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
-        }
-        model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
-
-
-
+        // INVALID DATA, redirect to index page.
         if (id < 1) return new ModelAndView("redirect:/");
         Optional<Course> course = courseRepository.findById(id);
         if (course.isEmpty()) return new ModelAndView("redirect:/");
 
+        // Check if user is logged in
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) {
+            Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
+            if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
+        }
 
+        model.addAttribute("loggedIn", User.isLoggedIn(auth));
         model.addAttribute("course", course.get());
         model.addAttribute("topics", null);
         return new ModelAndView("wyswietl");
@@ -131,15 +126,7 @@ public class CourseController {
     @GetMapping("/kurs/{courseId}")
     public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId,
                                         @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-        if (auth.getPrincipal() instanceof MyUserDetails currentUserName) {
-            Optional<User> optionalUser = userRepository.findByEmail(currentUserName.getUsername());
-            //if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
-            if (optionalUser.isPresent())
-                user = optionalUser.get();
-        }
-
+        // Check if data is valid
         if (courseId < 1 || topicId != null && topicId < 1) return new ModelAndView("redirect:/");
 
         Optional<Course> optionalCourse = courseRepository.findById(courseId);
@@ -149,6 +136,13 @@ public class CourseController {
         Topic selectedTopic = (topicId == null ? course.getFirstTopic() : course.getTopicById(topicId));
         if (selectedTopic == null) return new ModelAndView("redirect:/");
 
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = null;
+        if (User.isLoggedIn(auth)) {
+            Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
+            if (optionalUser.isPresent()) user = optionalUser.get();
+        }
 
         List<ChapterDto> chapterDtoList = new ArrayList<>();
         int counter = 0;
@@ -169,11 +163,11 @@ public class CourseController {
                             if (status == TopicStatus.FINISHED)
                                 selectedTopicFinished = true;
                         } else
-                            topicDtoList.add(new TopicDto(t, status, false)); // false means its not currently active topic
+                            topicDtoList.add(new TopicDto(t, status, false)); // false means it's not currently active topic
                     }
                 }
 
-                if (user == null || user != null && !isCourseStillValid(user, courseId)) {
+                if (user == null || (user != null && !isCourseStillValid(user, courseId))) {
 
                     if (counter < 3) {
                         if (t.equals(selectedTopic))
@@ -198,7 +192,7 @@ public class CourseController {
         }
 
 
-        model.addAttribute("loggedIn", (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))));
+        model.addAttribute("loggedIn", User.isLoggedIn(auth));
         model.addAttribute("videosPath", courseVideoesPath);
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseOwned", (user != null && user.isCourseOwnedAndValid(course)));
@@ -223,45 +217,34 @@ public class CourseController {
         if (topicId < 1 || optionalTopic.isEmpty()) return map;
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getPrincipal() instanceof MyUserDetails currentUserName) {
-            Optional<User> optionalUser = userRepository.findByEmail(currentUserName.getUsername());
-            if (optionalUser.isEmpty()) {
-                map.replace("message", "Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
-                return map;
-            }
-
-            User user = optionalUser.get();
-            Course c = optionalTopic.get().getChapter().getCourse();
-            if (!user.isCourseOwnedAndValid(c)) {
-                map.replace("message", "Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
-                return map;
-            }
-
-            Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
-            if (foundTopic.isEmpty()) {
-                FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
-                finishedTopicRepository.save(ft);
-                map.replace("success", true);
-                map.put("type", 1);
-                map.replace("message", "Sukces: Oznaczono temat jako wykonany!");
-                return map;
-            }
-
-            finishedTopicRepository.delete(foundTopic.get());
-            map.replace("success", true);
-            map.put("type", 0);
-            map.replace("message", "Sukces: Odznaczono temat!");
+        if (!User.isLoggedIn(auth) || userRepository.findByEmail(User.getEmail(auth)).isEmpty()) {
+            map.replace("message", "Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
             return map;
-
         }
 
-        map.replace("message", "Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
+        User user = userRepository.findByEmail(User.getEmail(auth)).get();
+        Course c = optionalTopic.get().getChapter().getCourse();
+        if (!user.isCourseOwnedAndValid(c)) {
+            map.replace("message", "Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
+            return map;
+        }
+
+        Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
+        if (foundTopic.isEmpty()) {
+            FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
+            finishedTopicRepository.save(ft);
+            map.replace("success", true);
+            map.put("type", 1);
+            map.replace("message", "Sukces: Oznaczono temat jako wykonany!");
+            return map;
+        }
+
+        finishedTopicRepository.delete(foundTopic.get());
+        map.replace("success", true);
+        map.put("type", 0);
+        map.replace("message", "Sukces: Odznaczono temat!");
         return map;
     }
-
-
-
-
 
 
 
