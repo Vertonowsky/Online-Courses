@@ -2,13 +2,11 @@ package com.example.hello_world.web.controller;
 
 
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -20,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RestController
@@ -30,55 +27,45 @@ public class AuthController {
     private IUserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    private static String authorizationRequestBaseUri = "oauth2/authorization";
-
-    @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
 
 
     @GetMapping("/logowanie")
     public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered) {
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            ModelAndView mav = new ModelAndView( "logowanie");
-            mav.addObject("googleUrl", getGoogleLoginUrl());
-            mav.addObject("registered", registered);
-            return mav;
-        }
-
-        return new ModelAndView( "redirect:/");
+        ModelAndView mav = new ModelAndView( "logowanie");
+        mav.addObject("googleUrl", getGoogleLoginUrl());
+        mav.addObject("registered", registered);
+        return mav;
     }
 
 
 
     @PostMapping("/logowanie")
     public ModelAndView showLoginform(HttpServletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            ModelAndView mav = new ModelAndView( "logowanie");
-            mav.addObject("googleUrl", getGoogleLoginUrl());
-            mav.addObject("registered", false);
-            return mav;
-        }
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
-        return new ModelAndView( "redirect:/");
+        ModelAndView mav = new ModelAndView( "logowanie");
+        mav.addObject("googleUrl", getGoogleLoginUrl());
+        mav.addObject("registered", false);
+        return mav;
     }
 
 
     @GetMapping("/rejestracja")
     public ModelAndView RegisterView(Model model) {
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+
         UserDto userDto = new UserDto();
         model.addAttribute("user", userDto);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return new ModelAndView( "rejestracja");
-        }
-
-        return new ModelAndView( "redirect:/");
+        return new ModelAndView( "rejestracja");
     }
 
 
@@ -124,21 +111,8 @@ public class AuthController {
     }
 
 
-    @GetMapping("/oauth_login")
-    public ModelAndView getLoginPage(Model model) {
-        model.addAttribute("googleUrl", getGoogleLoginUrl());
-        return new ModelAndView("oauth_login");
-    }
-
-
-    @GetMapping("/list-users")
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-
     private String getGoogleLoginUrl() {
-        Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
+        String authorizationRequestBaseUri = "oauth2/authorization";
         Iterable<ClientRegistration> clientRegistrations = null;
         ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
         if (type != ResolvableType.NONE && ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0]))
