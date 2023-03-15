@@ -6,19 +6,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, AuthenticatedUser {
 
 
-    private String email;
-    private String password;
-    private boolean active;
-    private List<GrantedAuthority> authorities;
+    private final String email;
+    private final String password;
+    private final boolean active;
+    private final List<GrantedAuthority> authorities;
 
-    public MyUserDetails(User user) {
+    public CustomUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.active = user.isActive();
@@ -27,10 +26,6 @@ public class MyUserDetails implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-
-    public MyUserDetails(String email) {
-        this.email = email;
-    }
 
     /*
     private List<GrantedAuthority> getAuthorities (List<String> roles) {
@@ -43,10 +38,16 @@ public class MyUserDetails implements UserDetails {
 
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public List<GrantedAuthority> getAuthorities() {
         return authorities;
         //return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
+
+    @Override
+    public boolean isActive() { return active; }
+
+    @Override
+    public String getEmail() { return email; }
 
     @Override
     public String getPassword() {
