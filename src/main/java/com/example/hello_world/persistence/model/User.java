@@ -2,6 +2,9 @@ package com.example.hello_world.persistence.model;
 
 
 import com.example.hello_world.RegistrationMethod;
+import com.example.hello_world.security.CustomOidcUser;
+import com.example.hello_world.security.CustomUserDetails;
+import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
 import java.util.*;
@@ -16,10 +19,6 @@ public class User {
     @Column(name="user_id")
     private Integer id;
 
-    //@Column(name="salt", nullable = false, length = 32)
-    //String salt;
-
-
     @Column(nullable = false, length = 32, columnDefinition = "varchar(32) default 'DEFAULT'")
     @Enumerated(value = EnumType.STRING)
     private RegistrationMethod registrationMethod = RegistrationMethod.DEFAULT;
@@ -27,7 +26,7 @@ public class User {
     @Column(nullable = false, length = 60)
     private String email;
 
-    @Column(nullable = true, length = 64)
+    @Column(length = 64)
     private String password;
 
 
@@ -57,23 +56,46 @@ public class User {
     private Set<FinishedTopic> finishedTopics;
 
 
-
     public User() {
 
     }
-
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-
     public User(String email, RegistrationMethod registrationMethod) {
         this.email = email;
         this.password = null;
         this.registrationMethod = registrationMethod;
     }
+
+    /*
+
+    Added authentication methods. Implemented functions: isLoggedIn(Authentication authentication), getEmail(Authentication authentication),hasAuthority(Authentication authentication, String name)
+
+     */
+
+    public static String getEmail(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof CustomUserDetails) return ((CustomUserDetails) authentication.getPrincipal()).getEmail();
+        if (authentication.getPrincipal() instanceof CustomOidcUser)    return ((CustomOidcUser)    authentication.getPrincipal()).getEmail();
+
+        return null;
+    }
+
+    public static boolean isLoggedIn(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof CustomOidcUser) return true;
+        if (authentication.getPrincipal() instanceof CustomUserDetails) return true;
+
+        return false;
+    }
+
+    public static boolean hasAuthority(Authentication authentication, String name) {
+        return (authentication.getAuthorities().stream().anyMatch(usr -> usr.getAuthority().equals(name)));
+    }
+
+
 
 
 
