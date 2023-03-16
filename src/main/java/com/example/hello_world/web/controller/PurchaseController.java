@@ -4,9 +4,7 @@ import com.example.hello_world.CourseStatus;
 import com.example.hello_world.DiscountType;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.*;
-import com.example.hello_world.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -46,40 +44,32 @@ public class PurchaseController {
 
     @PostMapping("/purchase/useDiscountCode")
     public Map<String, Object> useDiscountCode(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName") String codeName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> map = verifyPaymentDetails(courseId, codeName, true);
         map.put("discount", null);
         map.put("newPrice", null);
 
-        if (map.get("success").equals(false)) {
-            return map;
-        }
+        if (map.get("success").equals(false) || !(User.isLoggedIn(auth))) return map;
 
-        Course course = courseRepository.findById(courseId).get();
-        DiscountCode discountCode = discountCodeRepository.findByName(codeName).get();
-        MyUserDetails currentUserName = (MyUserDetails) authentication.getPrincipal();
-        Optional<User> user = userRepository.findByEmail(currentUserName.getUsername());
 
-        if (user.isPresent()) {
-            Map<String, Double> prices = calculateDiscountPrice(course, discountCode);
+        Optional<Course> course = courseRepository.findById(courseId);
+        Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
+        Optional<User> user = userRepository.findByEmail(User.getEmail(auth));
 
-            /*DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
-            discountCodeUsed.setDiscountCode(discountCode);
-            discountCodeUsed.setUser(user.get());
-            discountCodeUsed.setDate(now);
-            discountCodeUsedRepository.save(discountCodeUsed);*/
-
-            map.replace("success", true);
-            map.replace("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
-            if (prices.get("discount") != null) map.replace("discount", prices.get("discount"));
-            if (prices.get("newPrice") != null) map.replace("newPrice", prices.get("newPrice"));
-            map.put("title", discountCode.getTitle());
+        if (course.isEmpty() || discountCode.isEmpty() || user.isEmpty()) {
+            map.replace("success", false);
+            map.replace("message", "Wystąpił nieoczekiwany błąd ;c");
             return map;
         }
 
 
-        map.replace("success", false);
-        map.replace("message", "Wystąpił nieoczekiwany błąd ;c");
+        Map<String, Double> prices = calculateDiscountPrice(course.get(), discountCode.get());
+
+        map.replace("success", true);
+        map.replace("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
+        if (prices.get("discount") != null) map.replace("discount", prices.get("discount"));
+        if (prices.get("newPrice") != null) map.replace("newPrice", prices.get("newPrice"));
+        map.put("title", discountCode.get().getTitle());
         return map;
     }
 
@@ -95,101 +85,94 @@ public class PurchaseController {
 
     @PostMapping("/purchase/verifyPayment")
     public Map<String, Object> verifyPayment(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName", defaultValue = "") String codeName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> map = verifyPaymentDetails(courseId, codeName, !codeName.isEmpty());
         map.put("discount", null);
         map.put("newPrice", null);
 
-        if (map.get("success").equals(false)) {
+        if (map.get("success").equals(false) || !(User.isLoggedIn(auth))) return map;
+
+
+        Optional<Course> course = courseRepository.findById(courseId);
+        Optional<DiscountCode> discountCode = !codeName.isEmpty() ? discountCodeRepository.findByName(codeName) : Optional.empty();
+        Optional<User> user = userRepository.findByEmail(User.getEmail(auth));
+
+        if (course.isEmpty() || user.isEmpty()) {
+            map.replace("success", false);
+            map.replace("message", "Wystąpił nieoczekiwany błąd ;c");
             return map;
         }
 
-        Course course = courseRepository.findById(courseId).get();
-        DiscountCode discountCode = !codeName.isEmpty() ? discountCodeRepository.findByName(codeName).get() : null;
-        MyUserDetails currentUserName = (MyUserDetails) authentication.getPrincipal();
-        Optional<User> user = userRepository.findByEmail(currentUserName.getUsername());
-
-        if (user.isPresent()) {
-            Map<String, Double> prices = calculateDiscountPrice(course, discountCode);
-            Optional<CourseOwned> courseOwned = courseOwnedRepository.findIfAlreadyBought(user.get(), course);
+        Map<String, Double> prices = calculateDiscountPrice(course.get(), discountCode.orElse(null));
+        Optional<CourseOwned> courseOwned = courseOwnedRepository.findIfAlreadyBought(user.get(), course.get());
 
 
-            Calendar calendar = new GregorianCalendar();
-            Date now = new Date(System.currentTimeMillis());
+        Calendar calendar = new GregorianCalendar();
+        Date now = new Date(System.currentTimeMillis());
 
-            //user has bought this course before
-            if (courseOwned.isPresent()) {
-                Date expiryDate = courseOwned.get().getExpiryDate();
+        //user has bought this course before
+        if (courseOwned.isPresent()) {
+            Date expiryDate = courseOwned.get().getExpiryDate();
 
-                //check if course is still active (yes, it is)
-                if (now.compareTo(expiryDate) < 0) {
+            //check if course is still active (yes, it is)
+            if (now.compareTo(expiryDate) < 0) {
 
-                    calendar.setTime(expiryDate);
-                    calendar.add(Calendar.DATE, 90);
+                calendar.setTime(expiryDate);
+                calendar.add(Calendar.DATE, 90);
 
-                    courseOwnedRepository.updateExistingCourseExpiration(user.get(), course, now, calendar.getTime());
-
-
-                //Otherways, when course isn't active anymore
-                } else {
-
-                    calendar.setTime(now);
-                    calendar.add(Calendar.DATE, 90);
-
-                    courseOwnedRepository.updateExistingCourseExpiration(user.get(), course, now, calendar.getTime());
-
-                }
+                courseOwnedRepository.updateExistingCourseExpiration(user.get(), course.get(), now, calendar.getTime());
 
 
+            //Otherways, when course isn't active anymore
             } else {
 
                 calendar.setTime(now);
                 calendar.add(Calendar.DATE, 90);
-                Date expiryDate = calendar.getTime();
 
-                CourseOwned courseOwn = new CourseOwned();
-                courseOwn.setStatus(CourseStatus.NEW);
-                courseOwn.setBuyDate(now);
-                courseOwn.setExpiryDate(expiryDate);
-                courseOwn.setCourse(course);
-                courseOwn.setUser(user.get());
-
-                courseOwnedRepository.save(courseOwn);
-            }
-
-
-            //if user used any discount code then save this to database -> validation was at the start of the function
-            if (!codeName.isEmpty()) {
-
-                DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
-                discountCodeUsed.setDiscountCode(discountCode);
-                discountCodeUsed.setUser(user.get());
-                discountCodeUsed.setDate(now);
-                discountCodeUsedRepository.save(discountCodeUsed);
+                courseOwnedRepository.updateExistingCourseExpiration(user.get(), course.get(), now, calendar.getTime());
 
             }
 
 
-            //Save payment request in database
-            PaymentHistory paymentHistory = new PaymentHistory(now, prices.get("newPrice"), "PLN", true);
-            paymentHistory.setCourse(course);
-            paymentHistory.setUser(user.get());
-            paymentHistoryRepository.save(paymentHistory);
+        } else {
 
+            calendar.setTime(now);
+            calendar.add(Calendar.DATE, 90);
+            Date expiryDate = calendar.getTime();
 
+            CourseOwned courseOwn = new CourseOwned();
+            courseOwn.setStatus(CourseStatus.NEW);
+            courseOwn.setBuyDate(now);
+            courseOwn.setExpiryDate(expiryDate);
+            courseOwn.setCourse(course.get());
+            courseOwn.setUser(user.get());
 
-            map.replace("success", true);
-            map.replace("message", String.format("Sukces: Zakupiono kurs %s!", course.getName()));
-            if (prices.get("discount") != null) map.replace("discount", prices.get("discount"));
-            if (prices.get("newPrice") != null) map.replace("newPrice", prices.get("newPrice"));
-            return map;
+            courseOwnedRepository.save(courseOwn);
         }
 
 
+        //if user used any discount code then save this to database -> validation was at the start of the function
+        if (discountCode.isPresent()) {
+            DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
+            discountCodeUsed.setDiscountCode(discountCode.get());
+            discountCodeUsed.setUser(user.get());
+            discountCodeUsed.setDate(now);
+            discountCodeUsedRepository.save(discountCodeUsed);
+        }
 
 
-        map.put("success", true);
-        map.put("message", "Wystąpił nieoczekiwany błąd ;c");
+        //Save payment request in database
+        PaymentHistory paymentHistory = new PaymentHistory(now, prices.get("newPrice"), "PLN", true);
+        paymentHistory.setCourse(course.get());
+        paymentHistory.setUser(user.get());
+        paymentHistoryRepository.save(paymentHistory);
+
+
+
+        map.replace("success", true);
+        map.replace("message", String.format("Sukces: Zakupiono kurs %s!", course.get().getName()));
+        if (prices.get("discount") != null) map.replace("discount", prices.get("discount"));
+        if (prices.get("newPrice") != null) map.replace("newPrice", prices.get("newPrice"));
         return map;
     }
 
@@ -207,16 +190,21 @@ public class PurchaseController {
 
 
     private Map<String, Object> verifyPaymentDetails(Integer courseId, String codeName, boolean usingDiscount) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Date now = new Date(System.currentTimeMillis());
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("message", String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
 
-
         Optional<Course> course = courseRepository.findById(courseId);
         if (courseId < 1 || course.isEmpty()) {
             map.replace("message", "Błąd: Nie odnaleziono podanego kursu.");
+            return map;
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!User.isLoggedIn(auth)) {
+            map.put("success", false);
+            map.put("message", "Błąd: Zakup kursu możliwy jedynie dla zalogowanych użytkowników.");
             return map;
         }
 
@@ -226,22 +214,13 @@ public class PurchaseController {
 
             Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
 
-            if (codeName == null || codeName.isEmpty()) return map;
-            if (!matcher.matches()) return map;
-            if (discountCode.isEmpty()) return map;
+            if (codeName.isEmpty() || !matcher.matches() || discountCode.isEmpty()) return map;
 
             if (now.compareTo(discountCode.get().getExpiryDate()) > 0) {
                 map.replace("message", "Błąd: Podany kod utracił ważność.");
                 return map;
             }
         }
-
-        if (authentication instanceof AnonymousAuthenticationToken) {
-            map.put("success", false);
-            map.put("message", "Błąd: Zakup kursu możliwy jedynie dla zalogowanych użytkowników.");
-            return map;
-        }
-
 
         map.replace("success", true);
         map.replace("message", "Sukces");
