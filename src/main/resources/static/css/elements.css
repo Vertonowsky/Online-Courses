@@ -386,6 +386,7 @@ body {
     background: #60768F;
     text-align: center;
     color: #fff;
+    border: none;
     border-radius: 8px;
     padding: 12px 0;
     cursor: pointer;

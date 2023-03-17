@@ -42,7 +42,7 @@
                         <p class="tit_text">Witamy</p>
                     </div>
 
-                    <div class="desc">Założ darmowe konto i ciesz się nową wiedzą</div>
+                    <p class="desc">Założ darmowe konto i ciesz się nową wiedzą</p>
 
 
                     <div id="register_square" class="tab_content">
@@ -53,7 +53,7 @@
                             -->
                             <div class="input_group">
                                 <input value="" id="register_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
-                                <label> Email: </label>
+                                <label for="register_data_email"> Email: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -71,7 +71,7 @@
                             -->
                             <div class="input_group">
                                 <input value="" id="register_data_password" class="input" type="password" name="password" autocomplete="new-password" oninput="checkInputData(1, AuthDataTypeEnum.Password, this.value)" onfocusout="checkPasswordsEquality()">
-                                <label> Hasło: </label>
+                                <label for="register_data_password"> Hasło: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -89,7 +89,7 @@
                             -->
                             <div class="input_group" style="margin-bottom: 0;">
                                 <input value="" id="register_data_password_repeat" class="input" type="password" name="passwordRepeat" autocomplete="new-password" oninput="checkInputData(2, AuthDataTypeEnum.PasswordRepeat, this.value)" onfocusout="checkPasswordsEquality()">
-                                <label> Powtórz hasło: </label>
+                                <label for="register_data_password_repeat"> Powtórz hasło: </label>
 
                                 <!--
                                     TOOLTIP - Information about corectness of data
@@ -120,7 +120,7 @@
                                         <label class="checkbox-border">
                                             <input name="terms" oninput="checkInputData(3, AuthDataTypeEnum.Terms, this.checked)" id="register_data_terms" type="checkbox" class="invisible">
                                             <div class="checkbox">
-                                                <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                                <svg tabindex="0" width="20px" height="20px" viewBox="0 0 20 20">
                                                     <path d="M3,1 L17,1 L17,1 C18.1045695,1 19,1.8954305 19,3 L19,17 L19,17 C19,18.1045695 18.1045695,19 17,19 L3,19 L3,19 C1.8954305,19 1,18.1045695 1,17 L1,3 L1,3 C1,1.8954305 1.8954305,1 3,1 Z"></path>
                                                     <polyline points="4 11 8 15 16 6"></polyline>
                                                 </svg>

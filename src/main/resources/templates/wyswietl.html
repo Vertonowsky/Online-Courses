@@ -38,43 +38,43 @@ Wczytanie advantages
 
                 <div class="panel_left">
 
-                    <div class="heading" th:text="${course.name}"></div>
-                    <div class="desc" th:text="${course.description}"></div>
+                    <h1 class="heading" th:text="${course.name}"></h1>
+                    <p class="desc" th:text="${course.description}"></p>
 
                     <div id="plans">
 
                         <div class="plan_container">
 
-                            <h1 class="title">Wersja próbna</h1>
+                            <h3 class="title">Wersja próbna</h3>
                             <div class="prices">
-                                <div class="price_block">0 zł</div>
+                                <p class="price_block">0 zł</p>
                             </div>
 
                             <ul class="adv_list">
 
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> 3-miesięczny dostęp do kursu </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Tłumaczenie od doświadczonego korepetytora </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Swobodę uczenia się o dowolnej porze </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Starannie wyselekcjonowane zadania </p>
                                 </li>
                                 <li class="unavailable">
-                                    <div class="left"><i class="fas fa-times"></i></div>
-                                    <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                    <p class="left"><i class="fas fa-times"></i></p>
+                                    <p class="right"> Ponad 70 godzin materiałów wideo </p>
                                 </li>
                                 <li class="unavailable">
-                                    <div class="left"><i class="fas fa-times"></i></div>
-                                    <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                    <p class="left"><i class="fas fa-times"></i></p>
+                                    <p class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </p>
                                 </li>
                             </ul>
 
@@ -84,41 +84,41 @@ Wczytanie advantages
 
                         <div class="plan_container premium">
 
-                            <h1 class="title">Wersja premium</h1>
+                            <h3 class="title">Wersja premium</h3>
                             <div class="prices">
-                                <div class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></div>
-                                <div class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </div>-->
+                                <p class="price_block" th:if="${course.pricePromotion} > 0"><span class="price_old" th:text="${course.getPriceAsString()} + ' zł'"> --- </span> <span class="price_promotion" th:text="${course.getPricePromotionAsString()} + ' zł'"> --- </span></p>
+                                <p class="price_block" th:if="${course.pricePromotion} <= 0" th:text="${course.getPriceAsString()} + ' zł'"> --- </p>-->
                             </div>
 
                             <ul class="adv_list">
 
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> 3-miesięczny dostęp do kursu </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> 3-miesięczny dostęp do kursu </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Tłumaczenie od doświadczonego korepetytora </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Tłumaczenie od doświadczonego korepetytora </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Swobodę uczenia się o dowolnej porze </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Swobodę uczenia się o dowolnej porze </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Starannie wyselekcjonowane zadania </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Starannie wyselekcjonowane zadania </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> Ponad 70 godzin materiałów wideo </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> Ponad 70 godzin materiałów wideo </p>
                                 </li>
                                 <li class="available">
-                                    <div class="left"><i class="fas fa-check"></i></div>
-                                    <div class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </div>
+                                    <p class="left"><i class="fas fa-check"></i></p>
+                                    <p class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </p>
                                 </li>
                             </ul>
 
-                            <a class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
+                            <button class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></button>
 
                         </div>
 
@@ -136,10 +136,10 @@ Wczytanie advantages
 
 
             <div id="below_banner">
-                <div id="test">
+                <div id="cloud_background">
 
                 </div>
-                <h1 id="below_introduction"> Tego nauczysz się w naszym kursie:</h1>
+                <h2 id="below_introduction"> Tego nauczysz się w naszym kursie:</h2>
 
                 <div id="all_topics" th:if="${course != null}">
 
@@ -199,8 +199,8 @@ Wczytanie advantages
             
                 <div class="top">
 
-                    <h1 th:if="${loggedIn}" th:id="main_title" class="title" th:text="'Sprawdź poprawność danych i dokonaj płatności'"></h1>
-                    <h1 th:if="${!loggedIn}" th:id="main_title" class="title" th:text="'Do korzystania z pełnej wersji kursu wymagane jest konto'"></h1>
+                    <h2 th:if="${loggedIn}" th:id="main_title" class="title" th:text="'Sprawdź poprawność danych i dokonaj płatności'"></h2>
+                    <h2 th:if="${!loggedIn}" th:id="main_title" class="title" th:text="'Do korzystania z pełnej wersji kursu wymagane jest konto'"></h2>
 
                     <div class="step_progress_bar">
                         <ul class="progressbar">
@@ -297,8 +297,8 @@ Wczytanie advantages
 
                         <i class="modal_center_icon fas fa-user-circle"></i>
 
-                        <h1 class="subtitle">Zaloguj się aby móc kontynuować</h1>
-                        <h2 class="desc">Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.</h2>
+                        <h2 class="subtitle">Zaloguj się aby móc kontynuować</h2>
+                        <h3 class="desc">Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.</h3>
 
                         <div class="buttons">
 
@@ -313,14 +313,13 @@ Wczytanie advantages
                     <div class="tab_section">
                         <i class="modal_center_icon fas fa-check-circle"></i>
 
-                        <h1 class="subtitle">Pomyślnie dokonano zakupu.</h1>
-                        <h2 class="desc">Wszystkie zakupione kursy dostępne są w
-                        <ul class="href">
-                            <li><a class="list_link" th:href="@{/profil}"><span class="bold">panelu użytkownika</span></a></li>
-                        </ul>.</h2>
+                        <h2 class="subtitle">Pomyślnie dokonano zakupu.</h2>
+                        <h3 class="desc">Wszystkie zakupione kursy dostępne są w
+                        <a class="list_link" th:href="@{/profil}"><span class="bold">panelu użytkownika</span></a></li>
+                        </h3>
 
                         <div class="buttons">
-                            <div class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
+                            <button class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></button>
                             <a th:href="@{'/kurs/' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
 

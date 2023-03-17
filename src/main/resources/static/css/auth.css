@@ -77,7 +77,6 @@
                     width: 200px;
                     margin: 20px auto 0 auto;
                     padding: 13px 10px;
-                    outline: 0;
                     border: 0;
                 }
 
@@ -173,7 +172,6 @@
                         #auth_container .button_blue {
                             padding: 14px 0;
                             width: 180px;
-                            outline: 0;
                             border: 0;
                             right: 0;
                         }

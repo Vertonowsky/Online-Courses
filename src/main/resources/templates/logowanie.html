@@ -26,8 +26,8 @@
             <div id="registration_info_bg" th:if="${!#strings.isEmpty(registered) && registered}">
                 <div class="window" id="registration_info">
                     <i class="center_icon fas fa-check-circle"></i>
-                    <h1 class="subtitle">Proces rejestracji zakończony sukcesem!</h1>
-                    <h2 class="desc">Możesz się teraz zalogować na swoje konto.</h2>
+                    <h2 class="subtitle">Proces rejestracji zakończony sukcesem!</h2>
+                    <h3 class="desc">Możesz się teraz zalogować na swoje konto.</h3>
                     <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                         <p class="tit_text">Witamy ponownie</p>
                     </div>
 
-                    <div class="desc">Zaloguj się, aby mieć dostęp do posiadanych kursów</div>
+                    <p class="desc">Zaloguj się, aby mieć dostęp do posiadanych kursów</p>
 
 
                     <form id="login_form" th:action="@{/logowanie}" method="POST">
@@ -68,7 +68,7 @@
                         -->
                         <div class="input_group">
                             <input th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" id="login_data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
-                            <label> Email: </label>
+                            <label for="login_data_email"> Email: </label>
 
                             <!--
                                 TOOLTIP - Information about corectness of data
@@ -86,7 +86,7 @@
                         -->
                         <div class="input_group">
                             <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="login_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
-                            <label> Hasło: </label>
+                            <label for="login_data_password"> Hasło: </label>
 
                             <!--
                                 TOOLTIP - Information about corectness of data
