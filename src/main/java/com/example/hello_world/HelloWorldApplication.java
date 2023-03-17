@@ -34,7 +34,7 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
         MySQL.closeConnection();
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-        applicationContext.getEnvironment().setActiveProfiles("prod");
+        applicationContext.getEnvironment().setActiveProfiles("dev");
         applicationContext.register(ProfileConfiguration.class);
         applicationContext.refresh();
     }

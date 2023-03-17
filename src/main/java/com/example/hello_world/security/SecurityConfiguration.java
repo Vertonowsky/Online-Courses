@@ -61,8 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .oauth2Login()
-                    .loginPage("/logowanie")
-                    .permitAll();
+                    .loginPage("/logowanie").permitAll();
         }
 
 
