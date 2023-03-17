@@ -292,6 +292,9 @@
                 }
 
 
+        .topic_menu {
+            text-align: right;
+        }
 
         .topic_header {
             position: relative;
@@ -301,6 +304,7 @@
             margin: 5px 0 10px 5%;
             padding: 12px 8px;
             box-shadow: 0 0 4px 2px #EBEBEB;
+            background: transparent;
             text-align: center;
             font-size: 0;
             border: 1px solid transparent;

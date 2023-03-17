@@ -34,7 +34,7 @@ function loadCourses(typeFilters, categoryFilters, limit) {
                     text = text + '<div class="course_container">' +
                         '<div class="left">' +
                         '<div class="photo">' +
-                        '<img src="/images/course_photo_' + element.id + '.png" />' +
+                        '<img alt="Miniatura kursu" src="/images/course_photo_' + element.id + '.png" />' +
                         '</div>' +
 
                         '<div class="title_with_shadow_hidden">' +

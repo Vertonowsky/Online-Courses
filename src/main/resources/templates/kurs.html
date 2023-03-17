@@ -39,7 +39,7 @@
                         </div>
 
                         <div class="topic_menu" th:if="${!#lists.isEmpty(chapterDto.topicDtoList)}">
-                            <div th:each="topicDto : ${chapterDto.topicDtoList}" th:class="${topicDto.active} ?  'topic_header ' + ${topicDto.getStatusAsString()} + ' active' : 'topic_header ' + ${topicDto.getStatusAsString()}" th:onclick="${topicDto.blocked} ? '' : ' openTopic(' + ${topicDto.topic.id} + ')'" th:attr="data-id=${topicDto.topic.getId()}">
+                            <button th:each="topicDto : ${chapterDto.topicDtoList}" th:class="${topicDto.active} ?  'topic_header ' + ${topicDto.getStatusAsString()} + ' active' : 'topic_header ' + ${topicDto.getStatusAsString()}" th:onclick="${topicDto.blocked} ? '' : ' openTopic(' + ${topicDto.topic.id} + ')'" th:attr="data-id=${topicDto.topic.getId()}">
 
                                 <div class="td_left">
                                     <i th:if="${topicDto.getStatusAsString()} == 'available'" class="far fa-circle"></i>
@@ -53,7 +53,7 @@
                                     <div class="td_title" th:text="${topicDto.topic.title}"></div>
                                 </div>
 
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -72,8 +72,7 @@
                     <div id="loader"></div>
                     <h1 id="video_controls_title" th:text="${topic.title}"></h1>
 
-                    <video id="video" onloadeddata="initializeVideo()" th:src="${videosPath} + ${topic.location}">
-                    </video>
+                    <video id="video" onloadeddata="initializeVideo()" th:src="${videosPath} + ${topic.location}"></video>
 
                     <div id="center_volume_info"></div>
                     <div id="center_play_info" class="active"><i id="center_play_info_icon" class="fas fa-play"></i></div>
@@ -91,34 +90,34 @@
 
                         <div class="left">
 
-                            <div class="playpause" id="button_play"></div>
+                            <button class="playpause" id="button_play"></button>
 
-                            <div id="video_volume" data-state="1"><i onclick="mute()" id="button_volume_icon" class=""></i>
+                            <button id="video_volume"><i onclick="mute()" id="button_volume_icon"></i>
                                 <div id="volume_slider_container">
-                                    <input id="volume_slider" type="range" min="0" max="100" class="slider_volume">
+                                    <input id="volume_slider" type="range" min="0" max="100">
                                 </div>
-                            </div>
-                            <div id="video_time">0:00</div>
+                            </button>
+                            <p id="video_time">0:00</p>
 
                         </div>
 
 
                         <div class="right">
 
-                            <button id="button_speed" type="button" data-state="1" onclick="toggleSpeedContainer()"><i class="fas fa-cog"></i></button>
+                            <button id="button_speed" onclick="toggleSpeedContainer()"><i class="fas fa-cog"></i></button>
                             <div id="speed_container">
-                                <h1>Predkość odtwarzania</h1>
+                                <h3>Predkość odtwarzania</h3>
                                 <div id="option_list">
-                                    <div onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</div>
-                                    <div onclick="changeSpeed(this, 0.5) " class="button_speed_option">0.50</div>
-                                    <div onclick="changeSpeed(this, 0.75)" class="button_speed_option">0.75</div>
-                                    <div onclick="changeSpeed(this, 1)   " class="button_speed_option active">Normalna</div>
-                                    <div onclick="changeSpeed(this, 1.5) " class="button_speed_option">1.5</div>
-                                    <div onclick="changeSpeed(this, 1.75)" class="button_speed_option">1.75</div>
-                                    <div onclick="changeSpeed(this, 2)   " class="button_speed_option">2</div>
+                                    <p onclick="changeSpeed(this, 0.25)" class="button_speed_option">0.25</p>
+                                    <p onclick="changeSpeed(this, 0.5) " class="button_speed_option">0.50</p>
+                                    <p onclick="changeSpeed(this, 0.75)" class="button_speed_option">0.75</p>
+                                    <p onclick="changeSpeed(this, 1)   " class="button_speed_option active">Normalna</p>
+                                    <p onclick="changeSpeed(this, 1.5) " class="button_speed_option">1.5</p>
+                                    <p onclick="changeSpeed(this, 1.75)" class="button_speed_option">1.75</p>
+                                    <p onclick="changeSpeed(this, 2)   " class="button_speed_option">2</p>
                                 </div>
                             </div>
-                            <button id="button_fullscreen" type="button" data-state="0"><i class="fas fa-expand"></i></button>
+                            <button id="button_fullscreen"><i class="fas fa-expand"></i></button>
 
                         </div>
                     </div>
@@ -128,9 +127,9 @@
 
                     <div id="topic_info">
                         <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
-                        <div id="topic_title" th:text="${topic.title}"></div>
+                        <p id="topic_title" th:text="${topic.title}"></p>
                     </div>
-                    <div th:if="${loggedIn && courseOwned}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></div>
+                    <button th:if="${loggedIn && courseOwned}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></button>
 
                 </div>
 
@@ -138,7 +137,7 @@
 
                 <!--<div id="exercises_container">
                     <div class="task">
-                        <h1 class="task_number">Zadanie 1</h1>
+                        <h2 class="task_number">Zadanie 1</h2>
                         <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
                         <ol class="answers">
                             <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
@@ -151,7 +150,7 @@
                     </div>
 
                     <div class="task">
-                        <h1 class="task_number">Zadanie 1</h1>
+                        <h2 class="task_number">Zadanie 1</h2>
                         <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
                         <ol class="answers">
                             <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
@@ -165,7 +164,7 @@
 
 
                     <div class="task">
-                        <h1 class="task_number">Zadanie 1</h1>
+                        <h2 class="task_number">Zadanie 1</h2>
                         <p class="title">Maja i Kaja jadą samochodem z prędkością 45km/h. Kiedy Kaja pierdolnie w drzewo?</p>
                         <ol class="answers">
                             <li class="answer"><span class="index">A.</span> Gdy zobaczy kto do niej dzwoni na telefonie</li>
@@ -262,8 +261,7 @@
      * Detect FullScreen toggle
      */
     $("#video_container").on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function() {
-        if (document.fullscreenElement) fullscreen = true;
-        else fullscreen = false;
+        fullscreen = document.fullscreenElement;
     });
 
 
@@ -608,7 +606,7 @@
      *                        False stands for rewinding the video 10 seconds backwards
      */
     function skipVideo(forward) {
-        let time = 0;
+        let time;
         if (forward) {
             time = video.currentTime + 10;
             if (time > video.duration) time = video.duration;
@@ -743,27 +741,23 @@
      * Toggle volume mute
      */
     function mute() {
-        if (!muted) {
+        if (muted) {
+            muted = false;
+            let vol = getCookie("video_volume")
+            if (vol != null) volume = vol;
+
+            updateVolumeSlider(volume);
+            document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+            button_volume_icon.className = "fas fa-volume-up";
+            video.volume = volume/100;
+
+        } else {
             muted = true;
             volume = 0;
             video.volume = volume/100;
             updateVolumeSlider(volume);
             document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
             button_volume_icon.className = "fas fa-volume-mute";
-            return;
-        }
-
-        if (muted) {
-            muted = false;
-            let vol = getCookie("video_volume")
-            if (vol != null) {
-                volume = vol;
-            }
-            updateVolumeSlider(volume);
-            document.cookie = "video_muted=" + muted + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-            button_volume_icon.className = "fas fa-volume-up";
-            video.volume = volume/100;
-            return;
         }
     }
 
@@ -864,7 +858,7 @@
      */
     function markAsFinished() {
         let topicId = /*[[${topic.id}]]*/ "";
-        if (topicId == null || topicId == "" || topicId <= 0) {
+        if (topicId == "" || topicId <= 0) {
             alert("Wystąpił problem podczas wykonywania żądania.");
             return;
         }
@@ -924,7 +918,7 @@
     $(document).ready(function() {
         let vol   = getCookie("video_volume");
         let mute  = getCookie("video_muted");
-        if (mute == "true" ? muted = true : muted = false);
+        muted = mute == "true";
 
         if (vol != "") {
             volume = vol;
@@ -1032,11 +1026,11 @@
     }
 
 
-    timeline_slider.addEventListener('mouseleave', function(e) {
+    timeline_slider.addEventListener('mouseleave', function() {
         bubble.classList.remove("active");
     });
 
-    timeline_slider.addEventListener('touchend', function(e) {
+    timeline_slider.addEventListener('touchend', function() {
         bubble.classList.remove("active");
     });
 

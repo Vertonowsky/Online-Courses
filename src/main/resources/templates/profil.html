@@ -29,8 +29,8 @@
                     <div th:if="${#lists.isEmpty(ownedCourses)}" id="no_courses_found" class="window">
                         <i class="center_icon fas fa-exclamation-circle"></i>
 
-                        <h1 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h1>
-                        <h2 class="desc">Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!</h2>
+                        <h2 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h2>
+                        <h3 class="desc">Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!</h3>
                         <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
 
                     </div>
@@ -76,7 +76,7 @@
             <div id="content_right">
                 <div id="statistics" class="window">
                     <div class="section">
-                        <h1 class="heading">Osiągnięte cele</h1>
+                        <h2 class="heading">Osiągnięte cele</h2>
 
                         <div class="progress_background">
                             <div class="progress_fill" th:attr="data-done=${lastDayPercentage}"></div>  <!-- Percentage progress through the same day. -->
@@ -103,21 +103,21 @@
 
 
                 <div id="payment_history" class="window">
-                    <h1 class="heading">Historia transakcji</h1>
+                    <h2 class="heading">Historia transakcji</h2>
 
                     <div th:if="${#lists.isEmpty(paymentHistory)}" id="no_payment_history_found">
                         <i class="center_icon fas fa-hourglass-half"></i>
-                        <h1 class="desc">Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!</h1>
+                        <h2 class="desc">Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!</h2>
                     </div>
 
 
                     <div class="activity_section" th:if="${!#lists.isEmpty(paymentHistory)}">
 
                         <div class="activity" th:each="payment : ${paymentHistory}">
-                            <div class="date circular" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></div>
-                            <div class="price circular" th:text="${payment.getAmountInt()} + 'zł'"></div>
+                            <p class="date circular" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
+                            <p class="price circular" th:text="${payment.getAmountInt()} + 'zł'"></p>
 
-                            <div class="title circular" th:text="${payment.course.name}"></div>
+                            <p class="title circular" th:text="${payment.course.name}"></p>
                         </div>
 
                     </div>

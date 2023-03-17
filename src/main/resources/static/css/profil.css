@@ -228,6 +228,10 @@ body {
                     border-bottom: 1px solid #BFBFBF;
                 }
 
+                .activity p {
+                    margin: 0;
+                }
+
                 .activity .circular {
                     position: relative;
                     padding: 5px 10px;

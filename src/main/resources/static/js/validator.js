@@ -221,9 +221,9 @@
 
 
                 }, 
-                error: function(xhr, status, error) {
+                error: function(xhr) {
                     let data = xhr.responseJSON;
-                    if (data != null || data != undefined)
+                    if (data != null)
                         showPopup(data.message, 0);
                 }
             });
