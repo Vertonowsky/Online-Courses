@@ -31,6 +31,7 @@
             width: 70%;
             margin: 7px auto 60px auto;
             font-size: 16px;
+            font-weight: normal;
             text-align: center;
             color: #fff;
         }
@@ -454,7 +455,8 @@
         z-index: 2;
     }
 
-    #section_introduction .right h1 {
+    #section_introduction .right h2 {
+        font-size: 28px;
         color: #1E4675;
         width: 100%;
         z-index: 3;
@@ -494,7 +496,7 @@
     padding: 20px 0 20px 50px;
 }
 
-    #section_advantages .left h1 {
+    #section_advantages .left h2 {
         color: #fff;
     }
 

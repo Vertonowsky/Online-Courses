@@ -28,7 +28,7 @@
 
             <div id="form">
                 <div class="left">
-                    <div class="headline">Wybierz kurs:</div>
+                    <h2 class="headline">Wybierz kurs:</h2>
 
                     <div id="select_course" class="select_menu" style="margin-bottom: 30px;">
                         <button class="select_btn" onclick="toggleSelect('select_course')" th:text="${selectedCourse == null} ? 'Nie wybrano kursu..' : ${selectedCourse.name}" ></button>
@@ -60,7 +60,7 @@
 
 
                     <div id="new_chapter" class="tabcontent" th:if="${selectedCourse != null}">
-                        <h3 class="headline">Nowy rozdział:</h3>
+                        <label class="headline" for="new_chapter_title"> Nowy rozdział:</label>
 
                         <div class="input_group">
                             <input class="input" id="new_chapter_title" type="text" placeholder="Wpisz nazwę rozdziału.." maxlength="50">
@@ -82,7 +82,8 @@
 
                     <div id="new_topic" class="tabcontent" th:if="${selectedCourse != null}">
 
-                        <h3 class="headline">Wybierz rozdział:</h3>
+                        <label class="headline" for="select_chapter">Wybierz rozdział:</label>
+
                         <div id="select_chapter" class="select_menu" style="margin-bottom: 40px;" th:fragment="chapter_select">
                             <button class="select_btn" onclick="toggleSelect('select_chapter')">Nie wybrano rozdziału..</button>
                             <i class="fa fa-chevron-left"></i>
@@ -93,14 +94,14 @@
                         </div>
 
 
-                        <h3 class="headline">Nowy temat:</h3>
+                        <label class="headline" for="new_topic_input">Nowy temat:</label>
                         <div class="input_group" style="margin-bottom: 40px;">
                             <input id="new_topic_input" type="text" class ="input" placeholder="Wpisz nazwę tematu.." maxlength="50">
                             <input class="input_number" id="new_topic_index" type="number" value="1" min="0">
                         </div>
 
 
-                        <h3 class="headline">Materiał wideo:</h3>
+                        <label class="headline" for="select_video">Materiał wideo:</label>
                         <div id="select_video" class="select_menu" style="margin-bottom: 30px;">
                             <button class="select_btn" onclick="toggleSelect('select_video')">Nie wybrano pliku wideo..</button>
                             <i class="fa fa-chevron-left"></i>
@@ -127,14 +128,14 @@
 
                     <div id="display_content" th:fragment="course_preview">
 
-                        <h2 class="headline" id="introduction"> Podgląd </h2>
+                        <h1 class="headline" id="introduction"> Podgląd </h1>
                         <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
 
                             <div th:if="${!#lists.isEmpty(selectedCourse)}">
                                 <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
                                     <i class="center_icon fas fa-exclamation-circle"></i>
 
-                                    <h3 class="subtitle">Kurs nie zawiera żadnych materiałów!</h3>
+                                    <h2 class="subtitle">Kurs nie zawiera żadnych materiałów!</h2>
                                     <p class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</p>
 
                                 </div>
@@ -188,7 +189,7 @@
 
             <!-- Modal content -->
             <div class="modal_content active">
-                <span class="close"><i class="fas fa-times"></i></span>
+                <span class="close" tabindex="0"><i class="fas fa-times"></i></span>
 
                 <div class="top">
                     <h2 class="title" id="modal_title"> Potwierdź akcje!</h2>
@@ -199,7 +200,7 @@
                     <div id="js_info">
 
                         <div th:fragment="editChapter" th:if="${editChapter != null}">
-                            <div class="headline">Nazwa i indeks rozdziału:</div>
+                            <p class="headline">Nazwa i indeks rozdziału:</p>
                             <div class="input_group" th:if="${editChapter != null}">
                                 <input class="input" id="edit_chapter_title" type="text" th:value="${editChapter.title}" placeholder="Wpisz nazwę rozdziału.." maxlength="50">
                                 <input class="input_number" id="edit_chapter_index" type="number" th:value="${editChapter.index}" min="0">
@@ -209,7 +210,7 @@
 
                         <div th:fragment="editTopic" th:if="${editTopic != null}" style="text-align: left">
 
-                            <div class="headline">Rozdział: </div>
+                            <p class="headline">Rozdział: </p>
                             <div id="edit_select_chapter" class="select_menu" style="margin-bottom: 40px;" th:data-id="${finalChapter.id}">
                                 <button class="select_btn" onclick="toggleSelect('edit_select_chapter')" th:text="${finalChapter.index} < 10 ? '0' + ${finalChapter.index}+ ' - ' + ${finalChapter.title} : ${finalChapter.index} + ' - ' + ${finalChapter.title}"></button>
                                 <i class="fa fa-chevron-left"></i>
@@ -219,7 +220,7 @@
                                 </ul>
                             </div>
 
-                            <div class="headline">Materiał wideo:</div>
+                            <p class="headline">Materiał wideo:</p>
                             <div id="edit_select_video" class="select_menu" style="margin-bottom: 40px;">
                                 <button class="select_btn" onclick="toggleSelect('edit_select_video')" th:text="${editTopic.location}"></button>
                                 <i class="fa fa-chevron-left"></i>
@@ -231,7 +232,7 @@
                             </div>
 
 
-                            <div class="headline">Nazwa oraz indeks tematu:</div>
+                            <p class="headline">Nazwa oraz indeks tematu:</p>
                             <div class="input_group">
                                 <input id="edit_topic_input" type="text" class ="input" th:value="${editTopic.title}" placeholder="Wpisz nazwę tematu.." maxlength="50">
                                 <input class="input_number" id="edit_topic_index" type="number" th:value="${editTopic.index}" min="0">
@@ -918,8 +919,8 @@
             let sourceElement = document.getElementById("source_refresh_duration");
             updateSingleVideo(videoElement, sourceElement, videoPath, list, index);
 
-            this.updateDurationTotal = 0;
-            this.updateDurationCounter = 0;
+            updateDurationTotal = 0;
+            updateDurationCounter = 0;
         }
 
 
