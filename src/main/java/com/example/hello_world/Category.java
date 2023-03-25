@@ -4,6 +4,7 @@ public enum Category {
 
     MATEMATYKA,
     INFORMATYKA,
-    ANGIELSKI
+    ANGIELSKI,
+    ROSYJSKI;
 
 }
