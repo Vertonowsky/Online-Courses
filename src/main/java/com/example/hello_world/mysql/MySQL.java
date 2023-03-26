@@ -18,9 +18,9 @@ public class MySQL {
     @Value("${spring.datasource.username}")
     private String user;
     @Value("${spring.datasource.password}")
-    private String password = "Karaoke321.";
+    private String password;
     @Value("${database.name}")
-    private String database = "spring";
+    private String database;
 
     private final String prefix = "[MySQL Configuration]";
 
