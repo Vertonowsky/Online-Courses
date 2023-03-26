@@ -267,9 +267,37 @@
 
                 </div>
             </div>
-            <!--
-                END section3
-            -->
+
+
+            <div id="faq">
+
+                <h2 class="heading">Najczęściej zadawane pytania</h2>
+
+                <div class="question">
+                    <button class="question_text">Czy mogę przetestować kurs przed zakupem? <i class="fas fa-plus icon"></i></button>
+
+                    <p class="answer">
+                        Tak. Każdy kurs zawiera 3 darmowe materiały wideo mające na celu zaprezentowanie naszego serwisu. W celu obejrzenia wszystkich materiałów niezbędna jest wersja premium.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <button class="question_text">Jak długo jest ważny kurs po zakupie? <i class="fas fa-plus icon"></i></button>
+
+                    <p class="answer">
+                        Wszystkie nasze kursy ważne są przez okres 90 dni. Po tym czasie niezbędne jest ponowne zakupienie licencji.
+                    </p>
+                </div>
+
+                <div class="question">
+                    <button class="question_text">Czy mogę przetestować kurs przed zakupem? <i class="fas fa-plus icon"></i></button>
+
+                    <p class="answer">
+                        Tak. Każdy kurs zawiera 3 darmowe materiały wideo mające na celu zaprezentowanie naszego serwisu. W celu obejrzenia wszystkich materiałów niezbędna jest wersja premium.
+                    </p>
+                </div>
+
+            </div>
 
 
 
@@ -343,6 +371,57 @@
             square.style.transform = "translateX(" + x + "px)";
         });
     });
+
+
+
+    const questions = document.querySelectorAll('.question')
+
+    questions.forEach(question => function() {
+
+        question.addEventListener('click', function() {
+            closeAllAnswers(question);
+
+            console.log("ok");
+
+            const button = question.getElementsByClassName("question_text")[0];
+            const answer = question.getElementsByClassName("answer")[0];
+            const icon   = question.getElementsByClassName("icon")[0];
+            if (button == null || answer == null || icon == null) return;
+
+            if (question.classList.contains("active")) {
+                question.classList.remove("active");
+                answer.classList.remove("active");
+                icon.classList.replace("fa-minus", "fa-plus");
+            } else {
+                question.classList.add("active");
+                answer.classList.add("active");
+                icon.classList.replace("fa-plus", "fa-minus");
+            }
+        })
+    })
+
+
+    function closeAllAnswers(excluded) {
+
+        questions.forEach(question => function() {
+            if (!question.classList.contains("active")) return;
+            if (question == excluded) {
+                console.log("pl");
+                return;
+            }
+
+            const button = question.getElementsByClassName("question_text")[0];
+            const answer = question.getElementsByClassName("answer")[0];
+            const icon   = question.getElementsByClassName("icon")[0];
+            if (button == null || answer == null || icon == null) return;
+
+            question.classList.remove("active");
+            answer.classList.remove("active");
+            icon.classList.replace("fa-minus", "fa-plus");
+        })
+    }
+
+
 
 
 
