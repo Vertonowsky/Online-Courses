@@ -1,6 +1,5 @@
 package com.example.hello_world;
 
-import com.example.hello_world.mysql.MySQL;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.web.service.ProfileConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HelloWorldApplication extends SpringBootServletInitializer {
 
-
     @Autowired
     private CourseRepository courseRepository;
 
@@ -28,15 +26,13 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(HelloWorldApplication.class, args);
-        MySQL.verifyDatabase();
-
-        MySQL.openConnection();
-        MySQL.closeConnection();
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("dev");
         applicationContext.register(ProfileConfiguration.class);
         applicationContext.refresh();
+
+        System.out.println("[Online-Courses] Application started!");
     }
 
     @RequestMapping("/")
