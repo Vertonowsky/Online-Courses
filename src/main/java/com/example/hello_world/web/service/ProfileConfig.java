@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-public class ProfileConfiguration {
+public class ProfileConfig {
 
     /**
      * Environment profiles. There are two environments available.
