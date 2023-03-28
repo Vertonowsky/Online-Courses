@@ -1,7 +1,7 @@
 package com.example.hello_world;
 
 import com.example.hello_world.persistence.repository.CourseRepository;
-import com.example.hello_world.web.service.ProfileConfiguration;
+import com.example.hello_world.web.service.ProfileConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,7 +29,7 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("prod");
-        applicationContext.register(ProfileConfiguration.class);
+        applicationContext.register(ProfileConfig.class);
         applicationContext.refresh();
 
         System.out.println("[Online-Courses] Application started!");
