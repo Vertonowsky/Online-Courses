@@ -6,6 +6,7 @@ import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
+import com.example.hello_world.web.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -37,6 +38,16 @@ public class AdminController {
     @Autowired
     TopicRepository topicRepository;
 
+    @Autowired
+    EmailService emailService;
+
+
+    /*
+    @Autowired
+    public void setChapterDependency(ChapterRepository chapterRepository) {
+        this.chapterRepository = chapterRepository;
+    }
+    */
 
     @RequestMapping(value = {"/admin", "/admin/{id}"})
     public ModelAndView openAdminView(@PathVariable(name = "id", required = false) Integer id, Model model) {
@@ -61,6 +72,20 @@ public class AdminController {
 
 
 
+
+    @GetMapping("/admin/sendMail")
+    public ModelAndView sendMail() {
+        //emailService.sendEmail("nieznane656@gmail.com", "Test email", "Welcome to Online-Courses! It is a test email. You don't need to respond.");
+        /*try {
+
+            emailService.sendVerificationEmail("nieznane656@gmail.com", "Test email", "src/main/resources/templates/test-email.html");
+
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }*/
+
+        return new ModelAndView("test-email");
+    }
 
 
 
