@@ -193,7 +193,7 @@
 
                     <div class="desc">
                         <h2>Ucz się z dowolnego miejsca na świecie</h2>
-                        <p>Wszystkie nasze materiały dostępne są <b>online</b>, a aplikacja działa na każdym urządzeniu posiadającym przeglądarkę. Niezależnie od tego, czy właśnie jesteś w pociągu, czy leniuchujesz na kanapie - bez problemu zdobędziesz nową wiedzę!</p>
+                        <p>Wszystkie nasze materiały dostępne są <b>online</b>, a aplikacja działa na każdym urządzeniu posiadającym przeglądarkę. Niezależnie od tego, czy właśnie jesteś w pociągu, czy leniuchujesz na kanapie, - bez problemu zdobędziesz nową wiedzę!</p>
                     </div>
 
                 </div>
@@ -211,7 +211,7 @@
 
                 <div class="left">
                     <h2>Co oferujemy?</h2>
-                    <p>Kursowo.pl zapewnia dostęp do wiedzy niezbędnej aby napisać egzamin ósmoklasisty oraz maturalny na zadowalający wynik. Oferujemy dostęp do materiałów opracowanych przez doświadczonych specjalistów, którzy od lat pracują z młodzieżą.</p>
+                    <p>Kursowo.pl zapewnia dostęp do wiedzy niezbędnej, aby napisać egzamin ósmoklasisty oraz maturalny na zadowalający wynik. Oferujemy dostęp do materiałów opracowanych przez doświadczonych specjalistów, którzy od lat pracują z młodzieżą.</p>
                 </div>
 
 
@@ -274,7 +274,7 @@
                 <h2 class="heading">Najczęściej zadawane pytania</h2>
 
                 <div class="question">
-                    <button class="question_text">Czy mogę przetestować kurs przed zakupem? <i class="fas fa-plus icon"></i></button>
+                    <button class="question_text"><i class="fas fa-keyboard first_icon"></i> Czy mogę przetestować kurs przed zakupem? <i class="fas fa-plus icon"></i></button>
 
                     <p class="answer">
                         Tak. Każdy kurs zawiera 3 darmowe materiały wideo mające na celu zaprezentowanie naszego serwisu. W celu obejrzenia wszystkich materiałów niezbędna jest wersja premium.
@@ -282,7 +282,7 @@
                 </div>
 
                 <div class="question">
-                    <button class="question_text">Jak długo jest ważny kurs po zakupie? <i class="fas fa-plus icon"></i></button>
+                    <button class="question_text"><i class="fas fa-calendar-alt first_icon"></i> Jak długo jest ważny kurs po zakupie? <i class="fas fa-plus icon"></i></button>
 
                     <p class="answer">
                         Wszystkie nasze kursy ważne są przez okres 90 dni. Po tym czasie niezbędne jest ponowne zakupienie licencji.
@@ -290,10 +290,18 @@
                 </div>
 
                 <div class="question">
-                    <button class="question_text">Czy mogę przetestować kurs przed zakupem? <i class="fas fa-plus icon"></i></button>
+                    <button class="question_text"><i class="fas fa-hourglass-half first_icon"></i> Za miesiąc mam maturę, czy zdąże się nauczyć? <i class="fas fa-plus icon"></i></button>
 
                     <p class="answer">
-                        Tak. Każdy kurs zawiera 3 darmowe materiały wideo mające na celu zaprezentowanie naszego serwisu. W celu obejrzenia wszystkich materiałów niezbędna jest wersja premium.
+                        Tak. Wystarczy przerobić zaledwie 1-2 materiały wideo dziennie wraz z rozwiązaniem zadań ćwiczeniowych, aby zdać maturę z dobrym wynikiem!
+                    </p>
+                </div>
+
+                <div class="question">
+                    <button class="question_text"><i class="fas fa-key first_icon"></i> Chciałbym zalogować się kontem Google. Do jakich danych daję dostęp? <i class="fas fa-plus icon"></i></button>
+
+                    <p class="answer">
+                        Logując się za pomocą API firm trzecich np. Google, zastrzegamy sobie prawo do pozyskania adresu e-mail oraz awatara. Co więcej, wybrana forma uwierzytelniania zapewnia nam wgląd do publicznej aktywności na profilu.
                     </p>
                 </div>
 
@@ -376,15 +384,14 @@
 
     const questions = document.querySelectorAll('.question')
 
-    questions.forEach(question => function() {
+    questions.forEach(question => {
 
-        question.addEventListener('click', function() {
+        question.addEventListener('click', () => {
             closeAllAnswers(question);
-
-            console.log("ok");
 
             const button = question.getElementsByClassName("question_text")[0];
             const answer = question.getElementsByClassName("answer")[0];
+            if (event.target == answer) return;
             const icon   = question.getElementsByClassName("icon")[0];
             if (button == null || answer == null || icon == null) return;
 
@@ -401,14 +408,13 @@
     })
 
 
+
+
     function closeAllAnswers(excluded) {
 
-        questions.forEach(question => function() {
+        questions.forEach(question => {
             if (!question.classList.contains("active")) return;
-            if (question == excluded) {
-                console.log("pl");
-                return;
-            }
+            if (question == excluded) return; // Skip excluded question (closing phase)
 
             const button = question.getElementsByClassName("question_text")[0];
             const answer = question.getElementsByClassName("answer")[0];
