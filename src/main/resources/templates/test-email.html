@@ -3,20 +3,121 @@
     <meta charset="UTF-8">
     <title>Test email</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.0/css/all.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.2;
+            -webkit-font-smoothing: subpixel-antialiased;
+            text-align: center;
         }
-        h1 {
-            color: green;
+
+        a {
+            text-decoration: none;
         }
+
+
+
+        .tab_section {
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+            height: auto;
+            max-width: 800px;
+            text-align: center;
+            margin: auto;
+            background: #FFF;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 6px 3px #E6E6E6;
+            color: #595959;
+        }
+
+
+        #head {
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #DEDEDE;
+            padding: 5px 10px;
+        }
+
+            #nav_logo {
+                cursor: pointer;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                margin: 0 0 0 auto;
+            }
+
+                #nav_logo img {
+                    position: relative;
+                    height: 45px;
+                }
+
+                #nav_logo span {
+                    margin-left: 5px;
+                    font-size: 16px;
+                    color: #00B8F2;
+                }
+
+
+            h1, h2 {
+                font-size: 16px;
+                font-weight: normal;
+                text-align: left;
+            }
+
+            h1 {
+                margin: 0;
+            }
+
+            h2 {
+                margin: 30px 0 0 15px;
+            }
+
+            .desc {
+                font-size: 16px;
+                margin: 70px 0 0 0;
+                text-align: center;
+            }
+
+            .button_blue {
+                position: relative;
+                box-sizing: border-box;
+                display: inline-block;
+                font-size: 15px;
+                font-weight: bold;
+                text-transform: uppercase;
+                background: #03A7DC;
+                text-align: center;
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                padding: 14px 20px;
+                width: auto;
+                cursor: pointer;
+                margin: 25px 0 0 0;
+            }
+
     </style>
 
 </head>
 <body>
 
-<h1>Test Email</h1>
-<p>This is a test email with CSS styles.</p>
+    <div class="tab_section">
+        <div id="head">
+            <h1 th:text="'Cześć, ' + ${to} + '!'"></h1>
+            <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
+        </div>
+        <h2> Dziękujemy za rejestrację na <b>Kursowo.pl</b>. Przed Tobą pozostał ostatni krok, by korzystać <br> z profesjonalnych kursów.</h2>
+        <p class="desc"> Kliknij poniższy przycisk i potwierdź swoją rejestrację.</p>
+        <a class="button_blue" th:href="${url}">Potwierdź rejestrację</a>
+
+    </div>
 
 </body>
 </html>
