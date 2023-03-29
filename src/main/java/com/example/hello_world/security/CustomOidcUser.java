@@ -18,7 +18,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     private final OidcUser oidcUser;
 
     private final String email;
-    private boolean active;
+    private boolean verified;
 
     private List<GrantedAuthority> authorities;
 
@@ -26,7 +26,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
         this.oidcUser   = oidcUser;
         this.attributes = oidcUser.getAttributes();
         this.email      = (String) attributes.get("email");
-        this.active     = true;
+        this.verified   = true;
     }
 
     public String getId() {
@@ -47,7 +47,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
                 .collect(Collectors.toList());
     }
 
-    public void setActive(boolean active) { this.active = active; }
+    public void setVerified(boolean verified) { this.verified = verified; }
 
     @Override
     public String getPassword() { return null; }
@@ -68,7 +68,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     }
 
     @Override
-    public boolean isActive() { return active; }
+    public boolean isVerified() { return verified; }
 
     @Override
     public Map<String, Object> getClaims() { return oidcUser.getClaims(); }

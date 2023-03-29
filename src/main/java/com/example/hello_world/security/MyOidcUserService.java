@@ -49,7 +49,7 @@ public class MyOidcUserService extends OidcUserService {
 
         Optional<User> user = userRepository.findByEmail(googleUser.getEmail());
         if (user.isPresent()) {
-            googleUser.setActive(user.get().isActive());
+            googleUser.setVerified(user.get().isVerified());
             googleUser.setAuthorities(user.get().getRoles());
         }
 

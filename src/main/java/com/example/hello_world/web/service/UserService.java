@@ -45,11 +45,13 @@ public class UserService implements IUserService {
 
         User user = new User();
         user.setEmail(userDto.getEmail());
-        if (userDto.getPassword() != null)
+        if (userDto.getPassword() != null) {
             user.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));  //encrypt password with BCrypt
-        else
+            user.setVerified(false);
+        } else {
             user.setPassword(null);
-        user.setActive(true);
+            user.setVerified(true);
+        }
         user.setRoles("ROLE_USER");
         user.setRegistrationDate(new Date(System.currentTimeMillis()));
         user.setRegistrationMethod(userDto.getRegistrationMethod());
