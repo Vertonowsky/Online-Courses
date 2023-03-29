@@ -31,8 +31,8 @@ public class MyOidcUserService extends OidcUserService {
 
         try {
             return processOidcUser(userRequest, oidcUser);
-        } catch (Exception ex) {
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        } catch (Exception e) {
+            throw new InternalAuthenticationServiceException(e.getMessage(), e.getCause());
         }
     }
 
@@ -41,9 +41,10 @@ public class MyOidcUserService extends OidcUserService {
         CustomOidcUser googleUser = new CustomOidcUser(oidcUser);
 
         try {
+
             userService.registerNewUserAccount(new UserDto(googleUser.getEmail(), null, null, true, RegistrationMethod.GOOGLE));
 
-        } catch (UserAlreadyExistsException uaeEx) {
+        } catch (Exception | UserAlreadyExistsException e) {
             System.out.println("Uzytkownik jest juz zarejestrowany. Przystepuje do logowania.");
         }
 

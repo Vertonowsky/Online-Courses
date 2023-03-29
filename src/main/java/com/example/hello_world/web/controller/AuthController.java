@@ -4,7 +4,7 @@ package com.example.hello_world.web.controller;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
-import com.example.hello_world.web.service.IUserService;
+import com.example.hello_world.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.Authentication;
@@ -16,18 +16,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 @Controller
 @RestController
 public class AuthController {
 
-    @Autowired
-    private IUserService userService;
+    private UserService userService;
+
+    private ClientRegistrationRepository clientRegistrationRepository;
+
+
 
     @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    public void setUserDependency(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setClientRegistrationDependency(ClientRegistrationRepository clientRegistrationRepository) {
+        this.clientRegistrationRepository = clientRegistrationRepository;
+    }
+
 
 
     @GetMapping("/logowanie")
@@ -45,7 +55,7 @@ public class AuthController {
 
 
     @PostMapping("/logowanie")
-    public ModelAndView showLoginform(HttpServletRequest request) {
+    public ModelAndView showLoginForm() {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
@@ -58,7 +68,7 @@ public class AuthController {
 
 
     @GetMapping("/rejestracja")
-    public ModelAndView RegisterView(Model model) {
+    public ModelAndView showRegisterForm(Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
@@ -72,40 +82,21 @@ public class AuthController {
 
 
     @PostMapping("/auth/register")
-    public HashMap<String, Object> registerUserAccount (@ModelAttribute("user") UserDto userDto) {
+    public HashMap<String, Object> registerUserAccount(@ModelAttribute("user") UserDto userDto) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("type", "register");
-        map.put("success", false);
-
-        if (!userDto.isEmailValid()) {
-            map.put("message", "Nieprawidłowy adres e-mail.");
-            return map;
-        }
-        if (!userDto.isPasswordValid()) {
-            map.put("message", "Hasło nie spełnia wymagań bezpieczeństwa.");
-            return map;
-        }
-        if (!userDto.arePasswordsEqual()) {
-            map.put("message", "Podane hasła nie są identyczne.");
-            return map;
-        }
-
-        if (!userDto.areTermsChecked()) {
-            map.put("message", "Wymagana jest akceptacja regulaminu.");
-            return map;
-        }
-
 
         try {
+
             userService.registerNewUserAccount(userDto);
 
-        } catch (UserAlreadyExistsException uaeEx) {
-            map.put("message", "Konto o podanym adresie email już istnieje.");
+        } catch (Exception | UserAlreadyExistsException e) {
+            map.put("message", e.getMessage());
+            map.put("success", false);
             return map;
         }
 
-
-        map.replace("success", false, true);
+        map.put("success", true);
         map.put("message", "Pomyślnie utworzono konto!");
         return map;
     }
