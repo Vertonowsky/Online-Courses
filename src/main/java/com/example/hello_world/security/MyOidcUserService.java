@@ -3,7 +3,6 @@ package com.example.hello_world.security;
 import com.example.hello_world.RegistrationMethod;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class MyOidcUserService extends OidcUserService {
 
             userService.registerNewUserAccount(new UserDto(googleUser.getEmail(), null, null, true, RegistrationMethod.GOOGLE));
 
-        } catch (Exception | UserAlreadyExistsException e) {
+        } catch (Exception e) {
             System.out.println("Uzytkownik jest juz zarejestrowany. Przystepuje do logowania.");
         }
 

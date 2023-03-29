@@ -2,7 +2,6 @@ package com.example.hello_world.web.controller;
 
 
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +89,7 @@ public class AuthController {
 
             userService.registerNewUserAccount(userDto);
 
-        } catch (Exception | UserAlreadyExistsException e) {
+        } catch (Exception e) {
             map.put("message", e.getMessage());
             map.put("success", false);
             return map;
