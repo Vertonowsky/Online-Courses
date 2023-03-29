@@ -2,6 +2,9 @@ package com.example.hello_world.web.controller;
 
 
 import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.persistence.model.VerificationToken;
+import com.example.hello_world.persistence.repository.UserRepository;
+import com.example.hello_world.persistence.repository.VerificationTokenRepository;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @Controller
@@ -24,6 +28,12 @@ public class AuthController {
     private UserService userService;
 
     private ClientRegistrationRepository clientRegistrationRepository;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
 
@@ -98,6 +108,20 @@ public class AuthController {
         map.put("success", true);
         map.put("message", "Pomyślnie utworzono konto!");
         return map;
+    }
+
+
+
+    @GetMapping("/auth/token")
+    public User registerUserToken() {
+        User u = userRepository.findByEmail("klocek@wp.pl").get();
+
+        VerificationToken token = new VerificationToken(new Date(System.currentTimeMillis()));
+        token.setUser(u);
+
+        verificationTokenRepository.save(token);
+
+        return u;
     }
 
 
