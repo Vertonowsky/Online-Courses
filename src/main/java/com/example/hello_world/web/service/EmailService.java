@@ -5,14 +5,15 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.HashMap;
 
 @Service
 public class EmailService {
@@ -35,16 +36,24 @@ public class EmailService {
     }
 
 
-    public void sendVerificationEmail(String to, String subject, String htmlFilePath) throws MessagingException, IOException {
+    public void sendVerificationEmail(String to, String subject, HashMap<String, Object> variables, String htmlFilePath) throws MessagingException, IOException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("kursowo-pl@gmail.com");
+        helper.setFrom("pomoc@kursowo.pl");
         helper.setTo(to);
         helper.setSubject(subject);
-        File file = new File(htmlFilePath);
-        Path path = Paths.get(file.toURI());
-        String htmlContent = Files.readString(path);
+
+        TemplateEngine templateEngine = new SpringTemplateEngine();
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateEngine.setTemplateResolver(templateResolver);
+
+        Context context = new Context();
+        context.setVariables(variables);
+        String htmlContent = templateEngine.process(htmlFilePath, context);
+
         helper.setText(htmlContent, true);
 
         javaMailSender.send(message);
