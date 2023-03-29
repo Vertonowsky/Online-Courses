@@ -23,42 +23,36 @@
         .tab_section {
             position: relative;
             box-sizing: border-box;
-            width: 100%;
+            width: 800px;
             height: auto;
-            max-width: 800px;
             text-align: center;
             margin: auto;
             background: #FFF;
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 2px 6px 3px #E6E6E6;
             color: #595959;
+            box-shadow: 0 2px 6px 3px #E6E6E6;
+            border: 1px solid #E6E6E6;
         }
 
 
         #head {
             position: relative;
-            box-sizing: border-box;
             display: flex;
-            align-items: center;
+            box-sizing: border-box;
             border-bottom: 1px solid #DEDEDE;
-            padding: 5px 10px;
+            padding: 8px 10px;
         }
 
             #nav_logo {
                 cursor: pointer;
                 box-sizing: border-box;
                 display: flex;
-                align-items: center;
                 margin: 0 0 0 auto;
             }
 
-                #nav_logo img {
-                    position: relative;
-                    height: 45px;
-                }
-
                 #nav_logo span {
+                    position: relative;
                     margin-left: 5px;
                     font-size: 16px;
                     color: #00B8F2;
@@ -94,7 +88,6 @@
                 text-transform: uppercase;
                 background: #03A7DC;
                 text-align: center;
-                color: #fff;
                 border: none;
                 border-radius: 8px;
                 padding: 14px 20px;
@@ -111,11 +104,11 @@
     <div class="tab_section">
         <div id="head">
             <h1 th:text="'Cześć, ' + ${to} + '!'"></h1>
-            <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
+            <a href="http://localhost:8080" id="nav_logo"><span>Kursowo.pl</span></a>
         </div>
         <h2> Dziękujemy za rejestrację na <b>Kursowo.pl</b>. Przed Tobą pozostał ostatni krok, by korzystać <br> z profesjonalnych kursów.</h2>
         <p class="desc"> Kliknij poniższy przycisk i potwierdź swoją rejestrację.</p>
-        <a class="button_blue" th:href="${url}">Potwierdź rejestrację</a>
+        <a class="button_blue" th:href="${url}" style="color: #fff">Potwierdź rejestrację</a>
 
     </div>
 
