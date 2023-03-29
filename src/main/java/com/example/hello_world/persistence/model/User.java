@@ -30,7 +30,8 @@ public class User {
     private String password;
 
 
-    private boolean active;
+    @Column(nullable = false)
+    private boolean verified;
 
 
     private String roles;
@@ -54,6 +55,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<FinishedTopic> finishedTopics;
+
+    @OneToMany(mappedBy = "user")
+    private Set<VerificationToken> verificationTokens;
 
 
     public User() {
@@ -127,12 +131,12 @@ public class User {
         this.roles = roles;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isVerified() {
+        return verified;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public Date getRegistrationDate() {
@@ -141,15 +145,6 @@ public class User {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
-    }
-
-
-    public Set<DiscountCodeUsed> getCodes() {
-        return codes;
-    }
-
-    public void setCodes(Set<DiscountCodeUsed> codes) {
-        this.codes = codes;
     }
 
     public List<CourseOwned> getCoursesOwned() {
@@ -164,6 +159,23 @@ public class User {
         });
 
         return arr;
+    }
+
+
+    public Set<DiscountCodeUsed> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(Set<DiscountCodeUsed> codes) {
+        this.codes = codes;
+    }
+
+    public Set<VerificationToken> getVerificationTokens() {
+        return verificationTokens;
+    }
+
+    public void setVerificationTokens(Set<VerificationToken> verificationTokens) {
+        this.verificationTokens = verificationTokens;
     }
 
     public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
@@ -229,14 +241,14 @@ public class User {
         return (this.id.equals(comparing.id) &&
                 this.email.equals(comparing.email) &&
                 this.password.equals(comparing.password) &&
-                this.active == comparing.active) &&
+                this.verified == comparing.verified) &&
                 this.roles.equals(comparing.roles) &&
                 this.registrationDate.equals(comparing.registrationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, active, roles, registrationDate);
+        return Objects.hash(id, email, password, verified, roles, registrationDate);
     }
 
 
