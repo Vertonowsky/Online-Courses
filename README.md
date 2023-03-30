@@ -51,7 +51,7 @@ All courses consist of **3 free videos** which are a demo version of the course.
 
 ## Summary
 Consider that this is only a superficial description of the whole application. Project consist of many features that haven't been specified here. To see all of them please visit [http://146.59.16.44:8080/](http://146.59.16.44:8080/). 
-Passwords are encrypted and application in **secure**. You can safely create an account and test all functionalities. 
+Passwords are encrypted and application is **secure**. You can safely create an account and test all functionalities. 
 
 
 ## License
