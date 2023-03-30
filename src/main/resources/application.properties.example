@@ -1,0 +1,25 @@
+spring.jpa.hibernate.ddl-auto=update
+#Database configuration
+spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/<yourDatabaseName>
+spring.datasource.username=<databaseUser>
+spring.datasource.password=<databasePassword>
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+database.name=<yourDatabaseName>
+
+#Email configuration
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=<emailUser>
+spring.mail.password=<emailPassword>
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+#Spring Security session timeout
+server.servlet.session.timeout=180m
+
+#Add your oauth2 API credentials
+spring.security.oauth2.client.registration.google.client-id=<PUBLIC_KEY>
+spring.security.oauth2.client.registration.google.client-secret=<SECRET_KEY>
+
+#Active properties file. Possible values are: "dev" (development) or "prod" (production).
+spring.profiles.active=prod
