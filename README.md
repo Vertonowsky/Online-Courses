@@ -25,10 +25,11 @@ Working DEMO is available under [http://146.59.16.44:8080/](http://146.59.16.44:
 
 1. Make Sure you have MySQL database installed. Application won't work without it. 
 > You are also obliged to run a Tomcat server which will host the application. Using `Intellij` is convinient as it has build-in Tomcat Server. 
-2. Import repository into your IDE with `git clone https://github.com/Vertonowsky/Online-Courses.git`.
-3. Rename [application.properties.example](src/main/resources/application.properties.example) file to `application.properties`. 
-4. Fill all necessary authentication credentials inside `application.properties` file. (**MySQL**, **gmail**, **OAuth 2.0**)
-5. Run application
+2. Change branch to `master` as `develop` (default branch) may not contain the newest working version of the code.
+3. Import repository into your IDE with `git clone https://github.com/Vertonowsky/Online-Courses.git`.
+4. Rename [application.properties.example](src/main/resources/application.properties.example) file to `application.properties`. 
+5. Fill all necessary authentication credentials inside `application.properties` file. (**MySQL**, **gmail**, **OAuth 2.0**)
+6. Run application
 
 ## Admin Panel
 All of the courses are **configurable** under `/admin` location. To access admin panel you will need admin permissions identified by `ROLE_ADMIN` role.
