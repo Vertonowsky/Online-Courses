@@ -2,7 +2,6 @@ package com.example.hello_world.web.controller;
 
 
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.persistence.model.VerificationToken;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.persistence.repository.VerificationTokenRepository;
 import com.example.hello_world.web.dto.UserDto;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 
 @Controller
 @RestController
@@ -98,39 +95,38 @@ public class AuthController {
 
 
     @PostMapping("/auth/register")
-    public HashMap<String, Object> registerUserAccount(@ModelAttribute("user") UserDto userDto) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("type", "register");
+    public ModelAndView registerUserAccount(@ModelAttribute("user") UserDto userDto) {
+        //HashMap<String, Object> map = new HashMap<>();
+        //map.put("type", "register");
 
         try {
 
             userService.registerNewUserAccount(userDto);
+            return new ModelAndView("weryfikacja");
 
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
-            map.put("message", e.getMessage());
-            map.put("success", false);
-            return map;
+            //map.put("message", e.getMessage());
+            //map.put("success", false);
+            return new ModelAndView("rejestracja");
         }
 
-        map.put("success", true);
-        map.put("message", "Pomyślnie utworzono konto!");
-        return map;
+        //map.put("success", true);
+        //map.put("message", "Na podany adres email został wysłany kod weryfikacyjny.");
+        //return map;
     }
 
 
+    @GetMapping("/weryfikacja")
+    public ModelAndView showVerifyForm(Model model) {
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
-    @GetMapping("/auth/token")
-    public User registerUserToken() {
-        User u = userRepository.findByEmail("klocek@wp.pl").get();
-
-        VerificationToken token = new VerificationToken(new Date(System.currentTimeMillis()));
-        token.setUser(u);
-
-        verificationTokenRepository.save(token);
-
-        return u;
+        model.addAttribute("email", "klocek@wp.pl");
+        return new ModelAndView( "weryfikacja");
     }
+
 
 
     private String getGoogleLoginUrl() {

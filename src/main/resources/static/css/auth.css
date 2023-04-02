@@ -131,15 +131,59 @@
                     font-size: var(--font-size-normal);
                 }
 
-                #auth_container .input_group {
-                    width: 100%;
-                    display: block;
-                    margin: 0 0 20px 0;
-                }
 
-                #auth_container .input_group:last-of-type {
-                    margin-bottom: 15px;
-                }
+
+
+
+#auth_body {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    width: 700px;
+    padding: 30px 15px;
+    top: 20%;
+    left: 10%;
+    text-align: center;
+    box-shadow: 0 2px 5px 2px #E6E6E6;
+    border-radius: 15px;
+}
+
+        #auth_body .center_icon {
+            font-size: 80px;
+            color: #33B3E8;
+            margin-bottom: 15px;
+        }
+
+        #auth_body .head_title {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        #auth_body .head_desc {
+            font-size: 15px;
+            font-weight: normal;
+            margin: 15px 0 0 0;
+        }
+
+        #auth_body .list_link {
+            color: var(--color-blue);
+            padding-bottom: 1px;
+        }
+
+        #auth_body .list_link:after {
+            bottom: -1px;
+        }
+
+        #auth_body #resend_email {
+            margin: 40px 0 0 0;
+            font-size: 15px;
+        }
+
+        #auth_body #send_email {
+            font-size: 15px;
+            margin-top: 3px;
+        }
+
 
                 /*#under_inputs {
                     display: flex;
