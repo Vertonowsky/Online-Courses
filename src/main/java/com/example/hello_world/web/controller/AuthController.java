@@ -6,6 +6,7 @@ import com.example.hello_world.persistence.model.VerificationToken;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.persistence.repository.VerificationTokenRepository;
 import com.example.hello_world.web.dto.UserDto;
+import com.example.hello_world.web.service.EmailService;
 import com.example.hello_world.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -26,7 +28,7 @@ import java.util.HashMap;
 public class AuthController {
 
     private UserService userService;
-
+    private EmailService emailService;
     private ClientRegistrationRepository clientRegistrationRepository;
 
     @Autowired
@@ -40,6 +42,11 @@ public class AuthController {
     @Autowired
     public void setUserDependency(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setEmailDependency(EmailService emailService) {
+        this.emailService = emailService;
     }
 
     @Autowired
@@ -100,6 +107,7 @@ public class AuthController {
             userService.registerNewUserAccount(userDto);
 
         } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             map.put("message", e.getMessage());
             map.put("success", false);
             return map;

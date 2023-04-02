@@ -76,16 +76,16 @@ public class AdminController {
     @GetMapping("/admin/sendMail")
     public ModelAndView sendMail(Model model) {
         //emailService.sendEmail("nieznane656@gmail.com", "Test email", "Welcome to Online-Courses! It is a test email. You don't need to respond.");
-        try {
-            HashMap<String, Object> variables = new HashMap<>();
-            variables.put("to", "nieznane656@gmail.com");
-            variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
-
-            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
-
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            HashMap<String, Object> variables = new HashMap<>();
+//            variables.put("to", "nieznane656@gmail.com");
+//            variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
+//
+//            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
+//
+//        } catch(Exception e) {
+//            System.out.println(e.getMessage());
+//        }
         model.addAttribute("to", "nieznane656@gmail.com");
         model.addAttribute("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
 
