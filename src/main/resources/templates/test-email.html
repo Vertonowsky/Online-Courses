@@ -42,25 +42,7 @@
             box-sizing: border-box;
             border-bottom: 1px solid #DEDEDE;
             padding: 8px 10px;
-            font-size: 0;
         }
-
-            #nav_logo {
-                position: relative;
-                display: inline-block;
-                cursor: pointer;
-                box-sizing: border-box;
-                margin: 0 0 0 auto;
-                width: 20%;
-                text-align: right;
-            }
-
-                #nav_logo span {
-                    position: relative;
-                    margin-left: 5px;
-                    font-size: 16px;
-                    color: #00B8F2;
-                }
 
 
             h1, h2 {
@@ -70,14 +52,13 @@
             }
 
             h1 {
-                position: relative;
-                display: inline-block;
                 margin: 0;
-                width: 80%;
+                width: 100%;
             }
 
             h2 {
-                margin: 30px 0 0 15px;
+                margin: 30px 0 0 10px;
+                text-align: center;
             }
 
             .desc {
@@ -111,10 +92,9 @@
     <div class="tab_section">
         <div id="head">
             <h1 th:text="'Cześć, ' + ${to} + '!'"></h1>
-            <a href="http://localhost:8080" id="nav_logo"><span>Kursowo.pl</span></a>
         </div>
         <h2> Dziękujemy za rejestrację na <b>Kursowo.pl</b>. Przed Tobą pozostał ostatni krok, by korzystać <br> z profesjonalnych kursów.</h2>
-        <p class="desc"> Kliknij poniższy przycisk i potwierdź swoją rejestrację.</p>
+        <p class="desc"> Kliknij poniższy przycisk, aby potwierdzić swoją rejestrację.</p>
         <a class="button_blue" th:href="${url}" style="color: #fff">Potwierdź rejestrację</a>
 
     </div>
