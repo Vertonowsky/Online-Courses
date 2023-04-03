@@ -182,6 +182,11 @@
         #auth_body #send_email {
             font-size: 15px;
             margin-top: 3px;
+            background: transparent;
+            outline: 0;
+            border: 0;
+            cursor: pointer;
+            padding: 0 0 4px 0;
         }
 
 

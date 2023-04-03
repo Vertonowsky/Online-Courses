@@ -23,11 +23,18 @@
 
         <div id="auth_content">
 
-            <div id="registration_info_bg" th:if="${!#strings.isEmpty(registered) && registered}">
-                <div class="window" id="registration_info">
+            <div id="registration_info_bg" th:if="${!#strings.isEmpty(verified)}">
+                <div class="window" th:id="registration_info" th:if="${verified}">
                     <i class="center_icon fas fa-check-circle"></i>
                     <h2 class="subtitle">Proces rejestracji zakończony sukcesem!</h2>
                     <h3 class="desc">Możesz się teraz zalogować na swoje konto.</h3>
+                    <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
+                </div>
+
+                <div class="window" th:id="registration_info" th:if="${!verified}">
+                    <i class="center_icon fas fa-check-circle"></i>
+                    <h2 class="subtitle">Proces rejestracji zakończony niepowodzeniem!</h2>
+                    <h3 class="desc" th:value="${verificationMessage}"></h3>
                     <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
             </div>

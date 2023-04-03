@@ -44,13 +44,14 @@
                 -->
                 <div id="auth_body">
 
-                    <i class="center_icon fas fa-exclamation-circle"></i>
+                    <i class="center_icon fas fa-info-circle"></i>
 
                     <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'">Nie posiadasz jeszcze żadnego kursu.</h1>
                     <h2 class="head_desc"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
 
-                    <p id="resend_email">Email z adresem weryfikacyjnym nie dotarł?</p>
-                    <a id="send_email" class="list_link" th:href="@{/auth/resendEmail}">Wyślij email ponownie!</a>
+                    <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
+                    <!-- TODO allow resending verification email -->
+                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(${email})|" > Wyślij email ponownie! </button>
 
                 </div>
 
@@ -62,7 +63,7 @@
             </div>
 
             <a th:href="@{/}" id="button_go_back"><i style="font-size: 13px;" class="fas fa-chevron-left"></i> Strona główna</a>
-            <a th:href="@{/rejestracja}" id="button_go_next">Rejestracja <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
+            <a th:href="@{/logowanie}" id="button_go_next">Logowanie <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
 
         </div>
 
@@ -101,6 +102,45 @@
             checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
         }
     /*]]>*/
+
+
+
+
+
+
+
+    function resendEmail(email) {
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            data: { "email": email }, // Serializes the form's elements
+            type: "POST",
+            dataType: "json",
+            url: "auth/resendEmail",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token)
+            },
+            success: function(data) {
+
+                if (data == null) {
+                    showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                    return;
+                }
+
+                showPopup(data.message, data.success);
+
+
+            },
+            error: function(xhr) {
+                let data = xhr.responseJSON;
+                if (data != null)
+                    showPopup(data.message, 0);
+            }
+        });
+    }
+
+
 
 </script>
 
