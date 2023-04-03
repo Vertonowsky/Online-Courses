@@ -89,6 +89,7 @@ public class User {
     }
 
     public static boolean isLoggedIn(Authentication authentication) {
+        if (authentication == null) return false;
         if (authentication.getPrincipal() instanceof CustomOidcUser) return true;
         if (authentication.getPrincipal() instanceof CustomUserDetails) return true;
 
