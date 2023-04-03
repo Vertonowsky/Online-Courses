@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,6 +31,9 @@ public class VerificationToken {
     private UUID token;
 
 
+    @Column(name = "creation_date", nullable = false)
+    private Date creationDate;
+
     @Column(name = "expiry_date", nullable = false)
     private Date expiryDate;
 
@@ -40,9 +44,18 @@ public class VerificationToken {
 
 
 
-    public VerificationToken(Date expiryDate) {
-        this.expiryDate = expiryDate;
-        this.token      = UUID.randomUUID();
+    public VerificationToken(Date creationDate) {
+        this.creationDate = creationDate;
+        this.token        = UUID.randomUUID();
+
+        //Calculate expiryDate = creationDate + 24 hours
+        Date now = new Date(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.HOUR_OF_DAY, 24);
+
+        this.expiryDate = calendar.getTime();
+
     }
 
     public VerificationToken() {
@@ -67,6 +80,10 @@ public class VerificationToken {
 
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     public UUID getToken() {
