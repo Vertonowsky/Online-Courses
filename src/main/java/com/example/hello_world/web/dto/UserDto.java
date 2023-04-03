@@ -80,8 +80,8 @@ public class UserDto {
 
 
 
-    public boolean isPasswordValid() {
-        if (password == null || password.equals("") || password.isEmpty()) return false;
+    public static boolean isPasswordValid(String password) {
+        if (password == null || password.isEmpty()) return false;
         if (password.length() < 8 || password.length() > 32) return false;
 
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
@@ -89,8 +89,8 @@ public class UserDto {
         return matcher.matches();
     }
 
-    public boolean isEmailValid() {
-        if (email == null || email.equals("") || email.isEmpty()) return false;
+    public static boolean isEmailValid(String email) {
+        if (email == null || email.isEmpty()) return false;
         if (email.length() > 64) return false;
 
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);

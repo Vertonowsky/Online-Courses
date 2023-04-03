@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.UUID;
 
 @Controller
 @RestController
@@ -94,27 +96,62 @@ public class AuthController {
 
 
 
-    @PostMapping("/auth/register")
-    public ModelAndView registerUserAccount(@ModelAttribute("user") UserDto userDto) {
-        //HashMap<String, Object> map = new HashMap<>();
-        //map.put("type", "register");
-
+    @PostMapping("/rejestracja")
+    public ModelAndView registerUserAccount(Model model, @ModelAttribute("user") UserDto userDto) {
         try {
 
             userService.registerNewUserAccount(userDto);
-            return new ModelAndView("weryfikacja");
+            return new ModelAndView("redirect:weryfikacja");
 
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
-            //map.put("message", e.getMessage());
-            //map.put("success", false);
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("dataEmail", userDto.getEmail());
+            model.addAttribute("dataPassword", userDto.getPassword());
+            model.addAttribute("dataPasswordRepeat", userDto.getPasswordRepeat());
+            model.addAttribute("dataTerms", userDto.areTermsChecked());
             return new ModelAndView("rejestracja");
         }
-
-        //map.put("success", true);
-        //map.put("message", "Na podany adres email został wysłany kod weryfikacyjny.");
-        //return map;
     }
+
+
+
+
+
+    @GetMapping("/auth/verify")
+    public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") UUID tokenUuid) {
+        try {
+
+            userService.verifyUserEmail(tokenUuid);
+            model.addAttribute("verified", true);
+
+        } catch (Exception e) {
+            model.addAttribute("verified", false);
+            model.addAttribute("verificationMessage", e.getMessage());
+        }
+
+        return new ModelAndView("logowanie");
+    }
+
+
+
+    @GetMapping("/auth/resendEmail")
+    public HashMap<String, Object> verifyUserAccount(Model model, @RequestParam(value = "email") String email) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+
+            userService.resendEmail(email);
+            map.put("success", true);
+            map.put("message", "Wysłano nowy token weryfikacyjny. Sprawdź pocztę e-mail.");
+
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
+        }
+
+        return map;
+    }
+
 
 
     @GetMapping("/weryfikacja")
@@ -123,7 +160,7 @@ public class AuthController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
-        model.addAttribute("email", "klocek@wp.pl");
+        model.addAttribute("email", "killerbar12@op.pl");
         return new ModelAndView( "weryfikacja");
     }
 

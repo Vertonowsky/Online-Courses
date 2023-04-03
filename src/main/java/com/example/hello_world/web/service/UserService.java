@@ -11,10 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -49,12 +48,12 @@ public class UserService implements IUserService {
     @Override
     public void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidPasswordFormatException, PasswordsNotEqualException, TermsNotAcceptedException {
         if (emailExists(userDto.getEmail()))
-            throw new UserAlreadyExistsException(String.format("Istnieje już konto powiązane z adresem: %s!", userDto.getEmail()));
+            throw new UserAlreadyExistsException(String.format("Konto o adresie %s już istnieje!", userDto.getEmail()));
 
-        if (!userDto.isEmailValid())
-            throw new InvalidEmailFormatException("Nieprawidłowy formatu adresu e-mail.");
+        if (!UserDto.isEmailValid(userDto.getEmail()))
+            throw new InvalidEmailFormatException("Nieprawidłowy format adresu e-mail.");
 
-        if (!userDto.isPasswordValid())
+        if (!UserDto.isPasswordValid(userDto.getPassword()))
             throw new InvalidPasswordFormatException("Hasło nie spełnia wymagań bezpieczeństwa.");
 
         if (!userDto.arePasswordsEqual())
@@ -78,23 +77,69 @@ public class UserService implements IUserService {
         user.setRegistrationMethod(userDto.getRegistrationMethod());
         userRepository.save(user);
 
+        // Create new verification token
+        createTokenAndSendEmail(user);
+    }
 
-        // Make old token invalid
-        Optional<VerificationToken> optionalToken = verificationTokenRepository.findByUserAndValid(user, true);
-        if (optionalToken.isPresent()) {
-            VerificationToken tok = optionalToken.get();
-            tok.setValid(false);
-            verificationTokenRepository.save(tok);
+
+
+    public boolean verifyUserEmail(UUID tokenUuid) {
+        Pattern uuidPattern = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+
+        // Check if token UUID matches the pattern
+        Matcher uuidMatcher = uuidPattern.matcher(tokenUuid.toString());
+        if (!uuidMatcher.matches()) return false;
+
+        //Check if token exists
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(tokenUuid);
+        if (verificationToken.isEmpty()) return false;
+
+        VerificationToken token = verificationToken.get();
+        if (!token.isValid()) return false;
+        if (token.getExpiryDate().getTime() <= System.currentTimeMillis()) return false;
+
+        token.setValid(false);
+        User user = token.getUser();
+        user.setVerified(true);
+        verificationTokenRepository.save(token);
+        userRepository.save(user);
+
+        return true;
+    }
+
+
+
+
+    public void resendEmail(String email) throws InvalidEmailFormatException, UserNotFoundException {
+        if (!UserDto.isEmailValid(email))
+            throw new InvalidEmailFormatException("Nieprawidłowy format adresu e-mail.");
+
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) throw new UserNotFoundException(String.format("Nie odnaleziono konta powiązanego z adresem %s", email));
+
+        // Set already awaiting verification tokens invalid
+        disableOldTokens(user.get());
+
+        // Create new verification token
+        createTokenAndSendEmail(user.get());
+    }
+
+
+
+
+    private void disableOldTokens(User user) {
+        List<VerificationToken> verificationTokens = verificationTokenRepository.findAllByUser(user);
+        if (verificationTokens.size() > 0) {
+            for(VerificationToken token : verificationTokens)
+                token.setValid(false);
+            verificationTokenRepository.saveAll(verificationTokens);
         }
+    }
 
 
-        // Create verification token
-        Date now = new Date(System.currentTimeMillis());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.HOUR_OF_DAY, 24);
 
-        VerificationToken token = new VerificationToken(calendar.getTime());
+    private void createTokenAndSendEmail(User user) {
+        VerificationToken token = new VerificationToken(new Date(System.currentTimeMillis()));
         token.setUser(user);
         verificationTokenRepository.save(token);
 
@@ -102,11 +147,12 @@ public class UserService implements IUserService {
         // Send verification email
         HashMap<String, Object> variables = new HashMap<>();
         variables.put("to", user.getEmail());
-        variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=" + token.getToken().toString());
+        variables.put("url", "http://localhost:8080/auth/verify?token=" + token.getToken().toString());
 
         emailService.sendVerificationEmail(user.getEmail(), "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
-
     }
+
+
 
     private boolean emailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
