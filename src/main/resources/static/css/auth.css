@@ -393,6 +393,10 @@
             margin-bottom: 15px;
         }
 
+        #registration_info .center_icon.red {
+            color: #FA6B69;
+        }
+
         #registration_info .subtitle {
             font-size: 18px;
             margin: 0;

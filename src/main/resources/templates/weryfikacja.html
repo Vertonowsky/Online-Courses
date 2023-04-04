@@ -51,7 +51,7 @@
 
                     <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
                     <!-- TODO allow resending verification email -->
-                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(${email})|" > Wyślij email ponownie! </button>
+                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
 
                 </div>
 
