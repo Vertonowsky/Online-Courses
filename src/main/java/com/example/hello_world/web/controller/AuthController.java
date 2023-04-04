@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.UUID;
 
 @Controller
 @RestController
@@ -119,7 +118,7 @@ public class AuthController {
 
 
     @GetMapping("/auth/verify")
-    public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") UUID tokenUuid) {
+    public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
         try {
 
             userService.verifyUserEmail(tokenUuid);
@@ -135,8 +134,8 @@ public class AuthController {
 
 
 
-    @GetMapping("/auth/resendEmail")
-    public HashMap<String, Object> verifyUserAccount(Model model, @RequestParam(value = "email") String email) {
+    @PostMapping("/auth/resendEmail")
+    public HashMap<String, Object> resendEmail(Model model, @RequestParam(value = "email") String email) {
         HashMap<String, Object> map = new HashMap<>();
         try {
 

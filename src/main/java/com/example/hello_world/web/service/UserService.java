@@ -83,39 +83,52 @@ public class UserService implements IUserService {
 
 
 
-    public boolean verifyUserEmail(UUID tokenUuid) {
+    public void verifyUserEmail(String tokenUuid) throws InvalidUUIDFormatException, TokenNotFoundException, TokenExpiredException {
         Pattern uuidPattern = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
         // Check if token UUID matches the pattern
-        Matcher uuidMatcher = uuidPattern.matcher(tokenUuid.toString());
-        if (!uuidMatcher.matches()) return false;
+        Matcher uuidMatcher = uuidPattern.matcher(tokenUuid);
+        if (!uuidMatcher.matches()) throw new InvalidUUIDFormatException("Nieprawidłowy token.");
 
         //Check if token exists
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(tokenUuid);
-        if (verificationToken.isEmpty()) return false;
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(UUID.fromString(tokenUuid));
+        if (verificationToken.isEmpty()) throw new TokenNotFoundException("Nie odnaleziono tokenu.");
 
         VerificationToken token = verificationToken.get();
-        if (!token.isValid()) return false;
-        if (token.getExpiryDate().getTime() <= System.currentTimeMillis()) return false;
+        if (!token.isValid() || token.getExpiryDate().getTime() <= System.currentTimeMillis()) throw new TokenExpiredException("Wskazany token utracił swoją ważność.");
 
         token.setValid(false);
         User user = token.getUser();
         user.setVerified(true);
         verificationTokenRepository.save(token);
         userRepository.save(user);
-
-        return true;
     }
 
 
 
 
-    public void resendEmail(String email) throws InvalidEmailFormatException, UserNotFoundException {
+    public void resendEmail(String email) throws InvalidEmailFormatException, UserNotFoundException, TokenExpiredException, LowDelayException {
         if (!UserDto.isEmailValid(email))
             throw new InvalidEmailFormatException("Nieprawidłowy format adresu e-mail.");
 
+        // Check if user exists
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) throw new UserNotFoundException(String.format("Nie odnaleziono konta powiązanego z adresem %s", email));
+
+        // Check is account isn't already verified
+        if (user.get().isVerified()) throw new TokenExpiredException("Konto zostało już aktywowane.");
+
+
+        // Check if user has recently sent request for resending email
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByUserAndValid(user.get(), true);
+        if (verificationToken.isPresent()) {
+            Date now = new Date(System.currentTimeMillis());
+            long duration = (now.getTime() - verificationToken.get().getCreationDate().getTime()) / 1000;
+            System.out.println(duration);
+            // If delay is smaller than 120 seconds
+            if (duration < 120) throw new LowDelayException(String.format("Odczekaj %d sekund!", 120 - duration));
+        }
+
 
         // Set already awaiting verification tokens invalid
         disableOldTokens(user.get());
