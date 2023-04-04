@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/list-used-discount-code").permitAll()
                 .antMatchers("/wyswietl/**").permitAll()
                 .antMatchers("/list-users").permitAll()
+                .antMatchers("/weryfikacja").permitAll()
                 .antMatchers("/logowanie2").permitAll()
                 .antMatchers("/registration").permitAll()
                 .antMatchers("/oauth_login").permitAll()

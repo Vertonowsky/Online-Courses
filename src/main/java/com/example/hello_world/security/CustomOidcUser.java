@@ -68,7 +68,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     }
 
     @Override
-    public boolean isVerified() { return verified; }
+    public boolean isEnabled() { return verified; }
 
     @Override
     public Map<String, Object> getClaims() { return oidcUser.getClaims(); }

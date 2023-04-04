@@ -44,9 +44,6 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
     }
 
     @Override
-    public boolean isVerified() { return verified; }
-
-    @Override
     public String getEmail() { return email; }
 
     @Override
@@ -76,7 +73,7 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return verified;
     }
 
 }

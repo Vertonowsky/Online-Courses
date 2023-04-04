@@ -33,9 +33,15 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         response.getWriter().println(objectMapper.writeValueAsString(data));*/
         //String redirectUrl = request.getContextPath() + "/logowanie";
 
+        System.out.println(exception.getMessage());
 
+        if (exception.getMessage().equalsIgnoreCase("Bad credentials"))
+            request.setAttribute("error", "Błędny adres email lub hasło!");
+        else if (exception.getMessage().equalsIgnoreCase("User is disabled"))
+            request.setAttribute("error", "Twoje konto nie zostało zweryfikowane. Sprawdź pocztę email!");
+        else
+            request.setAttribute("error", "Nie udało się zalogować.");
 
-        request.setAttribute("error", "Błędny adres email lub hasło.");
         request.setAttribute("dataEmail", request.getParameter("email"));
         request.setAttribute("dataPassword", request.getParameter("password"));
         RequestDispatcher dispatcher = context.getRequestDispatcher("/logowanie");

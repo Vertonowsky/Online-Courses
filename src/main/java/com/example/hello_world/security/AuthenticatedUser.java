@@ -12,6 +12,6 @@ public interface AuthenticatedUser {
 
     List<GrantedAuthority> getAuthorities();
 
-    boolean isVerified();
+    boolean isEnabled();
 
 }
