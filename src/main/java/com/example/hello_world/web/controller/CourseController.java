@@ -9,6 +9,7 @@ import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.ChapterDto;
 import com.example.hello_world.web.dto.TopicDto;
 import com.example.hello_world.web.service.CourseService;
+import com.example.hello_world.web.service.TopicService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,11 +42,17 @@ public class CourseController {
 
 
     private CourseService courseService;
+    private TopicService topicService;
     private CourseRepository courseRepository;
 
     @Autowired
     public void setCourseService(CourseService courseService) {
         this.courseService = courseService;
+    }
+
+    @Autowired
+    public void setTopicService(TopicService topicService) {
+        this.topicService = topicService;
     }
 
     @Autowired
@@ -248,48 +255,22 @@ public class CourseController {
     }
 
 
-
-
+    /**
+     * Mark video as already watched / finished
+     *
+     * @param topicId identifier of the topic
+     */
     @PostMapping("/kurs/markAsFinished")
     public Map<String, Object> markAsFinished(@RequestParam(value = "topicId") Integer topicId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono tematu o podanym identyfikatorze.");
-        Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-
-        if (topicId < 1 || optionalTopic.isEmpty()) return map;
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth) || userRepository.findByEmail(User.getEmail(auth)).isEmpty()) {
-            map.replace("message", "Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
+        try {
+            return topicService.markAsFinished(topicId);
+        } catch (Exception e) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
-
-        User user = userRepository.findByEmail(User.getEmail(auth)).get();
-        Course c = optionalTopic.get().getChapter().getCourse();
-        if (!user.isCourseOwnedAndValid(c)) {
-            map.replace("message", "Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
-            return map;
-        }
-
-        Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
-        if (foundTopic.isEmpty()) {
-            FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
-            finishedTopicRepository.save(ft);
-            map.replace("success", true);
-            map.put("type", 1);
-            map.replace("message", "Sukces: Oznaczono temat jako wykonany!");
-            return map;
-        }
-
-        finishedTopicRepository.delete(foundTopic.get());
-        map.replace("success", true);
-        map.put("type", 0);
-        map.replace("message", "Sukces: Odznaczono temat!");
-        return map;
     }
-
-
 
 
 
