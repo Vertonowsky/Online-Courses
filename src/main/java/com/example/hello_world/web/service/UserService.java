@@ -21,9 +21,7 @@ import java.util.regex.Pattern;
 public class UserService implements IUserService {
 
     private UserRepository userRepository;
-
     private VerificationTokenRepository verificationTokenRepository;
-
     private EmailService emailService;
 
 
@@ -124,7 +122,6 @@ public class UserService implements IUserService {
         if (verificationToken.isPresent()) {
             Date now = new Date(System.currentTimeMillis());
             long duration = (now.getTime() - verificationToken.get().getCreationDate().getTime()) / 1000;
-            System.out.println(duration);
             // If delay is smaller than 120 seconds
             if (duration < 120) throw new LowDelayException(String.format("Odczekaj %d sekund!", 120 - duration));
         }

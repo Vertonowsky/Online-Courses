@@ -1,4 +1,4 @@
-package com.example.hello_world.web.service;
+package com.example.hello_world.web.config;
 
 
 import org.springframework.context.annotation.Bean;

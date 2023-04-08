@@ -1,6 +1,5 @@
 package com.example.hello_world.web.controller;
 
-import com.example.hello_world.Category;
 import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.CourseRepository;
@@ -9,6 +8,10 @@ import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.ChapterDto;
 import com.example.hello_world.web.dto.TopicDto;
+import com.example.hello_world.web.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -27,9 +30,6 @@ public class CourseController {
     private String courseVideoesPath;
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
     private TopicRepository topicRepository;
 
     @Autowired
@@ -39,6 +39,22 @@ public class CourseController {
     private UserRepository userRepository;
 
 
+
+    private CourseService courseService;
+    private CourseRepository courseRepository;
+
+    @Autowired
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
+    @Autowired
+    public void setCourseRepository(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
+
+
+    /*
     @GetMapping("/list2")
     public Iterable<Course> getCourses() {
         return courseRepository.findAll();
@@ -86,18 +102,45 @@ public class CourseController {
         courseRepository.save(course3);
         return "Added 3 courses to repository.";
     }
+    */
+
+
+    /**
+     * Load courses from database including the search filtering
+     *
+     * @param typeFilters JSON String storing selected course types
+     * @param categoryFilters JSON String storing selected category types
+     * @param limit number of returned courses. 0 <=> unlimited
+     * @return List of courses which match the filters
+     * @throws JsonProcessingException exception thrown when there was a problem with parsing JSON filters
+     */
+    @GetMapping("/manipulation/loadCourses")
+    public Iterable<Course> loadCourses(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (limit < 0) limit = 0;
+        List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
+
+        return courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit);
+    }
 
 
 
 
-
-
+    /**
+     * Opens page which contains all of the available courses
+     *
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     */
     @GetMapping("/lista-kursow")
     public ModelAndView courseListView(Model model) {
         model.addAttribute("subjects", courseRepository.findAllTypes());
         model.addAttribute("categories", courseRepository.findAllCategories());
         return new ModelAndView("lista-kursow");
     }
+
 
 
     @GetMapping("/wyswietl/{id}")

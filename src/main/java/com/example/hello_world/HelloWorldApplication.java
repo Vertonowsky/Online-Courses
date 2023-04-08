@@ -1,7 +1,7 @@
 package com.example.hello_world;
 
 import com.example.hello_world.persistence.repository.CourseRepository;
-import com.example.hello_world.web.service.ProfileConfig;
+import com.example.hello_world.web.config.EnvironmentConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HelloWorldApplication extends SpringBootServletInitializer {
 
-    @Autowired
+
     private CourseRepository courseRepository;
+
+    @Autowired
+    public void setCourseRepository(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -29,7 +34,7 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("prod");
-        applicationContext.register(ProfileConfig.class);
+        applicationContext.register(EnvironmentConfig.class);
         applicationContext.refresh();
 
         System.out.println("[Online-Courses] Application started!");
