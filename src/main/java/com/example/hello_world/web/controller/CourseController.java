@@ -3,10 +3,9 @@ package com.example.hello_world.web.controller;
 import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.CourseRepository;
-import com.example.hello_world.persistence.repository.FinishedTopicRepository;
-import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.ChapterDto;
+import com.example.hello_world.web.dto.CourseListDto;
 import com.example.hello_world.web.dto.TopicDto;
 import com.example.hello_world.web.service.CourseService;
 import com.example.hello_world.web.service.TopicService;
@@ -30,17 +29,7 @@ public class CourseController {
     @Value("${course.videos.path}")
     private String courseVideoesPath;
 
-    @Autowired
-    private TopicRepository topicRepository;
-
-    @Autowired
-    private FinishedTopicRepository finishedTopicRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-
-
     private CourseService courseService;
     private TopicService topicService;
     private CourseRepository courseRepository;
@@ -53,6 +42,11 @@ public class CourseController {
     @Autowired
     public void setTopicService(TopicService topicService) {
         this.topicService = topicService;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Autowired
@@ -71,7 +65,7 @@ public class CourseController {
     public String addCourse() {
         Course course = new Course("Egzamin Ósmoklasisty",
                 "Kurs Ósmoklasisty Matematyka",
-                "Zawiera wiedzę potrzebną, żeby napisać egzamin nawet na 100%! Obejmuje nie tylko zagadnienia z klasy 8 ale z całej szkoły podstawowej – tłumaczy od podstaw działania na ułamkach, jednostki, i wiele innych rzeczy.",
+                "Zawiera wiedzę potrzebną, żeby napisać egzamin nawet na 100%! Obejmuje nie tylko zagadnienia z klasy 8, ale z całej szkoły podstawowej – tłumaczy od podstaw działania na ułamkach, jednostki, i wiele innych rzeczy.",
                 Category.MATEMATYKA,
                 "Brak korzyści",
                 249.0,
@@ -109,7 +103,44 @@ public class CourseController {
         courseRepository.save(course3);
         return "Added 3 courses to repository.";
     }
+
+
+    @PostMapping("/add3")
+    public String addChapter() {
+        Chapter chapter = new Chapter(0, "Rozdział 01 - Liczby i działania");
+
+        Course course = courseRepository.findById(2).get();
+        chapter.setCourse(course);
+
+        chapterRepository.save(chapter);
+        return "Added new chapter to repository!";
+    }
+
     */
+
+
+
+    /**
+     * Opens page which contains all of the available courses
+     *
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
+     */
+    @GetMapping("/lista-kursow")
+    public ModelAndView courseListView(Model model) {
+        model.addAttribute("subjects", courseRepository.findAllTypes());
+        model.addAttribute("categories", courseRepository.findAllCategories());
+
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is not limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), new ArrayList<>());
+        model.addAttribute("topPanel", true);
+        model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
+        model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
+        model.addAttribute("courses", courses);
+        return new ModelAndView("lista-kursow");
+    }
+
+
 
 
     /**
@@ -118,11 +149,12 @@ public class CourseController {
      * @param typeFilters JSON String storing selected course types
      * @param categoryFilters JSON String storing selected category types
      * @param limit number of returned courses. 0 <=> unlimited
+     * @param model instance of the Model class. Used to pass attributes to the end user
      * @return List of courses which match the filters
      * @throws JsonProcessingException exception thrown when there was a problem with parsing JSON filters
      */
-    @GetMapping("/manipulation/loadCourses")
-    public Iterable<Course> loadCourses(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit) throws JsonProcessingException {
+    @PostMapping("/kurs/getCourses")
+    public ModelAndView getCourseInfo(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
         if (limit < 0) limit = 0;
@@ -130,26 +162,24 @@ public class CourseController {
         List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
         categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
 
-        return courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit);
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is not limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), categoryParamList);
+        model.addAttribute("topPanel", true);
+        model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
+        model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
+        model.addAttribute("courses", courses);
+        return new ModelAndView("index :: courses_list");
     }
 
 
 
 
     /**
-     * Opens page which contains all of the available courses
      *
+     * @param id course id
      * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
      */
-    @GetMapping("/lista-kursow")
-    public ModelAndView courseListView(Model model) {
-        model.addAttribute("subjects", courseRepository.findAllTypes());
-        model.addAttribute("categories", courseRepository.findAllCategories());
-        return new ModelAndView("lista-kursow");
-    }
-
-
-
     @GetMapping("/wyswietl/{id}")
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         // INVALID DATA, redirect to index page.
