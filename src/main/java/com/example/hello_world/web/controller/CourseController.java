@@ -120,7 +120,7 @@ public class CourseController {
         model.addAttribute("subjects", courseRepository.findAllTypes());
         model.addAttribute("categories", courseRepository.findAllCategories());
 
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is not limit for course count
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), new ArrayList<>());
         model.addAttribute("topPanel", true);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
@@ -152,7 +152,7 @@ public class CourseController {
         List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
         categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
 
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is not limit for course count
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), categoryParamList);
         model.addAttribute("topPanel", true);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
