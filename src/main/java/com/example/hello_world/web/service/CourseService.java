@@ -3,7 +3,6 @@ package com.example.hello_world.web.service;
 import com.example.hello_world.Category;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.web.dto.CourseListDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
@@ -15,19 +14,28 @@ import java.util.List;
 public class CourseService {
 
 
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    public void setCourseRepository(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
 
-    public List<CourseListDto> getCoursesWithCriteria(List<String> typeFilters, List<String> categoryFilters, int limit) {
 
+
+
+    /**
+     * Get List of Courses filtered by type and category
+     *
+     * @param typeFilters List of selected course types
+     * @param categoryFilters List of selected categories
+     * @param limit number of elements to return from the original list
+     * @return List of courses sorted by given filters
+     */
+    public List<CourseListDto> getCoursesWithCriteria(List<String> typeFilters, List<String> categoryFilters, int limit) {
         if (typeFilters.size() == 0 && categoryFilters.size() == 0) {
             List<CourseListDto> courses = courseRepository.findAllDtos(); //return all courses if no filters are applied
-            if (limit > 0) return limitNumberOfIterable(courses, limit);
+            if (limit > 0) return limitNumberOfElements(courses, limit);
             return courses;
         }
 
@@ -44,24 +52,27 @@ public class CourseService {
         }
 
         List<CourseListDto> courses = courseRepository.findAllWithCondition(typeFilters, catFilters);
-        if (limit > 0) return limitNumberOfIterable(courses, limit);
+        if (limit > 0) return limitNumberOfElements(courses, limit);
 
         return courses;
     }
 
 
-    private ArrayList<CourseListDto> limitNumberOfIterable(List<CourseListDto> iterable, int limit) {
-        ArrayList<CourseListDto> array = new ArrayList<>();
-        int size = 0;
-        for (CourseListDto c : iterable) {
-            if (size < limit) {
-                array.add(c);
-                size++;
-            }
-            if (size == limit) break;
-        }
-        return array;
+
+
+    /**
+     * Reduce size of given List
+     *
+     * @param list collection of elemenets
+     * @param limit number of returned elements.
+     * @return List with reduced size
+     */
+    private <T> List<T> limitNumberOfElements(List<T> list, int limit) {
+        if (limit <= 0) return list;
+        return list.stream().limit(limit).toList();
     }
+
+
 
 
     /**
@@ -90,13 +101,6 @@ public class CourseService {
         response.put("topPanelCategory", category.toString());
 
         return response;
-
-//        let text = '<h1 class="heading"><span class="bold">' + size + prefix + '</span> w kategorii <span class="category">' + cat + '</span></h1>';
-//
-//        let filters_toggle = document.getElementById("filtersToggle");
-//        if (filters_toggle.classList.contains("active")) text = text + '<div id="filtersToggle" class="active" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>';
-//        else text = text + '<div id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>';
-
     }
 
 }

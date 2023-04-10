@@ -12,7 +12,6 @@ import com.example.hello_world.web.service.TopicService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,30 +28,18 @@ public class CourseController {
     @Value("${course.videos.path}")
     private String courseVideoesPath;
 
-    private UserRepository userRepository;
-    private CourseService courseService;
-    private TopicService topicService;
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
+    private final CourseService courseService;
+    private final TopicService topicService;
 
-    @Autowired
-    public void setCourseService(CourseService courseService) {
-        this.courseService = courseService;
-    }
-
-    @Autowired
-    public void setTopicService(TopicService topicService) {
-        this.topicService = topicService;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public CourseController(UserRepository userRepository, CourseService courseService, TopicService topicService, CourseRepository courseRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setCourseRepository(CourseRepository courseRepository) {
+        this.courseService = courseService;
+        this.topicService = topicService;
         this.courseRepository = courseRepository;
     }
+
 
 
     /*
@@ -120,6 +107,8 @@ public class CourseController {
 
 
 
+
+
     /**
      * Opens page which contains all of the available courses
      *
@@ -139,6 +128,7 @@ public class CourseController {
         model.addAttribute("courses", courses);
         return new ModelAndView("lista-kursow");
     }
+
 
 
 
@@ -174,7 +164,9 @@ public class CourseController {
 
 
 
+
     /**
+     * Opens page which contain given course
      *
      * @param id course id
      * @param model instance of the Model class. Used to pass attributes to the end user
@@ -203,6 +195,16 @@ public class CourseController {
 
 
 
+
+    /**
+     * Opens course page. Here you can watch a video.
+     *
+     * @param courseId id of the coursae
+     * @param topicId id of the topic
+     * @param scrollPosition current scroll position
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
+     */
     @GetMapping("/kurs/{courseId}")
     public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId,
                                         @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) {
@@ -233,7 +235,7 @@ public class CourseController {
 
                 boolean blocked = false;  //refers to current topic status (is it blocked?)
                 if (user != null) {
-                    if (isCourseStillValid(user, courseId)) {
+                    if (isCourseStillValid(user, course)) {
                         TopicStatus status = TopicStatus.AVAILABLE;
                         if (user.isTopicFinished(t.getId()))
                             status = TopicStatus.FINISHED;
@@ -247,7 +249,7 @@ public class CourseController {
                     }
                 }
 
-                if (user == null || (user != null && !isCourseStillValid(user, courseId))) {
+                if (user == null || (user != null && !isCourseStillValid(user, course))) {
 
                     if (counter < 3) {
                         if (t.equals(selectedTopic))
@@ -285,6 +287,9 @@ public class CourseController {
     }
 
 
+
+
+
     /**
      * Mark video as already watched / finished
      *
@@ -304,9 +309,18 @@ public class CourseController {
 
 
 
-    public boolean isCourseStillValid(User user, Integer courseId) {
+
+
+    /**
+     * Check if user's course is valid
+     *
+     * @param user user object
+     * @param course course object
+     * @return boolean. True if course is valid.
+     */
+    public boolean isCourseStillValid(User user, Course course) {
         for (CourseOwned item : user.getCoursesOwned()) {
-            if (!item.getCourse().getId().equals(courseId)) continue;
+            if (!item.getCourse().getId().equals(course.getId())) continue;
 
             Date now = new Date(System.currentTimeMillis());
             if (now.compareTo(item.getExpiryDate()) < 0) return true;
