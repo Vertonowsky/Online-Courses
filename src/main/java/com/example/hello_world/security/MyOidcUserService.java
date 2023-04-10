@@ -1,6 +1,5 @@
 package com.example.hello_world.security;
 
-import com.example.hello_world.RegistrationMethod;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.UserDto;
