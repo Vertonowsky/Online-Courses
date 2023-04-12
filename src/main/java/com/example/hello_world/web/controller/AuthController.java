@@ -2,12 +2,8 @@ package com.example.hello_world.web.controller;
 
 
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.persistence.repository.VerificationTokenRepository;
 import com.example.hello_world.web.dto.UserDto;
-import com.example.hello_world.web.service.EmailService;
 import com.example.hello_world.web.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,30 +21,12 @@ import java.util.HashMap;
 @RestController
 public class AuthController {
 
-    private UserService userService;
-    private EmailService emailService;
-    private ClientRegistrationRepository clientRegistrationRepository;
-
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
 
-
-    @Autowired
-    public void setUserDependency(UserService userService) {
+    public AuthController(UserService userService, ClientRegistrationRepository clientRegistrationRepository) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setEmailDependency(EmailService emailService) {
-        this.emailService = emailService;
-    }
-
-    @Autowired
-    public void setClientRegistrationDependency(ClientRegistrationRepository clientRegistrationRepository) {
         this.clientRegistrationRepository = clientRegistrationRepository;
     }
 
@@ -164,7 +142,11 @@ public class AuthController {
     }
 
 
-
+    /**
+     * Get google login url from Spring Security configuration
+     *
+     * @return google oAuth2 login url
+     */
     private String getGoogleLoginUrl() {
         String authorizationRequestBaseUri = "oauth2/authorization";
         Iterable<ClientRegistration> clientRegistrations = null;
