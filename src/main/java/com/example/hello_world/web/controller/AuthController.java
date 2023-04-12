@@ -113,7 +113,7 @@ public class AuthController {
 
 
     @PostMapping("/auth/resendEmail")
-    public HashMap<String, Object> resendEmail(Model model, @RequestParam(value = "email") String email) {
+    public HashMap<String, Object> resendEmail(@RequestParam(value = "email") String email) {
         HashMap<String, Object> map = new HashMap<>();
         try {
 
