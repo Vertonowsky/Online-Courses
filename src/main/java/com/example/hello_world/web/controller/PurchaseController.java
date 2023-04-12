@@ -25,13 +25,21 @@ public class PurchaseController {
 
 
 
+
+    /**
+     * Add the discount code to the current transaction
+     *
+     * @param courseId id of the course
+     * @param codeName name of the used discount code
+     * @return Map of objects with success state and calculated discount amount
+     */
     @PostMapping("/purchase/useDiscountCode")
     public Map<String, Object> useDiscountCode(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName") String codeName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!User.isLoggedIn(auth)) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
-            map.put("message", "Błąd: Zakup kursu możliwy jedynie dla zalogowanych użytkowników.");
+            map.put("message", "Błąd: Kody rabatowe dostępne są jedynie dla zalogowanych użytkowników.");
             return map;
         }
 
@@ -52,8 +60,13 @@ public class PurchaseController {
 
 
 
-
-
+    /**
+     * Validate and process the payment
+     *
+     * @param courseId id of the course
+     * @param codeName name of the used discount code
+     * @return Map of objects with success state and calculated discount amount
+     */
     @PostMapping("/purchase/verifyPayment")
     public Map<String, Object> finalizePayment(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName", defaultValue = "") String codeName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

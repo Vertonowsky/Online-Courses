@@ -40,6 +40,19 @@ public class PurchaseService {
 
 
 
+    /**
+     * Use discount code and calculate the discount
+     *
+     * @param email user's email
+     * @param courseId id of the course
+     * @param codeName name of the discount code
+     * @param usingDiscount boolean. True if user provided a discount code
+     * @return Map of objects: success, message, title, discount, newPrice
+     * @throws CourseNotFoundException Thrown when couldn't find a course with specified courseId
+     * @throws DiscountCodeNotFoundException Thrown when couldn't find a discount code with specified codeName
+     * @throws DiscountCodeExpiredException Thrown when discount code has expired
+     * @throws UserNotFoundException Thrown when couldn't find a user with specified email
+     */
     public Map<String, Object> useDiscoundCode(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
         Map<String, Object> data = verifyData(email, courseId, codeName, usingDiscount);
 
@@ -55,6 +68,22 @@ public class PurchaseService {
     }
 
 
+
+
+
+    /**
+     *  Finalize the payment. Validate payment details
+     *
+     * @param email user's email
+     * @param courseId id of the course
+     * @param codeName name of the discount code
+     * @param usingDiscount boolean. True if user provided a discount code
+     * @return Map of objects: success, message, title, discount, newPrice
+     * @throws CourseNotFoundException Thrown when couldn't find a course with specified courseId
+     * @throws DiscountCodeNotFoundException Thrown when couldn't find a discount code with specified codeName
+     * @throws DiscountCodeExpiredException Thrown when discount code has expired
+     * @throws UserNotFoundException Thrown when couldn't find a user with specified email
+     */
     public Map<String, Object> finalizePayment(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
         Map<String, Object> data = verifyData(email, courseId, codeName, usingDiscount);
 
@@ -68,6 +97,20 @@ public class PurchaseService {
 
 
 
+
+    /**
+     * Verifies provided data
+     *
+     * @param email user's email
+     * @param courseId id of the course
+     * @param codeName name of the discount code
+     * @param usingDiscount boolean. True if user provided a discount code
+     * @return Map of objects: user, course, discountCode
+     * @throws CourseNotFoundException Thrown when couldn't find a course with specified courseId
+     * @throws DiscountCodeNotFoundException Thrown when couldn't find a discount code with specified codeName
+     * @throws DiscountCodeExpiredException Thrown when discount code has expired
+     * @throws UserNotFoundException Thrown when couldn't find a user with specified email
+     */
     public Map<String, Object> verifyData(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
         Map<String, Object> response = new HashMap<>();
         Date now = new Date(System.currentTimeMillis());
@@ -100,6 +143,15 @@ public class PurchaseService {
 
 
 
+
+
+    /**
+     * Calculate how big discount shold be, based on course price
+     *
+     * @param course course object which price we want to reduce
+     * @param discountCode provided by user discount code
+     * @return Map of objects: discount, newPrice
+     */
     public Map<String, Object> calculateDiscountPrice(Course course, DiscountCode discountCode) {
         Double coursePrice = course.getPricePromotion() > 0 ? course.getPricePromotion() : course.getPrice();
         Map<String, Object> map = new HashMap<>();
@@ -132,6 +184,15 @@ public class PurchaseService {
 
 
 
+
+    /**
+     * Increase course duration for user by 3 months
+     *
+     * @param user user object
+     * @param course course which is being bought
+     * @param discountCode discount code used during the transcation
+     * @return map of objects: success, message, discount, newPrice
+     */
     public Map<String, Object> buyCourse(User user, Course course, DiscountCode discountCode) {
         Map<String, Object> response = new HashMap<>();
         Optional<CourseOwned> courseOwned = courseOwnedRepository.findIfAlreadyBought(user, course);
@@ -144,20 +205,15 @@ public class PurchaseService {
             Date expiryDate = courseOwned.get().getExpiryDate();
 
             // Check if course is still active (yes, it is)
-            if (now.compareTo(expiryDate) < 0) {
-
+            if (now.compareTo(expiryDate) < 0)
                 calendar.setTime(expiryDate);
-                calendar.add(Calendar.DATE, 90);
-                courseOwnedRepository.updateExistingCourseExpiration(user, course, now, calendar.getTime());
 
-                // Otherways, when course isn't active anymore
-            } else {
-
+            // Otherways, when course isn't active anymore
+            else
                 calendar.setTime(now);
-                calendar.add(Calendar.DATE, 90);
-                courseOwnedRepository.updateExistingCourseExpiration(user, course, now, calendar.getTime());
 
-            }
+            calendar.add(Calendar.DATE, 90);
+            courseOwnedRepository.updateExistingCourseExpiration(user, course, now, calendar.getTime());
 
         } else {
 
@@ -200,6 +256,5 @@ public class PurchaseService {
         response.put("newPrice", prices.get("newPrice"));
         return response;
     }
-
 
 }
