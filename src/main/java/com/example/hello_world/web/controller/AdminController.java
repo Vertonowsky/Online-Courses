@@ -1,11 +1,14 @@
 package com.example.hello_world.web.controller;
 
+import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.Chapter;
-import com.example.hello_world.persistence.model.Course;
 import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
+import com.example.hello_world.validation.CourseNotFoundException;
+import com.example.hello_world.validation.InvalidTextFormatException;
+import com.example.hello_world.web.service.ChapterService;
 import com.example.hello_world.web.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +23,6 @@ import java.util.regex.Pattern;
 
 @RestController
 public class AdminController {
-
-    private final String STRING_PATTERN = "[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ ~!@#$%^&*()-_=+'?,.<>\\[\\]{}|]*";
 
     @Value("${course.videos.path}")
     private String courseVideoesPath;
@@ -41,87 +42,85 @@ public class AdminController {
     @Autowired
     EmailService emailService;
 
+    private final ChapterService chapterService;
 
-    /*
-    @Autowired
-    public void setChapterDependency(ChapterRepository chapterRepository) {
-        this.chapterRepository = chapterRepository;
+
+    public AdminController(ChapterService chapterService) {
+        this.chapterService = chapterService;
     }
-    */
 
     @RequestMapping(value = {"/admin", "/admin/{id}"})
     public ModelAndView openAdminView(@PathVariable(name = "id", required = false) Integer id, Model model) {
-        ModelAndView mav = new ModelAndView("admin");
         model.addAttribute("courses", courseRepository.findAllCoursesNames());
         model.addAttribute("videos", getVideoList());
         model.addAttribute("videosPath", courseVideoesPath);
 
-        if (id == null) {
-            return mav;
-        }
+        if (id == null)
+            return new ModelAndView("admin");
 
-        if (id < 1 || courseRepository.findById(id).isEmpty()) {
-            mav.setViewName("redirect:/");
-            return mav;
-        }
+        if (id < 1 || courseRepository.findById(id).isEmpty())
+            return new ModelAndView("redirect:/");
 
         model.addAttribute("selectedCourse", courseRepository.findById(id).get());
-        return mav;
+        return new ModelAndView("admin");
     }
 
 
 
 
 
-    @GetMapping("/admin/sendMail")
+    /*@GetMapping("/admin/sendMail")
     public ModelAndView sendMail(Model model) {
-        //emailService.sendEmail("nieznane656@gmail.com", "Test email", "Welcome to Online-Courses! It is a test email. You don't need to respond.");
-//        try {
-//            HashMap<String, Object> variables = new HashMap<>();
-//            variables.put("to", "nieznane656@gmail.com");
-//            variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
-//
-//            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
-//
-//        } catch(Exception e) {
-//            System.out.println(e.getMessage());
-//        }
+        emailService.sendEmail("nieznane656@gmail.com", "Test email", "Welcome to Online-Courses! It is a test email. You don't need to respond.");
+        try {
+            HashMap<String, Object> variables = new HashMap<>();
+            variables.put("to", "nieznane656@gmail.com");
+            variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
+
+            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
+
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
         model.addAttribute("to", "nieznane656@gmail.com");
         model.addAttribute("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
 
         return new ModelAndView("test-email");
-    }
+    }*/
 
 
 
 
 
-
-
-
+    /**
+     * Add a new chapter to the specified course
+     *
+     * @param courseId id of the course
+     * @param title title of the chapter
+     * @param index index of the chapter
+     * @return Map containing "success" and "message" values
+     */
     @PostMapping("/admin/addNewChapter")
     public Map<String, Object> addNewChapter(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "chapterTitle") String title, @RequestParam(value = "chapterIndex") Integer index) {
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("message", "Błąd: Nie odnaleziono podanego kursu.");
 
-        if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) return map;
-        if (!isStringValid(title)) {
-            map.replace("message", "Błąd: Podany tutuł zawiera niedozwolone znaki.");
+        if (courseId < 1) return map;
+
+        try {
+
+            chapterService.createNewChapter(courseId, title, index);
+
+            map.replace("success", true);
+            map.replace("message", "Sukces: Dodano nowy rozdział do kursu.");
+            return map;
+
+        } catch (CourseNotFoundException | InvalidTextFormatException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
-
-
-        Optional<Course> course = courseRepository.findById(courseId);
-        Chapter chapter = new Chapter();
-        chapter.setCourse(course.get());
-        chapter.setIndex(index);
-        chapter.setTitle(title);
-        chapterRepository.save(chapter);
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Dodano nowy rozdział do kursu!");
-        return map;
     }
 
 
@@ -428,7 +427,7 @@ public class AdminController {
 
 
     private boolean isStringValid(String title) {
-        Pattern pattern = Pattern.compile(STRING_PATTERN);
+        Pattern pattern = Pattern.compile(Regex.POLISH_TEXT_PATTERN.getPattern());
         Matcher matcher = pattern.matcher(title);
         return matcher.matches();
     }
