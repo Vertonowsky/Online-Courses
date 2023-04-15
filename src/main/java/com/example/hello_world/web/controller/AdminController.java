@@ -6,10 +6,10 @@ import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
-import com.example.hello_world.validation.CourseNotFoundException;
-import com.example.hello_world.validation.InvalidTextFormatException;
+import com.example.hello_world.validation.*;
 import com.example.hello_world.web.service.ChapterService;
 import com.example.hello_world.web.service.EmailService;
+import com.example.hello_world.web.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,10 +45,11 @@ public class AdminController {
     @Autowired
     EmailService emailService;
 
+    private final TopicService topicService;
     private final ChapterService chapterService;
 
-
-    public AdminController(ChapterService chapterService) {
+    public AdminController(TopicService topicService, ChapterService chapterService) {
+        this.topicService = topicService;
         this.chapterService = chapterService;
     }
 
@@ -127,96 +131,61 @@ public class AdminController {
 
 
 
-
-
-
-
+    /**
+     * Add a new topic to the specified chapter
+     *
+     * @param chapterId id of the chapter that the topic is inside of
+     * @param topicTitle title of the topic
+     * @param topicIndex index of the topic
+     * @param topicVideo path to the video which will be linked to the topic
+     * @param duration duration of the video
+     * @return Map containing "success" and "message" values
+     */
     @PostMapping("/admin/addNewTopic")
-    public Map<String, Object> addNewTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
+    public Map<String, Object> createNewTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicTitle") String topicTitle,
                                            @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo,
                                            @RequestParam(value = "duration") Double duration) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono rozdziału o podanym identyfikatorze.");
+        map.put("message", "Błąd: Nie odnaleziono rozdziału o danym id.");
 
-        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
+        if (chapterId < 1) return map;
 
-        if (topicIndex < 0) {
-            map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+        try {
+
+            topicService.createNewTopic(chapterId, topicTitle, topicIndex, topicVideo, duration);
+
+            map.replace("success", true);
+            map.replace("message", "Sukces: Dodano nowy temat do kursu!");
+            return map;
+
+        } catch (ChapterNotFoundException | InvalidTextFormatException | InvalidDataException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
 
-        if (duration < 0.0 || duration > 10000000.0) {
-            map.replace("message", "Błąd: Nieprawidłowa długość filmu.");
-            return map;
-        }
-
-        if (!isStringValid(topicTitle) || !isStringValid(topicVideo)) {
-            map.replace("message", "Błąd: Nazwa kursu bądź ścieżka video zawiera niedozwolone znaki.");
-            return map;
-        }
-
-        Optional<Chapter> chapter = chapterRepository.findById(chapterId);
-        Topic topic = new Topic();
-        topic.setIndex(topicIndex);
-        topic.setTitle(topicTitle);
-        topic.setLocation(topicVideo);
-        topic.setDuration(duration.intValue());
-        topic.setChapter(chapter.get());
-        topicRepository.save(topic);
-
-
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Dodano nowy temat do kursu!");
-        return map;
     }
 
 
 
 
 
-
-
-
-
-    @PostMapping("/admin/deleteTopic")
-    public Map<String, Object> deleteTopic(@RequestParam(value = "topicId") Integer topicId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono podanego tematu.");
-
-        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) return map;
-
-        Topic topic = topicRepository.findById(topicId).get();
-        topicRepository.delete(topic);
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Usunięto wskazany temat.");
-        return map;
-    }
-
-
-
-
-
-
-
+    /**
+     * Delete chapter with specified id
+     *
+     * @param chapterId id of the chapter
+     * @return Map containing "success" and "message" values
+     */
     @PostMapping("/admin/deleteChapter")
     public Map<String, Object> deleteChapter(@RequestParam(value = "chapterId") Integer chapterId) {
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("message", "Błąd: Nie odnaleziono podanego rozdziału.");
 
-        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
+        if (chapterId < 1) return map;
 
-        Chapter chapter = chapterRepository.findById(chapterId).get();
-        for (Topic topic : chapter.getTopics()) {
-            topicRepository.delete(topic);
-        }
-
-        chapterRepository.delete(chapter);
 
         map.replace("success", true);
         map.replace("message", "Sukces: Usunięto wskazany rozdział wraz z tematami.");
@@ -227,10 +196,34 @@ public class AdminController {
 
 
 
+    /**
+     * Delete topic with specified id
+     *
+     * @param topicId id of the topic
+     * @return Map containing "success" and "message" values
+     */
+    @PostMapping("/admin/deleteTopic")
+    public Map<String, Object> deleteTopic(@RequestParam(value = "topicId") Integer topicId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", false);
+        map.put("message", "Błąd: Nie odnaleziono podanego tematu.");
 
+        if (topicId < 1) return map;
 
+        try {
 
+            topicService.deleteTopic(topicId);
 
+            map.replace("success", true);
+            map.replace("message", "Sukces: Usunięto wskazany temat.");
+            return map;
+
+        } catch (TopicNotFoundException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
+            return map;
+        }
+    }
 
 
 

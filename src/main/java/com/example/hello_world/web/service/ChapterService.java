@@ -5,6 +5,8 @@ import com.example.hello_world.persistence.model.Chapter;
 import com.example.hello_world.persistence.model.Course;
 import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.CourseRepository;
+import com.example.hello_world.persistence.repository.TopicRepository;
+import com.example.hello_world.validation.ChapterNotFoundException;
 import com.example.hello_world.validation.CourseNotFoundException;
 import com.example.hello_world.validation.InvalidTextFormatException;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,17 @@ import java.util.Optional;
 @Service
 public class ChapterService {
 
-    private final CourseRepository courseRepository;
+    private final TopicRepository topicRepository;
     private final ChapterRepository chapterRepository;
+    private final CourseRepository courseRepository;
 
-    public ChapterService(CourseRepository courseRepository, ChapterRepository chapterRepository) {
-        this.courseRepository = courseRepository;
+    public ChapterService(TopicRepository topicRepository, ChapterRepository chapterRepository, CourseRepository courseRepository) {
+        this.topicRepository = topicRepository;
         this.chapterRepository = chapterRepository;
+        this.courseRepository = courseRepository;
     }
+
+
 
 
     /**
@@ -47,6 +53,27 @@ public class ChapterService {
         chapter.setIndex(index);
         chapter.setTitle(title);
         chapterRepository.save(chapter);
-
     }
+
+
+
+
+    /**
+     * Delete chapter with specified id
+     *
+     * @param chapterId id of the topic
+     * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
+     */
+    public void deleteTopic(Integer chapterId) throws ChapterNotFoundException {
+        Optional<Chapter> chapter = chapterRepository.findById(chapterId);
+        if (chapter.isEmpty())
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego tematu.");
+
+        topicRepository.deleteAll(chapter.get().getTopics());
+        chapterRepository.delete(chapter.get());
+    }
+
+
+
+
 }

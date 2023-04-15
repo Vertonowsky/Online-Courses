@@ -1,16 +1,12 @@
 package com.example.hello_world.web.service;
 
-import com.example.hello_world.persistence.model.Course;
-import com.example.hello_world.persistence.model.FinishedTopic;
-import com.example.hello_world.persistence.model.Topic;
-import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.Regex;
+import com.example.hello_world.persistence.model.*;
+import com.example.hello_world.persistence.repository.ChapterRepository;
 import com.example.hello_world.persistence.repository.FinishedTopicRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.validation.CourseNotOwnedException;
-import com.example.hello_world.validation.TopicNotFoundException;
-import com.example.hello_world.validation.UserNotLoggedInException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hello_world.validation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,27 +20,31 @@ import java.util.Optional;
 public class TopicService {
 
 
-    private UserRepository userRepository;
-    private TopicRepository topicRepository;
-    private FinishedTopicRepository finishedTopicRepository;
+    private final UserRepository userRepository;
+    private final TopicRepository topicRepository;
+    private final ChapterRepository chapterRepository;
+    private final FinishedTopicRepository finishedTopicRepository;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+
+    public TopicService(UserRepository userRepository, TopicRepository topicRepository, ChapterRepository chapterRepository, FinishedTopicRepository finishedTopicRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setTopicRepository(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
-    }
-
-    @Autowired
-    public void setFinishedTopicRepository(FinishedTopicRepository finishedTopicRepository) {
+        this.chapterRepository = chapterRepository;
         this.finishedTopicRepository = finishedTopicRepository;
     }
 
 
 
+
+
+    /**
+     *
+     * @param topicId id of the topic
+     * @return Map of objects: success, type, message
+     * @throws TopicNotFoundException thrown when topic with specified id doesn't exist
+     * @throws UserNotLoggedInException thrown when user is not logged in
+     * @throws CourseNotOwnedException thrown when course with specified id doesn't exist
+     */
     public Map<String, Object> markAsFinished(int topicId) throws TopicNotFoundException, UserNotLoggedInException, CourseNotOwnedException {
         if (topicId < 1) throw new TopicNotFoundException("Błąd: Nie odnaleziono tematu.");
 
@@ -76,5 +76,66 @@ public class TopicService {
         map.put("message", "Sukces: Odznaczono temat!");
         return map;
     }
+
+
+
+
+
+    /**
+     * Add a new topic to the specified chapter and save it into the database
+     *
+     * @param chapterId id of the chapter that the topic is inside of
+     * @param topicTitle title of the topic
+     * @param topicIndex index of the topic
+     * @param topicVideo path to the video which will be linked to the topic
+     * @param duration duration of the video
+     * @throws InvalidTextFormatException thrown when user provides banned characters
+     * @throws InvalidDataException thrown when data exceeds the range of allowed limitations
+     * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
+     */
+    public void createNewTopic(Integer chapterId, String topicTitle, Integer topicIndex, String topicVideo, Double duration) throws InvalidTextFormatException, InvalidDataException, ChapterNotFoundException {
+        Optional<Chapter> chapter = chapterRepository.findById(chapterId);
+        if (chapter.isEmpty())
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
+
+        if (topicIndex < 0)
+            throw new InvalidDataException("Błąd: Indeks nie może być mniejszy niż 0.");
+
+        if (duration < 0.0 || duration > 10000000.0)
+            throw new InvalidDataException("Błąd: Nieprawidłowa długość filmu.");
+
+        if (!Regex.POLISH_TEXT_PATTERN.matches(topicTitle) || !Regex.POLISH_TEXT_PATTERN.matches(topicVideo))
+            throw new InvalidTextFormatException("Błąd: Nazwa kursu bądź ścieżka video zawiera niedozwolone znaki.");
+
+
+        Topic topic = new Topic();
+        topic.setIndex(topicIndex);
+        topic.setTitle(topicTitle);
+        topic.setLocation(topicVideo);
+        topic.setDuration(duration.intValue());
+        topic.setChapter(chapter.get());
+        topicRepository.save(topic);
+    }
+
+
+
+
+
+    /**
+     * Delete topic with specified id
+     *
+     * @param topicId id of the topic
+     * @throws TopicNotFoundException thrown when topic with specified id doesn't exist
+     */
+    public void deleteTopic(Integer topicId) throws TopicNotFoundException {
+        Optional<Topic> topic = topicRepository.findById(topicId);
+        if (topic.isEmpty())
+            throw new TopicNotFoundException("Błąd: Nie odnaleziono podanego tematu.");
+
+        topicRepository.delete(topic.get());
+    }
+
+
+
 
 }
