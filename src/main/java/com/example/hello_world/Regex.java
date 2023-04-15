@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 public enum Regex {
 
-    DISCOUNT_PATTERN("[a-zA-Z0-9]*"),
-    POLISH_TEXT_PATTERN("[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ ~!@#$%^&*()-_=+'?,.<>\\[\\]{}|]*");
+    DISCOUNT_PATTERN("^[a-zA-Z0-9]+"),
+    POLISH_TEXT_PATTERN("^[a-zA-Z0-9ąĄćĆśŚęĘóÓłŁńŃżŻźŹ ~!@#$%^&*()-_=+'?,.<>\\[\\]{}|]+");
 
 
     private final String pattern;
