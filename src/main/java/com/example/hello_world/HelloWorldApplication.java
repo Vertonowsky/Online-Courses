@@ -35,7 +35,7 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
         SpringApplication.run(HelloWorldApplication.class, args);
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-        applicationContext.getEnvironment().setActiveProfiles("dev");
+        applicationContext.getEnvironment().setActiveProfiles("prod");
         applicationContext.register(EnvironmentConfig.class);
         applicationContext.refresh();
 
