@@ -1,9 +1,9 @@
 package com.example.hello_world.persistence.model;
 
 
-import com.example.hello_world.RegistrationMethod;
 import com.example.hello_world.security.CustomOidcUser;
 import com.example.hello_world.security.CustomUserDetails;
+import com.example.hello_world.security.RegistrationMethod;
 import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;

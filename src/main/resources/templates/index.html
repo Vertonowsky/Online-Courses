@@ -255,8 +255,53 @@
             <div id="section3">
                 <div class="inner">
                     <h2 class="introduction">Nasze kursy:</h2>
-                    <div id="courses_list">
+
+
+                    <div id="courses_list" th:fragment="courses_list">
+
+                        <div id="top_panel" th:if="${topPanel}">
+                            <h1 class="heading"><span class="bold" th:text="${topPanelPrefix}"></span> w kategorii <span class="category" th:text="${topPanelCategory}"></span></h1>
+                            <div id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>
+                        </div>
+
+
+                        <div th:id="courses_data" th:if="${courses} == null">
+                            <div id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>
+                        </div>
+
+                        <div th:id="courses_data" th:if="${courses} != null">
+
+                            <div class="course_container" th:each="course : ${courses}">
+                                <div class="left">
+                                    <div class="photo">
+                                        <img alt="Miniatura kursu" th:src="@{'/images/course_photo_' + ${course.id} +'.png'}" />
+                                    </div>
+
+                                    <div class="title_with_shadow_hidden">
+                                        <span class="tit_text" th:inline="text"> [[${course.name}]] <div class="tit_bck"></div></span>
+                                    </div>
+
+                                    <p class="category" th:text="${course.capitalizeCategory()}"></p>
+                                </div>
+
+                                <div class="right">
+                                    <div class="description">
+
+                                        <div class="title_with_shadow">
+                                            <span class="tit_text" th:inline="text"> [[${course.name}]] <div class="tit_bck"></div></span>
+                                        </div>
+
+                                        <p class="desc" th:text="${course.description}"></p>
+                                        <a class="button_gray" th:href="@{'/wyswietl/' + ${course.id}}">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
+
 
                     <div class="dots">
                         <div class="dot"></div>
@@ -319,7 +364,6 @@
 
         <script src="/js/jquery-1.11.3.js"></script>
         <script src="/js/header.js"></script>
-        <script src="/js/manipulation.js"></script>
 
 
 </body>
@@ -327,9 +371,9 @@
 
 <script>
 
-    $(function() {
-        loadCourses(typeFilters, categoryFilters, 3);
-    })
+    // $(function() {
+    //     loadCourses(typeFilters, categoryFilters, 3);
+    // })
 
     const myNav = document.getElementById("header");
 

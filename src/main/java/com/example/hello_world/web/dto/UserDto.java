@@ -1,6 +1,6 @@
 package com.example.hello_world.web.dto;
 
-import com.example.hello_world.RegistrationMethod;
+import com.example.hello_world.security.RegistrationMethod;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

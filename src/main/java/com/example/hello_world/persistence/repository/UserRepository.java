@@ -1,8 +1,8 @@
 package com.example.hello_world.persistence.repository;
 
-import com.example.hello_world.RegistrationMethod;
 import com.example.hello_world.persistence.model.FinishedTopic;
 import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.security.RegistrationMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

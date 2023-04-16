@@ -1,7 +1,7 @@
 package com.example.hello_world;
 
-import com.example.hello_world.persistence.repository.CourseRepository;
-import com.example.hello_world.web.service.ProfileConfig;
+import com.example.hello_world.web.config.EnvironmentConfig;
+import com.example.hello_world.web.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,12 +12,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
+
 @SpringBootApplication
 @Controller
 public class HelloWorldApplication extends SpringBootServletInitializer {
 
+
+    private CourseService courseService;
+
     @Autowired
-    private CourseRepository courseRepository;
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -28,8 +35,8 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
         SpringApplication.run(HelloWorldApplication.class, args);
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-        applicationContext.getEnvironment().setActiveProfiles("prod");
-        applicationContext.register(ProfileConfig.class);
+        applicationContext.getEnvironment().setActiveProfiles("dev");
+        applicationContext.register(EnvironmentConfig.class);
         applicationContext.refresh();
 
         System.out.println("[Online-Courses] Application started!");
@@ -37,7 +44,7 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
 
     @RequestMapping("/")
     public String indexView(Model model) {
-        model.addAttribute("courses", courseRepository.findAll());
+        model.addAttribute("courses", courseService.getCoursesWithCriteria(new ArrayList<String>(), new ArrayList<String>(), 3));
         return "index";
     }
 
