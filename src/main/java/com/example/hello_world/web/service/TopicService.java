@@ -34,9 +34,6 @@ public class TopicService {
     }
 
 
-
-
-
     /**
      *
      * @param topicId id of the topic
@@ -78,9 +75,6 @@ public class TopicService {
     }
 
 
-
-
-
     /**
      * Add a new topic to the specified chapter and save it into the database
      *
@@ -96,7 +90,7 @@ public class TopicService {
     public void createNewTopic(Integer chapterId, String topicTitle, Integer topicIndex, String topicVideo, Double duration) throws InvalidTextFormatException, InvalidDataException, ChapterNotFoundException {
         Optional<Chapter> chapter = chapterRepository.findById(chapterId);
         if (chapter.isEmpty())
-            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
 
         if (topicIndex < 0)
             throw new InvalidDataException("Błąd: Indeks nie może być mniejszy niż 0.");
@@ -118,9 +112,6 @@ public class TopicService {
     }
 
 
-
-
-
     /**
      * Delete topic with specified id
      *
@@ -134,6 +125,51 @@ public class TopicService {
 
         topicRepository.delete(topic.get());
     }
+
+
+    /**
+     * Edit topic details
+     *
+     * @param chapterId id of the chaper that the topic is linked to
+     * @param topicId id of the topic
+     * @param index new index of the topic
+     * @param title new topic's title
+     * @param video new path to the video that is linked to the topic
+     * @param duration duration of the video
+     * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
+     * @throws TopicNotFoundException thrown when topic with specified id doesn't exist
+     * @throws InvalidTextFormatException thrown when user provides banned characters
+     * @throws InvalidDataException thrown when data exceeds the range of allowed limitations
+     */
+    public void editTopic(Integer chapterId, Integer topicId, Integer index, String title, String video, Double duration) throws InvalidTextFormatException, ChapterNotFoundException, InvalidDataException, TopicNotFoundException {
+        Optional<Chapter> optionalChapter = chapterRepository.findById(chapterId);
+        if (optionalChapter.isEmpty())
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
+
+        Optional<Topic> optionalTopic = topicRepository.findById(topicId);
+        if (optionalTopic.isEmpty())
+            throw new TopicNotFoundException("Błąd: Nie odnaleziono podanego tematu.");
+
+        if (index < 0)
+            throw new InvalidDataException("Błąd: Indeks nie może być mniejszy niż 0.");
+
+        if (duration < 0.0 || duration > 10000000.0)
+            throw new InvalidDataException("Błąd: Nieprawidłowa długość filmu.");
+
+        if (!Regex.POLISH_TEXT_PATTERN.matches(title) || !Regex.POLISH_TEXT_PATTERN.matches(video))
+            throw new InvalidTextFormatException("Błąd: Nazwa tematu bądź ścieżka video zawiera niedozwolone znaki.");
+
+
+        Topic topic = optionalTopic.get();
+        topic.setIndex(index);
+        topic.setTitle(title);
+        topic.setLocation(video);
+        topic.setDuration(duration.intValue());
+        topic.setChapter(optionalChapter.get());
+        topicRepository.save(topic);
+    }
+
+
 
 
 

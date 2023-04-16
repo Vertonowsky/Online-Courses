@@ -20,13 +20,12 @@ public class ChapterService {
     private final ChapterRepository chapterRepository;
     private final CourseRepository courseRepository;
 
+
     public ChapterService(TopicRepository topicRepository, ChapterRepository chapterRepository, CourseRepository courseRepository) {
         this.topicRepository = topicRepository;
         this.chapterRepository = chapterRepository;
         this.courseRepository = courseRepository;
     }
-
-
 
 
     /**
@@ -56,21 +55,44 @@ public class ChapterService {
     }
 
 
-
-
     /**
      * Delete chapter with specified id
      *
      * @param chapterId id of the topic
      * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
      */
-    public void deleteTopic(Integer chapterId) throws ChapterNotFoundException {
+    public void deleteChapter(Integer chapterId) throws ChapterNotFoundException {
         Optional<Chapter> chapter = chapterRepository.findById(chapterId);
         if (chapter.isEmpty())
-            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego tematu.");
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
 
         topicRepository.deleteAll(chapter.get().getTopics());
         chapterRepository.delete(chapter.get());
+    }
+
+
+    /**
+     * Edit chapter details
+     *
+     * @param chapterId id of the chapter
+     * @param index index of the chapter
+     * @param title new chapter's title
+     * @throws InvalidTextFormatException thrown when user provides banned characters
+     * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
+     */
+    public void editChapter(Integer chapterId, Integer index, String title) throws InvalidTextFormatException, ChapterNotFoundException {
+        Optional<Chapter> optionalChapter = chapterRepository.findById(chapterId);
+        if (optionalChapter.isEmpty())
+            throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
+
+        if (!Regex.POLISH_TEXT_PATTERN.matches(title))
+            throw new InvalidTextFormatException("Błąd: Podany tutuł zawiera niedozwolone znaki.");
+
+
+        Chapter chapter = optionalChapter.get();
+        chapter.setTitle(title);
+        chapter.setIndex(index);
+        chapterRepository.save(chapter);
     }
 
 

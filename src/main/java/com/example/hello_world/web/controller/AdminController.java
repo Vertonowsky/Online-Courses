@@ -93,9 +93,6 @@ public class AdminController {
     }*/
 
 
-
-
-
     /**
      * Add a new chapter to the specified course
      *
@@ -126,9 +123,6 @@ public class AdminController {
             return map;
         }
     }
-
-
-
 
 
     /**
@@ -169,9 +163,6 @@ public class AdminController {
     }
 
 
-
-
-
     /**
      * Delete chapter with specified id
      *
@@ -186,14 +177,21 @@ public class AdminController {
 
         if (chapterId < 1) return map;
 
+        try {
 
-        map.replace("success", true);
-        map.replace("message", "Sukces: Usunięto wskazany rozdział wraz z tematami.");
-        return map;
+            chapterService.deleteChapter(chapterId);
+
+            map.replace("success", true);
+            map.replace("message", "Sukces: Usunięto wskazany rozdział wraz z tematami.");
+            return map;
+
+        } catch (ChapterNotFoundException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
+            return map;
+        }
+
     }
-
-
-
 
 
     /**
@@ -226,33 +224,49 @@ public class AdminController {
     }
 
 
-
+    /**
+     * Edit chapter details
+     *
+     * @param chapterId id of the chapter
+     * @param title new chapter's title
+     * @param index index of the chapter
+     * @return Map containing "success" and "message" values
+     */
     @PostMapping("/admin/editChapter")
     public Map<String, Object> editChapter(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "chapterTitle") String title, @RequestParam(value = "chapterIndex") Integer index) {
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
         map.put("message", "Błąd: Nie odnaleziono podanego rozdziału.");
 
-        if (chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) return map;
-        if (!isStringValid(title)) {
-            map.replace("message", "Błąd: Podany tutuł zawiera niedozwolone znaki.");
+        if (chapterId < 1) return map;
+
+        try {
+
+            chapterService.editChapter(chapterId, index, title);
+
+            map.replace("success", true);
+            map.replace("message", "Sukces: Edytowano rozdział!");
+            return map;
+
+        } catch (InvalidTextFormatException | ChapterNotFoundException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
-
-
-        Chapter chapter = chapterRepository.findById(chapterId).get();
-        chapter.setTitle(title);
-        chapter.setIndex(index);
-        chapterRepository.save(chapter);
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Edytowano rozdział!");
-        return map;
     }
 
 
-
-
+    /**
+     * Edit topic details
+     *
+     * @param chapterId id of the chaper that the topic is linked to
+     * @param topicId id of the topic
+     * @param topicTitle new topic's title
+     * @param topicIndex new index of the topic
+     * @param topicVideo new path to the video that is linked to the topic
+     * @param duration duration of the video
+     * @return Map containing "success" and "message" values
+     */
     @PostMapping("/admin/editTopic")
     public Map<String, Object> editTopic(@RequestParam(value = "chapterId") Integer chapterId, @RequestParam(value = "topicId") Integer topicId, @RequestParam(value = "topicTitle") String topicTitle,
                                          @RequestParam(value = "topicIndex") Integer topicIndex, @RequestParam(value = "topicVideo") String topicVideo,
@@ -260,40 +274,24 @@ public class AdminController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono tematu o podanym identyfikatorze.");
+        map.put("message", "Błąd: Nie odnaleziono tematu o danym id.");
 
-        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) return map;
+        if (topicId < 1) return map;
 
-        if (topicIndex < 0) {
-            map.replace("message", "Błąd: Indeks nie może być mniejszy niż 0.");
+        try {
+
+            topicService.editTopic(chapterId, topicId, topicIndex, topicTitle, topicVideo, duration);
+
+            map.replace("success", true);
+            map.replace("message", "Sukces: Edytowano temat!");
+            return map;
+
+        } catch (InvalidTextFormatException | ChapterNotFoundException | InvalidDataException | TopicNotFoundException e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
 
-        if (duration < 0.0 || duration > 10000000.0) {
-            map.replace("message", "Błąd: Nieprawidłowa długość filmu.");
-            return map;
-        }
-
-        if (!isStringValid(topicTitle) || !isStringValid(topicVideo)) {
-            map.replace("message", "Błąd: Nazwa tematu bądź ścieżka video zawiera niedozwolone znaki.");
-            return map;
-        }
-
-
-        Topic topic = topicRepository.findById(topicId).get();
-        topic.setIndex(topicIndex);
-        topic.setTitle(topicTitle);
-        topic.setLocation(topicVideo);
-        topic.setDuration(duration.intValue());
-
-        if (chapterRepository.findById(chapterId).isPresent())
-            topic.setChapter(chapterRepository.findById(chapterId).get());
-
-        topicRepository.save(topic);
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Edytowano temat!");
-        return map;
     }
 
 
