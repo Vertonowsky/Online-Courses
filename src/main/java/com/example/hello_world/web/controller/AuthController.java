@@ -1,6 +1,7 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,7 +77,9 @@ public class AuthController {
         try {
 
             userService.registerNewUserAccount(userDto);
-            return new ModelAndView("redirect:weryfikacja");
+            RedirectView rv = new RedirectView("weryfikacja", true);
+            rv.addStaticAttribute("email", userDto.getEmail());
+            return new ModelAndView(rv);
 
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
@@ -87,6 +91,7 @@ public class AuthController {
             return new ModelAndView("rejestracja");
         }
     }
+
 
 
     @GetMapping("/auth/verify")
@@ -126,12 +131,12 @@ public class AuthController {
 
 
     @GetMapping("/weryfikacja")
-    public ModelAndView showVerifyForm(Model model) {
+    public ModelAndView showVerifyForm(@ModelAttribute(name="email") String email, Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (User.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
 
-        model.addAttribute("email", "killerbar12@op.pl");
+        model.addAttribute("email", email);
         return new ModelAndView( "weryfikacja");
     }
 

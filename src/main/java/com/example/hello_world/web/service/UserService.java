@@ -7,6 +7,7 @@ import com.example.hello_world.persistence.repository.VerificationTokenRepositor
 import com.example.hello_world.validation.*;
 import com.example.hello_world.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class UserService implements IUserService {
+
+    @Value("${verification.email.url}")
+    private String verificationEmailUrl;
 
     private UserRepository userRepository;
     private VerificationTokenRepository verificationTokenRepository;
@@ -157,7 +161,7 @@ public class UserService implements IUserService {
         // Send verification email
         HashMap<String, Object> variables = new HashMap<>();
         variables.put("to", user.getEmail());
-        variables.put("url", "http://localhost:8080/auth/verify?token=" + token.getToken().toString());
+        variables.put("url", verificationEmailUrl + "/auth/verify?token=" + token.getToken().toString());
 
         emailService.sendVerificationEmail(user.getEmail(), "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
     }
