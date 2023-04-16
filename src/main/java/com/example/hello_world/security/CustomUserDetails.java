@@ -14,13 +14,13 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
 
     private final String email;
     private final String password;
-    private final boolean active;
+    private final boolean verified;
     private final List<GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.active = user.isActive();
+        this.verified = user.isVerified();
         this.authorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -42,9 +42,6 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
         return authorities;
         //return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
-
-    @Override
-    public boolean isActive() { return active; }
 
     @Override
     public String getEmail() { return email; }
@@ -76,7 +73,7 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return verified;
     }
 
 }

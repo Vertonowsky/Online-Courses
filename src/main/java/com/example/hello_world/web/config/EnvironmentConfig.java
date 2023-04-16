@@ -1,12 +1,13 @@
-package com.example.hello_world.web.service;
+package com.example.hello_world.web.config;
 
 
+import com.example.hello_world.web.service.EnvironmentService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-public class ProfileConfiguration {
+public class EnvironmentConfig {
 
     /**
      * Environment profiles. There are two environments available.
@@ -16,13 +17,13 @@ public class ProfileConfiguration {
 
     @Bean
     @Profile("dev")
-    public ProfileService profileServiceDev(){
-        return new ProfileService("dev");
+    public EnvironmentService environmentServiceDev(){
+        return new EnvironmentService("dev");
     }
 
     @Bean
     @Profile("prod")
-    public ProfileService profileServiceProd(){
-        return new ProfileService("prod");
+    public EnvironmentService environmentServiceProd(){
+        return new EnvironmentService("prod");
     }
 }

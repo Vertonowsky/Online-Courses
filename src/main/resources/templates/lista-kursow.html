@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/css/course_container.css">
 
     <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
 </head>
 <body>
@@ -28,10 +30,7 @@
                 <div class="inner">
 
                     <div class="left_panel">
-                        <div id="top_panel">
-                            <button id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></button>
-                        </div>
-                        <div id="courses_list">
+                        <div id="courses_list" th:insert="~{index :: courses_list}">
 
                         </div>
                     </div>
@@ -100,7 +99,6 @@
 
 
         <script src="/js/jquery-1.11.3.js"></script>
-        <script src="/js/manipulation.js"></script>
         <script src="/js/header.js"></script>
 
     
@@ -109,9 +107,8 @@
 </body>
     <script>
 
-        $(function() {
-            loadCourses(typeFilters, categoryFilters, 0);
-        })
+        let categoryFilters  = [];
+        let typeFilters      = [];
         
 
         /* START CheckBox backend */
@@ -121,7 +118,7 @@
             let className = $box.attr("class").replace(" invisible", "");
             let name = $box.attr("data-name");
 
-            //update array depending of the clicked checkbox
+            //update array depending on the clicked checkbox
             if (className === "checkbox_type") $box.is(":checked") ? typeFilters.push(name) : typeFilters.splice(typeFilters.indexOf(name), 1);
             if (className === "checkbox_category") $box.is(":checked") ? categoryFilters.push(name) : categoryFilters.splice(categoryFilters.indexOf(name), 1);
 
@@ -141,10 +138,67 @@
 
                 else
                     top_panel.style.paddingBottom = (filters_ul.offsetHeight + 30) + "px";
-
             }
-
         };
+
+
+
+        /**
+         * Opens filters menu for smaller devices
+         */
+        function openFilters() {
+            let button     = document.getElementById("filtersToggle");
+            let top_panel  = document.getElementById("top_panel");
+            let filters_ul = document.getElementById("filters_ul");
+            let tab        = document.getElementById("right_panel");
+
+            if (!button.classList.contains("active")) {
+                button.classList.add("active");
+                top_panel.style.paddingBottom = (filters_ul.offsetHeight + 30) + "px";
+                tab.classList.add('active');
+            } else {
+                button.classList.remove("active");
+                top_panel.style.paddingBottom = "0";
+                tab.classList.remove('active');
+            }
+        }
+
+
+
+        /**
+         * Loads all course data from database including
+         * chosen flters
+         *
+         * Parameters:
+         *  category_filters -> filters describing type of the course
+         *  subject_filters  -> filters describing course subject
+         *  limit -> 0 means no limit. Any higher number stands for limiting the number of results
+         */
+        function loadCourses(typeFilters, categoryFilters, limit) {
+            let token  = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type:"POST",
+                dataType:"text",
+                data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters), "limit": limit },
+                url:"/kurs/getCourses",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(data) {
+
+                    $("#courses_list").html(data);
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.error(error);
+                }
+            });
+        }
+
+
 
     </script>
 </html>

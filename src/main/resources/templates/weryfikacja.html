@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <title>Weryfikacja adresu email</title>
+
+    <link rel="stylesheet" href="/css/auth.css"/>
+    <link rel="stylesheet" href="/css/popup.css"/>
+
+    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+</head>
+<body>
+
+
+        <!--
+            START popup
+        -->
+        <div th:insert="~{popup :: popup}"></div>
+
+
+        <div id="auth_content">
+
+            <div class="left">
+
+                <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
+
+                <p id="left_title">Masz już konto?</p>
+                <p id="left_desc">Załóż darmowe konto i skorzystaj z wysokiej jakości kursów online przygotowanych przez specjalistów!</p>
+                <a th:href="@{/logowanie}" class="button_blue"> Logowanie <i class="fas fa-arrow-circle-right"></i></a>
+
+            </div>
+
+
+
+
+
+            <div class="right">
+
+                <!--
+                    START auth_body
+                -->
+                <div id="auth_body">
+
+                    <i class="center_icon fas fa-info-circle"></i>
+
+                    <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'">Nie posiadasz jeszcze żadnego kursu.</h1>
+                    <h2 class="head_desc"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
+
+                    <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
+                    <!-- TODO allow resending verification email -->
+                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
+
+                </div>
+
+
+                <!--
+                    END auth_body
+                -->
+
+            </div>
+
+            <a th:href="@{/}" id="button_go_back"><i style="font-size: 13px;" class="fas fa-chevron-left"></i> Strona główna</a>
+            <a th:href="@{/logowanie}" id="button_go_next">Logowanie <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
+
+        </div>
+
+
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/validator.js"></script>
+        <script src="/js/popup.js"></script>
+
+
+</body>
+
+
+<script th:inline="javascript">
+
+
+    $("#login_form").submit(function(e) {
+        let correctData = 0; // Count correct data
+        if (checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value)) correctData++;
+        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))  correctData++;
+
+        if (correctData != 2)
+            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
+    });
+
+    function closeRegistrationInfo() {
+        const info = document.getElementById("registration_info_bg");
+        info.style.display = "none";
+    }
+
+    /*<![CDATA[*/
+        let error = /*[[${error}]]*/ "";
+
+        if (error != "" && error != null) {
+            showPopup(error,  0);
+            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
+        }
+    /*]]>*/
+
+
+
+
+
+
+
+    function resendEmail(email) {
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            data: { "email": email }, // Serializes the form's elements
+            type: "POST",
+            dataType: "json",
+            url: "auth/resendEmail",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token)
+            },
+            success: function(data) {
+
+                if (data == null) {
+                    showPopup("Wystąpił błąd podczas komunikacji z serwerem.", 0);
+                    return;
+                }
+
+                showPopup(data.message, data.success);
+
+
+            },
+            error: function(xhr) {
+                let data = xhr.responseJSON;
+                if (data != null)
+                    showPopup(data.message, 0);
+            }
+        });
+    }
+
+
+
+</script>
+
+
+</html>

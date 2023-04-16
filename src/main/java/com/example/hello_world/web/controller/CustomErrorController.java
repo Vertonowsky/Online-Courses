@@ -13,6 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class CustomErrorController implements ErrorController {
 
+
+    /**
+     * Renders page with proper error message
+     *
+     * @param request stands for rqeust made by user
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page with error information
+     */
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request, Model model) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE); // get error status

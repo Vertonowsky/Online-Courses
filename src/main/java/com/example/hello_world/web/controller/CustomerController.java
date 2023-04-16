@@ -1,17 +1,14 @@
 package com.example.hello_world.web.controller;
 
-import com.example.hello_world.persistence.model.Customer;
-import com.example.hello_world.persistence.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CustomerController {
 
 
+    /*
     @Autowired
     private CustomerRepository customerRepository;
-
 
     @PostMapping("/add")
     public String addCustomer(@RequestParam String first, @RequestParam String last) {
@@ -33,6 +30,7 @@ public class CustomerController {
     public Customer findCustomerById(@PathVariable Integer id) {
         return customerRepository.findById(id).get();
     }
+    */
 
 
 

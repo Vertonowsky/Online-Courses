@@ -1,11 +1,10 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
-import com.example.hello_world.web.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hello_world.web.service.UserService;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,19 +14,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @Controller
 @RestController
 public class AuthController {
 
-    @Autowired
-    private IUserService userService;
+    private final UserService userService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+
+    public AuthController(UserService userService, ClientRegistrationRepository clientRegistrationRepository) {
+        this.userService = userService;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+    }
 
 
     @GetMapping("/logowanie")
@@ -45,7 +48,7 @@ public class AuthController {
 
 
     @PostMapping("/logowanie")
-    public ModelAndView showLoginform(HttpServletRequest request) {
+    public ModelAndView showLoginForm() {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
@@ -58,7 +61,7 @@ public class AuthController {
 
 
     @GetMapping("/rejestracja")
-    public ModelAndView RegisterView(Model model) {
+    public ModelAndView showRegisterForm(Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
@@ -69,48 +72,80 @@ public class AuthController {
     }
 
 
-
-
-    @PostMapping("/auth/register")
-    public HashMap<String, Object> registerUserAccount (@ModelAttribute("user") UserDto userDto) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("type", "register");
-        map.put("success", false);
-
-        if (!userDto.isEmailValid()) {
-            map.put("message", "Nieprawidłowy adres e-mail.");
-            return map;
-        }
-        if (!userDto.isPasswordValid()) {
-            map.put("message", "Hasło nie spełnia wymagań bezpieczeństwa.");
-            return map;
-        }
-        if (!userDto.arePasswordsEqual()) {
-            map.put("message", "Podane hasła nie są identyczne.");
-            return map;
-        }
-
-        if (!userDto.areTermsChecked()) {
-            map.put("message", "Wymagana jest akceptacja regulaminu.");
-            return map;
-        }
-
-
+    @PostMapping("/rejestracja")
+    public ModelAndView registerUserAccount(Model model, @ModelAttribute("user") UserDto userDto) {
         try {
-            userService.registerNewUserAccount(userDto);
 
-        } catch (UserAlreadyExistsException uaeEx) {
-            map.put("message", "Konto o podanym adresie email już istnieje.");
-            return map;
+            userService.registerNewUserAccount(userDto);
+            RedirectView rv = new RedirectView("weryfikacja", true);
+            rv.addStaticAttribute("email", userDto.getEmail());
+            return new ModelAndView(rv);
+
+        } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("dataEmail", userDto.getEmail());
+            model.addAttribute("dataPassword", userDto.getPassword());
+            model.addAttribute("dataPasswordRepeat", userDto.getPasswordRepeat());
+            model.addAttribute("dataTerms", userDto.areTermsChecked());
+            return new ModelAndView("rejestracja");
+        }
+    }
+
+
+
+    @GetMapping("/auth/verify")
+    public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
+        try {
+
+            userService.verifyUserEmail(tokenUuid);
+            model.addAttribute("verified", true);
+
+        } catch (Exception e) {
+            model.addAttribute("verified", false);
+            model.addAttribute("verificationMessage", e.getMessage());
         }
 
+        return new ModelAndView("logowanie");
+    }
 
-        map.replace("success", false, true);
-        map.put("message", "Pomyślnie utworzono konto!");
+
+
+    @PostMapping("/auth/resendEmail")
+    public HashMap<String, Object> resendEmail(@RequestParam(value = "email") String email) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+
+            userService.resendEmail(email);
+            map.put("success", true);
+            map.put("message", "Wysłano nowy token weryfikacyjny. Sprawdź pocztę e-mail.");
+
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
+        }
+
         return map;
     }
 
 
+
+    @GetMapping("/weryfikacja")
+    public ModelAndView showVerifyForm(@ModelAttribute(name="email") String email, Model model) {
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
+
+        model.addAttribute("email", email);
+        return new ModelAndView( "weryfikacja");
+    }
+
+
+    /**
+     * Get google login url from Spring Security configuration
+     *
+     * @return google oAuth2 login url
+     */
     private String getGoogleLoginUrl() {
         String authorizationRequestBaseUri = "oauth2/authorization";
         Iterable<ClientRegistration> clientRegistrations = null;

@@ -1,15 +1,17 @@
 package com.example.hello_world.web.controller;
 
-import com.example.hello_world.Category;
 import com.example.hello_world.TopicStatus;
 import com.example.hello_world.persistence.model.*;
 import com.example.hello_world.persistence.repository.CourseRepository;
-import com.example.hello_world.persistence.repository.FinishedTopicRepository;
-import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.ChapterDto;
+import com.example.hello_world.web.dto.CourseListDto;
 import com.example.hello_world.web.dto.TopicDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hello_world.web.service.CourseService;
+import com.example.hello_world.web.service.TopicService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,19 +28,21 @@ public class CourseController {
     @Value("${course.videos.path}")
     private String courseVideoesPath;
 
-    @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private TopicRepository topicRepository;
-
-    @Autowired
-    private FinishedTopicRepository finishedTopicRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
+    private final CourseService courseService;
+    private final TopicService topicService;
 
 
+    public CourseController(UserRepository userRepository, CourseService courseService, TopicService topicService, CourseRepository courseRepository) {
+        this.userRepository = userRepository;
+        this.courseService = courseService;
+        this.topicService = topicService;
+        this.courseRepository = courseRepository;
+    }
+
+
+    /*
     @GetMapping("/list2")
     public Iterable<Course> getCourses() {
         return courseRepository.findAll();
@@ -48,7 +52,7 @@ public class CourseController {
     public String addCourse() {
         Course course = new Course("Egzamin Ósmoklasisty",
                 "Kurs Ósmoklasisty Matematyka",
-                "Zawiera wiedzę potrzebną, żeby napisać egzamin nawet na 100%! Obejmuje nie tylko zagadnienia z klasy 8 ale z całej szkoły podstawowej – tłumaczy od podstaw działania na ułamkach, jednostki, i wiele innych rzeczy.",
+                "Zawiera wiedzę potrzebną, żeby napisać egzamin nawet na 100%! Obejmuje nie tylko zagadnienia z klasy 8, ale z całej szkoły podstawowej – tłumaczy od podstaw działania na ułamkach, jednostki, i wiele innych rzeczy.",
                 Category.MATEMATYKA,
                 "Brak korzyści",
                 249.0,
@@ -88,18 +92,77 @@ public class CourseController {
     }
 
 
+    @PostMapping("/add3")
+    public String addChapter() {
+        Chapter chapter = new Chapter(0, "Rozdział 01 - Liczby i działania");
+
+        Course course = courseRepository.findById(2).get();
+        chapter.setCourse(course);
+
+        chapterRepository.save(chapter);
+        return "Added new chapter to repository!";
+    }
+
+    */
 
 
-
-
+    /**
+     * Opens page which contains all of the available courses
+     *
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
+     */
     @GetMapping("/lista-kursow")
     public ModelAndView courseListView(Model model) {
         model.addAttribute("subjects", courseRepository.findAllTypes());
         model.addAttribute("categories", courseRepository.findAllCategories());
+
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is no limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), new ArrayList<>());
+        model.addAttribute("topPanel", true);
+        model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
+        model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
+        model.addAttribute("courses", courses);
         return new ModelAndView("lista-kursow");
     }
 
 
+    /**
+     * Load courses from database including the search filtering
+     *
+     * @param typeFilters JSON String storing selected course types
+     * @param categoryFilters JSON String storing selected category types
+     * @param limit number of returned courses. 0 <=> unlimited
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return List of courses which match the filters
+     * @throws JsonProcessingException exception thrown when there was a problem with parsing JSON filters
+     */
+    @PostMapping("/kurs/getCourses")
+    public ModelAndView getCourseInfo(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (limit < 0) limit = 0;
+        List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
+
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), categoryParamList);
+        model.addAttribute("topPanel", true);
+        model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
+        model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
+        model.addAttribute("courses", courses);
+        return new ModelAndView("index :: courses_list");
+    }
+
+
+    /**
+     * Opens page which contain given course
+     *
+     * @param id course id
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
+     */
     @GetMapping("/wyswietl/{id}")
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         // INVALID DATA, redirect to index page.
@@ -121,8 +184,15 @@ public class CourseController {
     }
 
 
-
-
+    /**
+     * Opens course page. Here you can watch a video.
+     *
+     * @param courseId id of the coursae
+     * @param topicId id of the topic
+     * @param scrollPosition current scroll position
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML page
+     */
     @GetMapping("/kurs/{courseId}")
     public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId,
                                         @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) {
@@ -153,7 +223,7 @@ public class CourseController {
 
                 boolean blocked = false;  //refers to current topic status (is it blocked?)
                 if (user != null) {
-                    if (isCourseStillValid(user, courseId)) {
+                    if (isCourseStillValid(user, course)) {
                         TopicStatus status = TopicStatus.AVAILABLE;
                         if (user.isTopicFinished(t.getId()))
                             status = TopicStatus.FINISHED;
@@ -167,7 +237,7 @@ public class CourseController {
                     }
                 }
 
-                if (user == null || (user != null && !isCourseStillValid(user, courseId))) {
+                if (user == null || (user != null && !isCourseStillValid(user, course))) {
 
                     if (counter < 3) {
                         if (t.equals(selectedTopic))
@@ -205,54 +275,37 @@ public class CourseController {
     }
 
 
-
-
+    /**
+     * Mark video as already watched / finished
+     *
+     * @param topicId identifier of the topic
+     */
     @PostMapping("/kurs/markAsFinished")
     public Map<String, Object> markAsFinished(@RequestParam(value = "topicId") Integer topicId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("success", false);
-        map.put("message", "Błąd: Nie odnaleziono tematu o podanym identyfikatorze.");
-        Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-
-        if (topicId < 1 || optionalTopic.isEmpty()) return map;
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth) || userRepository.findByEmail(User.getEmail(auth)).isEmpty()) {
-            map.replace("message", "Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
+        try {
+            return topicService.markAsFinished(topicId);
+        } catch (Exception e) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("success", false);
+            map.put("message", e.getMessage());
             return map;
         }
-
-        User user = userRepository.findByEmail(User.getEmail(auth)).get();
-        Course c = optionalTopic.get().getChapter().getCourse();
-        if (!user.isCourseOwnedAndValid(c)) {
-            map.replace("message", "Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
-            return map;
-        }
-
-        Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
-        if (foundTopic.isEmpty()) {
-            FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
-            finishedTopicRepository.save(ft);
-            map.replace("success", true);
-            map.put("type", 1);
-            map.replace("message", "Sukces: Oznaczono temat jako wykonany!");
-            return map;
-        }
-
-        finishedTopicRepository.delete(foundTopic.get());
-        map.replace("success", true);
-        map.put("type", 0);
-        map.replace("message", "Sukces: Odznaczono temat!");
-        return map;
     }
 
 
 
 
 
-    public boolean isCourseStillValid(User user, Integer courseId) {
+    /**
+     * Check if user's course is valid
+     *
+     * @param user user object
+     * @param course course object
+     * @return boolean. True if course is valid.
+     */
+    public boolean isCourseStillValid(User user, Course course) {
         for (CourseOwned item : user.getCoursesOwned()) {
-            if (!item.getCourse().getId().equals(courseId)) continue;
+            if (!item.getCourse().getId().equals(course.getId())) continue;
 
             Date now = new Date(System.currentTimeMillis());
             if (now.compareTo(item.getExpiryDate()) < 0) return true;

@@ -1,9 +1,7 @@
 package com.example.hello_world.security;
 
-import com.example.hello_world.RegistrationMethod;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.validation.UserAlreadyExistsException;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,8 @@ public class MyOidcUserService extends OidcUserService {
 
         try {
             return processOidcUser(userRequest, oidcUser);
-        } catch (Exception ex) {
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        } catch (Exception e) {
+            throw new InternalAuthenticationServiceException(e.getMessage(), e.getCause());
         }
     }
 
@@ -41,15 +39,16 @@ public class MyOidcUserService extends OidcUserService {
         CustomOidcUser googleUser = new CustomOidcUser(oidcUser);
 
         try {
+
             userService.registerNewUserAccount(new UserDto(googleUser.getEmail(), null, null, true, RegistrationMethod.GOOGLE));
 
-        } catch (UserAlreadyExistsException uaeEx) {
+        } catch (Exception e) {
             System.out.println("Uzytkownik jest juz zarejestrowany. Przystepuje do logowania.");
         }
 
         Optional<User> user = userRepository.findByEmail(googleUser.getEmail());
         if (user.isPresent()) {
-            googleUser.setActive(user.get().isActive());
+            googleUser.setVerified(user.get().isVerified());
             googleUser.setAuthorities(user.get().getRoles());
         }
 
