@@ -1,6 +1,5 @@
 package com.example.hello_world.web.controller;
 
-import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.Chapter;
 import com.example.hello_world.persistence.model.Topic;
 import com.example.hello_world.persistence.repository.ChapterRepository;
@@ -21,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 public class AdminController {
@@ -118,8 +115,8 @@ public class AdminController {
             return map;
 
         } catch (CourseNotFoundException | InvalidTextFormatException e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
             return map;
         }
     }
@@ -155,8 +152,8 @@ public class AdminController {
             return map;
 
         } catch (ChapterNotFoundException | InvalidTextFormatException | InvalidDataException e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
             return map;
         }
 
@@ -186,8 +183,8 @@ public class AdminController {
             return map;
 
         } catch (ChapterNotFoundException e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
             return map;
         }
 
@@ -217,8 +214,8 @@ public class AdminController {
             return map;
 
         } catch (TopicNotFoundException e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
             return map;
         }
     }
@@ -249,8 +246,8 @@ public class AdminController {
             return map;
 
         } catch (InvalidTextFormatException | ChapterNotFoundException e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
             return map;
         }
     }
@@ -287,6 +284,34 @@ public class AdminController {
             return map;
 
         } catch (InvalidTextFormatException | ChapterNotFoundException | InvalidDataException | TopicNotFoundException e) {
+            map.replace("success", false);
+            map.replace("message", e.getMessage());
+            return map;
+        }
+
+    }
+
+
+    /**
+     * Update duration of all videos in the database
+     *
+     * @param videoLocation path to the video
+     * @param duration duration of the video
+     * @return Map containing "success" and "message" values
+     */
+    @PostMapping("/admin/updateDuration")
+    public Map<String, Object> updateDurations(@RequestParam(value = "videoLocation") String videoLocation, @RequestParam(value = "duration") Double duration) {
+        Map<String, Object> map = new HashMap<>();
+
+        try {
+
+            topicService.updateAllTopicsDuration(videoLocation, duration);
+
+            map.put("success", true);
+            map.put("message", "Sukces: Edytowano temat!");
+            return map;
+
+        } catch (InvalidTextFormatException | InvalidDataException e) {
             map.put("success", false);
             map.put("message", e.getMessage());
             return map;
@@ -295,46 +320,13 @@ public class AdminController {
     }
 
 
-
-
-
-
-
-    @PostMapping("/admin/updateDuration")
-    public Map<String, Object> updateDurations(@RequestParam(value = "videoLocation") String videoLocation, @RequestParam(value = "duration") Double duration) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("success", false);
-        map.put("message", "Błąd: Wystąpił nieoczekiwany problem.");
-
-        if (duration < 0.0 || duration > 10000000.0) {
-            map.put("message", "Błąd: Nieprawidłowa długość filmu.");
-            return map;
-        }
-
-        if (videoLocation.isEmpty() || !isStringValid(videoLocation)) {
-            map.put("message", "Błąd: Nazwa tematu bądź ścieżka video zawiera niedozwolone znaki.");
-            return map;
-        }
-
-        List<Topic> topics = topicRepository.findAllByVideoLocation(videoLocation);
-
-        for (Topic topic : topics) {
-            topic.setDuration(duration.intValue());
-            topicRepository.save(topic);
-        }
-
-        map.replace("success", true);
-        map.replace("message", "Sukces: Edytowano temat!");
-        return map;
-    }
-
-
-
-
-
-
-
-
+    /**
+     * Generate html fragment with chapter details
+     *
+     * @param chapterId id of the chapter
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML fragment which includes view of the chapter and it's topics
+     */
     @GetMapping("/admin/getChapterEditDetails/{id}")
     public ModelAndView getChapterEditDetails(@PathVariable(name = "id") Integer chapterId, Model model) {
         if (chapterId == null || chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) {
@@ -347,7 +339,14 @@ public class AdminController {
     }
 
 
-
+    /**
+     * Generate html fragment with topic details
+     *
+     * @param topicId id of the topic
+     * @param courseId id of the course
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML fragment which allows user to edit a topic
+     */
     @GetMapping("/admin/getTopicEditDetails/{id}")
     public ModelAndView getTopicEditDetails(@PathVariable(name = "id") Integer topicId, @RequestParam(value = "courseId") Integer courseId, Model model) {
         if (courseId == null || topicId == null) {
@@ -383,13 +382,13 @@ public class AdminController {
     }
 
 
-
-
-
-
-
-
-
+    /**
+     * Get fragment containing whole course preview
+     *
+     * @param courseId id of the course
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML fragment which contains a list of all courses
+     */
     @GetMapping("/admin/getCourseInfo/{id}")
     public ModelAndView getCourseInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
         if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
@@ -402,7 +401,13 @@ public class AdminController {
     }
 
 
-
+    /**
+     * Generade HTML fragment containing all chapters from the course
+     *
+     * @param courseId id of the course
+     * @param model instance of the Model class. Used to pass attributes to the end user
+     * @return HTML fragment which contains a list of all chapters inside a course
+     */
     @GetMapping("/admin/getChaptersInfo/{id}")
     public ModelAndView getChaptersInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
         if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
@@ -415,16 +420,11 @@ public class AdminController {
     }
 
 
-
-
-    private boolean isStringValid(String title) {
-        Pattern pattern = Pattern.compile(Regex.POLISH_TEXT_PATTERN.getPattern());
-        Matcher matcher = pattern.matcher(title);
-        return matcher.matches();
-    }
-
-
-
+    /**
+     * Get all paths of videos that can be used as topic media
+     *
+     * @return List containing all video paths
+     */
     private List<String> getVideoList() {
         File folder = new File(localVideoesPath);
         if (!folder.exists()) return new ArrayList<>();
@@ -433,7 +433,7 @@ public class AdminController {
         List<String> allVideos = new ArrayList<>();
 
 
-        if (listOfFiles.length > 0) {
+        if (listOfFiles != null && listOfFiles.length > 0) {
             for (File file : listOfFiles) {
                 if (file.isFile()) {
                     allVideos.add(file.getName());
@@ -443,6 +443,4 @@ public class AdminController {
 
         return allVideos;
     }
-
-
 }

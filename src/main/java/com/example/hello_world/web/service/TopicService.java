@@ -11,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TopicService {
@@ -170,8 +167,27 @@ public class TopicService {
     }
 
 
+    /**
+     *
+     * @param videoLocation path to the video
+     * @param duration duration of the video
+     * @throws InvalidTextFormatException thrown when user provides banned characters
+     * @throws InvalidDataException thrown when data exceeds the range of allowed limitations
+     */
+    public void updateAllTopicsDuration(String videoLocation, Double duration) throws InvalidDataException, InvalidTextFormatException {
+        if (duration < 0.0 || duration > 10000000.0)
+            throw new InvalidDataException("Błąd: Nieprawidłowa długość filmu.");
 
+        if (!Regex.POLISH_TEXT_PATTERN.matches(videoLocation))
+            throw new InvalidTextFormatException("Błąd: Ścieżka video zawiera niedozwolone znaki.");
 
+        List<Topic> topics = topicRepository.findAllByVideoLocation(videoLocation);
+        for (Topic topic : topics)
+            topic.setDuration(duration.intValue());
+
+        topicRepository.saveAll(topics);
+
+    }
 
 
 }
