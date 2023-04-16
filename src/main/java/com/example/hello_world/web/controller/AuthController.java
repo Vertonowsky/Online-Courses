@@ -31,7 +31,6 @@ public class AuthController {
     }
 
 
-
     @GetMapping("/logowanie")
     public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered) {
         // Check if user is already logged in.
@@ -71,8 +70,6 @@ public class AuthController {
     }
 
 
-
-
     @PostMapping("/rejestracja")
     public ModelAndView registerUserAccount(Model model, @ModelAttribute("user") UserDto userDto) {
         try {
@@ -90,9 +87,6 @@ public class AuthController {
             return new ModelAndView("rejestracja");
         }
     }
-
-
-
 
 
     @GetMapping("/auth/verify")

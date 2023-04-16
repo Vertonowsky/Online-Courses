@@ -33,13 +33,13 @@ public class CourseController {
     private final CourseService courseService;
     private final TopicService topicService;
 
+
     public CourseController(UserRepository userRepository, CourseService courseService, TopicService topicService, CourseRepository courseRepository) {
         this.userRepository = userRepository;
         this.courseService = courseService;
         this.topicService = topicService;
         this.courseRepository = courseRepository;
     }
-
 
 
     /*
@@ -106,9 +106,6 @@ public class CourseController {
     */
 
 
-
-
-
     /**
      * Opens page which contains all of the available courses
      *
@@ -128,9 +125,6 @@ public class CourseController {
         model.addAttribute("courses", courses);
         return new ModelAndView("lista-kursow");
     }
-
-
-
 
 
     /**
@@ -162,9 +156,6 @@ public class CourseController {
     }
 
 
-
-
-
     /**
      * Opens page which contain given course
      *
@@ -191,9 +182,6 @@ public class CourseController {
         model.addAttribute("topics", null);
         return new ModelAndView("wyswietl");
     }
-
-
-
 
 
     /**
@@ -285,9 +273,6 @@ public class CourseController {
 
         return new ModelAndView("kurs");
     }
-
-
-
 
 
     /**

@@ -29,9 +29,6 @@ public class ProfileController {
     }
 
 
-
-
-
     /**
      *
      * @param model instance of the Model class. Used to pass attributes to the end user

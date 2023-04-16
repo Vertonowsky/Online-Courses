@@ -7,9 +7,7 @@ import com.example.hello_world.persistence.repository.CourseRepository;
 import com.example.hello_world.persistence.repository.TopicRepository;
 import com.example.hello_world.validation.*;
 import com.example.hello_world.web.service.ChapterService;
-import com.example.hello_world.web.service.EmailService;
 import com.example.hello_world.web.service.TopicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,25 +28,21 @@ public class AdminController {
     @Value("${local.videos.path}")
     private String localVideoesPath;
 
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    ChapterRepository chapterRepository;
-
-    @Autowired
-    TopicRepository topicRepository;
-
-    @Autowired
-    EmailService emailService;
-
+    private final TopicRepository topicRepository;
+    private final ChapterRepository chapterRepository;
+    private final CourseRepository courseRepository;
     private final TopicService topicService;
     private final ChapterService chapterService;
 
-    public AdminController(TopicService topicService, ChapterService chapterService) {
+
+    public AdminController(TopicRepository topicRepository, ChapterRepository chapterRepository, CourseRepository courseRepository, TopicService topicService, ChapterService chapterService) {
+        this.topicRepository = topicRepository;
+        this.chapterRepository = chapterRepository;
+        this.courseRepository = courseRepository;
         this.topicService = topicService;
         this.chapterService = chapterService;
     }
+
 
     @RequestMapping(value = {"/admin", "/admin/{id}"})
     public ModelAndView openAdminView(@PathVariable(name = "id", required = false) Integer id, Model model) {

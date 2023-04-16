@@ -24,8 +24,6 @@ public class PurchaseController {
     }
 
 
-
-
     /**
      * Add the discount code to the current transaction
      *
@@ -55,9 +53,6 @@ public class PurchaseController {
             return map;
         }
     }
-
-
-
 
 
     /**
