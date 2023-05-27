@@ -52,30 +52,11 @@ Wczytanie advantages
 
                             <ul class="adv_list">
 
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> 3-miesięczny dostęp do kursu </p>
+                                <li th:each="advantage : ${course.getAdvantages()}" th:class="${advantage.premium} ? 'unavailable' : 'available'">
+                                    <p class="left"><i th:class="${advantage.premium} ? 'fas fa-times' : 'fas fa-check'"></i></p>
+                                    <p class="right" th:text="${advantage.title}"></p>
                                 </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Tłumaczenie od doświadczonego korepetytora </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Swobodę uczenia się o dowolnej porze </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Starannie wyselekcjonowane zadania </p>
-                                </li>
-                                <li class="unavailable">
-                                    <p class="left"><i class="fas fa-times"></i></p>
-                                    <p class="right"> Ponad 70 godzin materiałów wideo </p>
-                                </li>
-                                <li class="unavailable">
-                                    <p class="left"><i class="fas fa-times"></i></p>
-                                    <p class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </p>
-                                </li>
+
                             </ul>
 
                             <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
@@ -92,30 +73,11 @@ Wczytanie advantages
 
                             <ul class="adv_list">
 
-                                <li class="available">
+                                <li class="available" th:each="advantage : ${course.advantages}">
                                     <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> 3-miesięczny dostęp do kursu </p>
+                                    <p class="right" th:text="${advantage.title}"></p>
                                 </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Tłumaczenie od doświadczonego korepetytora </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Swobodę uczenia się o dowolnej porze </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Starannie wyselekcjonowane zadania </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> Ponad 70 godzin materiałów wideo </p>
-                                </li>
-                                <li class="available">
-                                    <p class="left"><i class="fas fa-check"></i></p>
-                                    <p class="right"> 110 zadań do samodzielnego rozwiązania + odpowiedzi </p>
-                                </li>
+
                             </ul>
 
                             <button class="button_gray" id="button_buy"> Wybieram <i class="fas fa-arrow-circle-right"></i></button>
