@@ -167,6 +167,24 @@ public class UserService implements IUserService {
     }
 
 
+    public long getLastValidTokenCooldown(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) return 0;
+
+        // Check if user has recently sent request for resending email
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByUserAndValid(user.get(), true);
+        if (verificationToken.isPresent()) {
+            Date now = new Date(System.currentTimeMillis());
+            long duration = (now.getTime() - verificationToken.get().getCreationDate().getTime()) / 1000;
+            // If delay is smaller than 120 seconds
+            if (duration > 120) return 0;
+
+            return 120 - duration;
+        }
+        return 0;
+    }
+
+
 
     private boolean emailExists(String email) {
         return userRepository.findByEmail(email).isPresent();

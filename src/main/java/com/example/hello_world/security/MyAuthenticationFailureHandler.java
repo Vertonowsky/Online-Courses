@@ -1,6 +1,5 @@
 package com.example.hello_world.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -16,7 +15,12 @@ import java.io.IOException;
 @Component
 public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final MyUserDetailsService myUserDetailsService;
+
+    public MyAuthenticationFailureHandler(MyUserDetailsService myUserDetailsService) {
+        this.myUserDetailsService = myUserDetailsService;
+    }
 
     @Autowired
     ServletContext context;
@@ -35,10 +39,15 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
 
         System.out.println(exception.getMessage());
 
-        if (exception.getMessage().equalsIgnoreCase("Bad credentials"))
+        //TODO check if credentials are valid -> then try to pas the page into verification page
+
+        if (exception.getMessage().equalsIgnoreCase("Bad credentials")) {
             request.setAttribute("error", "Błędny adres email lub hasło!");
-        else if (exception.getMessage().equalsIgnoreCase("User is disabled"))
-            request.setAttribute("error", "Twoje konto nie zostało zweryfikowane. Sprawdź pocztę email!");
+        }
+        else if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
+            request.setAttribute("error", "Konto powiązane z podanym adresem email wymaga weryfikacji!");
+            request.setAttribute("optionalErrorInfo", String.format("%s/weryfikacja?email=%s&loginAttempt=true", request.getContextPath(), request.getParameter("email")));
+        }
         else
             request.setAttribute("error", "Nie udało się zalogować.");
 

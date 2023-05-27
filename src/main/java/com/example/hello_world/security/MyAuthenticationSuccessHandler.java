@@ -5,7 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,9 +18,9 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
-        // This is actually not an error, but an OK message. It is sent to avoid redirects.
+        // This is actually not an error, but an OK message. It is sent to avoid redirections.
         response.setHeader("Content-Type", "text/xml; charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
 

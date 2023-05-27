@@ -140,7 +140,7 @@
          * Check if password and repeated password are equal
          */
         function checkPasswordsEquality() {
-            const passwordsEquality = document.getElementById("passwords_equality");
+            const passwordsEquality = document.getElementById("optionalErrorInfo");
             let pass = document.getElementById("register_data_password").value;
             let repeatPass = document.getElementById("register_data_password_repeat").value;
             if (pass != repeatPass && pass != "" && repeatPass != "") {

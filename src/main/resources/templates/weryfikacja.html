@@ -47,11 +47,14 @@
                     <i class="center_icon fas fa-info-circle"></i>
 
                     <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'">Nie posiadasz jeszcze żadnego kursu.</h1>
-                    <h2 class="head_desc"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
+                    <h2 class="head_desc" th:if="${loginAttempt == null || !loginAttempt}"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
+                    <h2 class="head_desc" th:if="${loginAttempt}"> Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.</h2>
 
                     <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
-                    <!-- TODO allow resending verification email -->
+
                     <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
+
+                    <span id="timer" class="hidden"></span>
 
                 </div>
 
@@ -130,6 +133,10 @@
 
                 showPopup(data.message, data.success);
 
+                const timer = document.getElementById("timer");
+                if (timer.classList.contains("hidden"))
+                    startTimer(data.tokenCooldown, document.getElementById("timer"));
+
 
             },
             error: function(xhr) {
@@ -139,6 +146,36 @@
             }
         });
     }
+
+
+    let intervalId = 0;
+    function startTimer(duration, display) {
+        display.classList.remove("hidden");
+        clearInterval(intervalId);
+
+
+        function updateTimer() {
+            let minutes, seconds;
+            minutes = parseInt(duration / 60, 10);
+            seconds = parseInt(duration % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            duration--;
+
+            if (duration < 0) {
+                clearInterval(intervalId);
+                display.classList.add("hidden");
+            }
+        }
+
+        updateTimer();
+        intervalId = setInterval(updateTimer, 1000);
+    }
+
 
 
 
