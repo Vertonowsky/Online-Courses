@@ -189,6 +189,21 @@
             padding: 0 0 4px 0;
         }
 
+        #timer {
+            position: relative;
+            display: block;
+            font-size: 22px;
+            margin-top: 15px;
+            color: var(--color-default);
+            transition: height 0.3s, margin 0.3s, opacity 0.2s;
+        }
+
+        #timer.hidden {
+            height: 0;
+            margin: 0;
+            opacity: 0;
+        }
+
 
                 /*#under_inputs {
                     display: flex;
@@ -246,14 +261,15 @@
                             }
 
 
-                        #passwords_equality {
+                        #optionalErrorInfo {
                             position: relative;
+                            display: block;
                             font-size: 15px;
                             background: #FF7270;
                             color: #fff;
                             height: 0;
                             padding: 0;
-                            margin: 0;
+                            margin: auto;
                             border-radius: 5px;
                             text-align: center;
                             visibility: hidden;
@@ -261,10 +277,19 @@
                             transition: all 0.3s;
                         }
 
-                        #passwords_equality.active {
+                        #optionalErrorInfo i {
+                            font-size: 14px;
+                        }
+
+                        #optionalErrorInfo.type_login:hover {
+                            cursor: pointer;
+                            background: #FF8987;
+                        }
+
+                        #optionalErrorInfo.active {
                             height: auto;
-                            padding: 8px 6px;
-                            margin: 5px 0 15px 0;
+                            padding: 8px 12px;
+                            margin: 5px auto 15px auto;
                             visibility: visible;
                             opacity: 1;
                         }

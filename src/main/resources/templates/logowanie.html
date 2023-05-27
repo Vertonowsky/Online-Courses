@@ -104,6 +104,7 @@
                             </div>
                         </div>
 
+                        <a th:if="${optionalErrorInfo != null}" th:href="${optionalErrorInfo}" id="optionalErrorInfo" class="type_login"><i class="fas fa-mouse-pointer"></i> Kliknij aby ponowić proces weryfikacji adresu email.</a>
 
                         <!--
                         <div id="under_inputs">
@@ -164,7 +165,7 @@
     $("#login_form").submit(function(e) {
         let correctData = 0; // Count correct data
         if (checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value)) correctData++;
-        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))  correctData++;
+        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value)) correctData++;
 
         if (correctData != 2)
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
@@ -177,11 +178,18 @@
 
     /*<![CDATA[*/
         let error = /*[[${error}]]*/ "";
+        let optionalErrorInfo = /*[[${optionalErrorInfo}]]*/ "";
 
         if (error != "" && error != null) {
             showPopup(error,  0);
             checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
             checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
+        }
+
+        if (optionalErrorInfo != "" && optionalErrorInfo != null) {
+            const optionalError = document.getElementById("optionalErrorInfo");
+            if (!optionalError.classList.contains("active"))
+                optionalError.classList.add("active");
         }
     /*]]>*/
 

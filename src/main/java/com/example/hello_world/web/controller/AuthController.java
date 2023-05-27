@@ -119,10 +119,12 @@ public class AuthController {
             userService.resendEmail(email);
             map.put("success", true);
             map.put("message", "Wysłano nowy token weryfikacyjny. Sprawdź pocztę e-mail.");
+            map.put("tokenCooldown", 120);
 
         } catch (Exception e) {
             map.put("success", false);
             map.put("message", e.getMessage());
+            map.put("tokenCooldown", userService.getLastValidTokenCooldown(email));
         }
 
         return map;
@@ -131,12 +133,13 @@ public class AuthController {
 
 
     @GetMapping("/weryfikacja")
-    public ModelAndView showVerifyForm(@ModelAttribute(name="email") String email, Model model) {
+    public ModelAndView showVerifyForm(@RequestParam(value = "email") String email, @RequestParam(value = "loginAttempt", required = false) boolean loginAttempt, Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
 
         model.addAttribute("email", email);
+        model.addAttribute("loginAttempt", loginAttempt);
         return new ModelAndView( "weryfikacja");
     }
 
