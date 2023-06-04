@@ -2,7 +2,7 @@ package com.example.hello_world.web.service;
 
 import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.persistence.model.VerificationToken;
+import com.example.hello_world.persistence.model.token.VerificationToken;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.persistence.repository.VerificationTokenRepository;
 import com.example.hello_world.validation.*;

@@ -1,8 +1,8 @@
 package com.example.hello_world.web.service;
 
 import com.example.hello_world.Regex;
-import com.example.hello_world.persistence.model.PasswordRecoveryToken;
 import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.persistence.model.token.PasswordRecoveryToken;
 import com.example.hello_world.persistence.repository.PasswordRecoveryTokenRepository;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.*;

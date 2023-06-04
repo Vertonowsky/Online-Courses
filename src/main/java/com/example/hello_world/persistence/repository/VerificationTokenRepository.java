@@ -1,7 +1,7 @@
 package com.example.hello_world.persistence.repository;
 
 import com.example.hello_world.persistence.model.User;
-import com.example.hello_world.persistence.model.VerificationToken;
+import com.example.hello_world.persistence.model.token.VerificationToken;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
