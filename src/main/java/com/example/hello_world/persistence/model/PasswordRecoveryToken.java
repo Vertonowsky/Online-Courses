@@ -10,8 +10,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verification_tokens")
-public class VerificationToken {
+@Table(name = "password_recovery_tokens")
+public class PasswordRecoveryToken {
 
 
     @Id
@@ -41,7 +41,7 @@ public class VerificationToken {
 
 
 
-    public VerificationToken() {
+    public PasswordRecoveryToken() {
         Date now = new Date(System.currentTimeMillis());
 
         this.creationDate = now;
@@ -54,6 +54,7 @@ public class VerificationToken {
 
         this.expiryDate = calendar.getTime();
     }
+
 
 
     public Integer getId() {

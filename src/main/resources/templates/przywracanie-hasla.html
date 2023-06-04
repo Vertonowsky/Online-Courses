@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <title>Przywracanie hasła</title>
+
+    <link rel="stylesheet" href="/css/auth.css"/>
+    <link rel="stylesheet" href="/css/popup.css"/>
+
+    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+</head>
+<body>
+
+
+        <!--
+            START popup
+        -->
+        <div th:insert="~{popup :: popup}"></div>
+
+
+        <div id="auth_content">
+
+            <!-- TODO make one version of left panel for different pages -->
+            <div class="left">
+
+                <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
+
+                <p id="left_title">Masz już konto?</p>
+                <p id="left_desc">Załóż darmowe konto i skorzystaj z wysokiej jakości kursów online przygotowanych przez specjalistów!</p>
+                <a th:href="@{/logowanie}" class="button_blue"> Logowanie <i class="fas fa-arrow-circle-right"></i></a>
+
+            </div>
+
+
+
+
+
+            <div class="right">
+
+                <!--
+                    START auth_container
+                -->
+                <div id="auth_container" th:if="${progress == null}">
+
+                    <div th:id="password_recovery_body">
+
+                        <div class="title_with_shadow">
+                            <div class="tit_bck"></div>
+                            <p class="tit_text">Zapomniałeś hasło?</p>
+                        </div>
+
+                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+
+                    </div>
+
+
+                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
+
+                        <!--
+                            INPUT GROUP - Input with its elements
+                        -->
+                        <div class="input_group">
+                            <input id="data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
+                            <label for="data_email"> Email: </label>
+
+                            <!--
+                                TOOLTIP - Information about corectness of data
+                            -->
+                            <div class="tooltip">
+                                <i class="fas tooltip_icon"></i>
+                                <span class="tooltip_text"></span>
+                            </div>
+                        </div>
+
+
+
+                        <div th:id="under_inputs">
+                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                        </div>
+
+                    </form>
+
+
+                </div>
+                <!--
+                    END auth_container
+                -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!--
+                    START auth_container
+                -->
+                <div th:id="auth_container" th:if="${progress != null}">
+
+                    <div th:id="password_recovery_body">
+
+                        <div class="title_with_shadow">
+                            <div class="tit_bck"></div>
+                            <p class="tit_text">Zapomniałeś hasło?</p>
+                        </div>
+
+                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+
+                    </div>
+
+
+                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
+
+                        <!--
+                            INPUT GROUP - Input with its elements
+                        -->
+                        <div class="input_group">
+                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
+                            <label for="data_password"> Nowe hasło: </label>
+
+                            <!--
+                                TOOLTIP - Information about corectness of data
+                            -->
+                            <div class="tooltip">
+                                <i class="fas tooltip_icon"></i>
+                                <span class="tooltip_text"></span>
+                            </div>
+                        </div>
+
+
+
+
+                        <!--
+                            INPUT GROUP - Input with its elements
+                        -->
+                        <div class="input_group">
+                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password_repeat" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
+                            <label for="data_password_repeat"> Powtórz hasło: </label>
+
+                            <!--
+                                TOOLTIP - Information about corectness of data
+                            -->
+                            <div class="tooltip">
+                                <i class="fas tooltip_icon"></i>
+                                <span class="tooltip_text"></span>
+                            </div>
+                        </div>
+
+
+
+                        <div th:id="under_inputs">
+                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                        </div>
+
+                    </form>
+
+
+                </div>
+                <!--
+                    END auth_container
+                -->
+
+            </div>
+
+            <a th:href="@{/}" id="button_go_back"><i style="font-size: 13px;" class="fas fa-chevron-left"></i> Strona główna</a>
+            <a th:href="@{/logowanie}" id="button_go_next">Logowanie <i style="font-size: 14px;" class="fas fa-chevron-right"></i></a>
+
+        </div>
+
+
+        <script src="/js/jquery-1.11.3.js"></script>
+        <script src="/js/validator.js"></script>
+        <script src="/js/popup.js"></script>
+
+
+</body>
+
+
+<script th:inline="javascript">
+
+
+    $("#password_recovery_form").submit(function(e) {
+        if (!checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("data_email").value)) {
+            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
+            return;
+        }
+    });
+
+
+    /*<![CDATA[*/
+        let error = /*[[${error}]]*/ "";
+
+        if (error != "" && error != null) {
+            showPopup(error,  0);
+            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+        }
+
+    /*]]>*/
+
+
+
+
+</script>
+
+
+</html>

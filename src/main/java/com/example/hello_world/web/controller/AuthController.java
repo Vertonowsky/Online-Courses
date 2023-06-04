@@ -1,10 +1,13 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.RecoverPasswordStage;
 import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.web.dto.UserDto;
+import com.example.hello_world.web.service.PasswordRecoveryTokenService;
 import com.example.hello_world.web.service.UserService;
+import com.example.hello_world.web.service.VerificationTokenService;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,13 +27,18 @@ import java.util.HashMap;
 public class AuthController {
 
     private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
+    private final PasswordRecoveryTokenService passwordRecoveryTokenService;
     private final ClientRegistrationRepository clientRegistrationRepository;
 
 
-    public AuthController(UserService userService, ClientRegistrationRepository clientRegistrationRepository) {
+    public AuthController(UserService userService, VerificationTokenService verificationTokenService, PasswordRecoveryTokenService passwordRecoveryTokenService, ClientRegistrationRepository clientRegistrationRepository) {
         this.userService = userService;
+        this.verificationTokenService = verificationTokenService;
+        this.passwordRecoveryTokenService = passwordRecoveryTokenService;
         this.clientRegistrationRepository = clientRegistrationRepository;
     }
+
 
 
     @GetMapping("/logowanie")
@@ -98,7 +106,7 @@ public class AuthController {
     public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
         try {
 
-            userService.verifyUserEmail(tokenUuid);
+            verificationTokenService.verifyUserEmail(tokenUuid);
             model.addAttribute("verified", true);
 
         } catch (Exception e) {
@@ -111,12 +119,12 @@ public class AuthController {
 
 
 
-    @PostMapping("/auth/resendEmail")
+    @PostMapping("/auth/resendVerificationEmail")
     public HashMap<String, Object> resendEmail(@RequestParam(value = "email") String email) {
         HashMap<String, Object> map = new HashMap<>();
         try {
 
-            userService.resendEmail(email);
+            verificationTokenService.resendVerificationEmail(email);
             map.put("success", true);
             map.put("message", "Wysłano nowy token weryfikacyjny. Sprawdź pocztę e-mail.");
             map.put("tokenCooldown", 120);
@@ -124,7 +132,7 @@ public class AuthController {
         } catch (Exception e) {
             map.put("success", false);
             map.put("message", e.getMessage());
-            map.put("tokenCooldown", userService.getLastValidTokenCooldown(email));
+            map.put("tokenCooldown", verificationTokenService.getLastValidTokenCooldown(email));
         }
 
         return map;
@@ -141,6 +149,33 @@ public class AuthController {
         model.addAttribute("email", email);
         model.addAttribute("loginAttempt", loginAttempt);
         return new ModelAndView( "weryfikacja");
+    }
+
+
+    @GetMapping("/przywracanie-hasla")
+    public ModelAndView showPasswordRecoveryForm(Model model) {
+        // Check if user is already logged in.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+
+        return new ModelAndView( "przywracanie-hasla");
+    }
+
+
+
+    @PostMapping("/auth/recoverPassword")
+    public ModelAndView startRecoveryProcess(@RequestParam(value = "email") String email, Model model) {
+        try {
+
+            passwordRecoveryTokenService.createPasswordRecoveryToken(email);
+            model.addAttribute("progress", RecoverPasswordStage.NEW_PASSWORD);
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Błąd: " + e.getMessage());
+            model.addAttribute("dataEmail", email);
+        }
+
+        return new ModelAndView("przywracanie-hasla");
     }
 
 
