@@ -4,6 +4,7 @@ import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.validation.*;
 import com.example.hello_world.web.dto.UserDto;
+import com.example.hello_world.web.service.token.VerificationTokenService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

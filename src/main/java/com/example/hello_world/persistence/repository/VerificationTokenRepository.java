@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface VerificationTokenRepository extends CrudRepository<VerificationToken, Integer> {
+public interface VerificationTokenRepository extends CrudRepository<VerificationToken, Integer>, TokenRepository<VerificationToken> {
 
     Optional<VerificationToken> findById(Integer id);
 

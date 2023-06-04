@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PasswordRecoveryTokenRepository extends CrudRepository<PasswordRecoveryToken, Integer> {
+public interface PasswordRecoveryTokenRepository extends CrudRepository<PasswordRecoveryToken, Integer>, TokenRepository<PasswordRecoveryToken> {
 
     Optional<PasswordRecoveryToken> findById(Integer id);
 
