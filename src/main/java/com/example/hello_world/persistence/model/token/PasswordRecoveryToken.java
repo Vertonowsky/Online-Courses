@@ -13,7 +13,7 @@ public class PasswordRecoveryToken extends Token {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
-    private RecoverPasswordStage recoverPasswordStage;
+    private RecoverPasswordStage recoverPasswordStage = RecoverPasswordStage.FRESH;
 
 
 

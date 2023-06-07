@@ -4,7 +4,7 @@ import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.model.token.VerificationToken;
 import com.example.hello_world.persistence.repository.UserRepository;
-import com.example.hello_world.persistence.repository.VerificationTokenRepository;
+import com.example.hello_world.persistence.repository.token.VerificationTokenRepository;
 import com.example.hello_world.validation.*;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.EmailService;
