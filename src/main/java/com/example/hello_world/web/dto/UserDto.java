@@ -1,15 +1,9 @@
 package com.example.hello_world.web.dto;
 
+import com.example.hello_world.Regex;
 import com.example.hello_world.security.RegistrationMethod;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class UserDto {
-
-    public static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-    public static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[ąĄćĆśŚęĘóÓłŁńŃżŻźŹ$&+,:;=?@#|<>.^*()%!-]).{8,32}$";
-
 
 
     private RegistrationMethod registrationMethod = RegistrationMethod.DEFAULT;
@@ -84,18 +78,14 @@ public class UserDto {
         if (password == null || password.isEmpty()) return false;
         if (password.length() < 8 || password.length() > 32) return false;
 
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+        return Regex.PASSWORD_PATTERN.matches(password);
     }
 
     public static boolean isEmailValid(String email) {
         if (email == null || email.isEmpty()) return false;
         if (email.length() > 64) return false;
 
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        return Regex.EMAIL_PATTERN.matches(email);
     }
 
     public boolean arePasswordsEqual() {

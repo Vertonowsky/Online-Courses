@@ -12,8 +12,6 @@ import com.example.hello_world.validation.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Service
@@ -124,10 +122,7 @@ public class PurchaseService {
 
 
         if (usingDiscount) {
-            Pattern pattern = Pattern.compile(Regex.DISCOUNT_PATTERN.getPattern());
-            Matcher matcher = pattern.matcher(codeName);
-
-            if (codeName.isEmpty() || !matcher.matches()) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
+            if (codeName.isEmpty() || !Regex.DISCOUNT_PATTERN.matches(codeName)) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
             Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
             if (discountCode.isEmpty()) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
 

@@ -106,16 +106,10 @@
 
                         <a th:if="${optionalErrorInfo != null}" th:href="${optionalErrorInfo}" id="optionalErrorInfo" class="type_login"><i class="fas fa-mouse-pointer"></i> Kliknij aby ponowić proces weryfikacji adresu email.</a>
 
-                        <!--
-                        <div id="under_inputs">
-                            <ul class="href">
-                                <li><a class="list_link" id="pass_remember" th:href="@{/przywracanie-hasla}" tabindex="-1">Nie pamiętasz hasła?</a></li>
-                            </ul>
 
-                            <button type="submit" id="button_login" class="button_blue">Logowanie <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
-                        -->
                         <div id="under_inputs">
+                                <a class="list_link" id="pass_remember" th:href="@{/przywracanie-hasla}">Nie pamiętasz hasła?</a>
+
                             <button type="submit" id="button_login" class="button_blue">Logowanie <i class="fas fa-arrow-circle-right"></i></button>
                         </div>
 

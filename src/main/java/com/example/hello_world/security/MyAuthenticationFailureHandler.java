@@ -37,9 +37,6 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         response.getWriter().println(objectMapper.writeValueAsString(data));*/
         //String redirectUrl = request.getContextPath() + "/logowanie";
 
-        System.out.println(exception.getMessage());
-
-        //TODO check if credentials are valid -> then try to pas the page into verification page
 
         if (exception.getMessage().equalsIgnoreCase("Bad credentials")) {
             request.setAttribute("error", "Błędny adres email lub hasło!");

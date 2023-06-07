@@ -120,7 +120,7 @@
             data: { "email": email }, // Serializes the form's elements
             type: "POST",
             dataType: "json",
-            url: "auth/resendEmail",
+            url: "auth/resendVerificationEmail",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token)
             },

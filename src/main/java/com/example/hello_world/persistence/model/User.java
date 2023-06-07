@@ -1,6 +1,7 @@
 package com.example.hello_world.persistence.model;
 
 
+import com.example.hello_world.persistence.model.token.VerificationToken;
 import com.example.hello_world.security.CustomOidcUser;
 import com.example.hello_world.security.CustomUserDetails;
 import com.example.hello_world.security.RegistrationMethod;
