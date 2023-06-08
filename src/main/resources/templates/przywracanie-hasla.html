@@ -40,66 +40,15 @@
 
             <div class="right">
 
-                <!--
-                    START auth_container
-                -->
-                <div id="auth_container" th:if="${progress == null}">
 
-                    <div th:id="password_recovery_body">
+                <!-- TODO make error window compatible with small screens. Make one version of the error style for every page -->
 
-                        <div class="title_with_shadow">
-                            <div class="tit_bck"></div>
-                            <p class="tit_text">Zapomniałeś hasło?</p>
-                        </div>
-
-                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
-
+                <div th:id="auth_container" th:if="${error != null}">
+                    <div class="window" id="recovery_error_info">
+                        <i class="center_icon red fas fa-times-circle"></i>
+                        <h2 class="subtitle" th:text="${error}"> </h2>
                     </div>
-
-
-                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input id="data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
-                            <label for="data_email"> Email: </label>
-
-                            <!--
-                                TOOLTIP - Information about corectness of data
-                            -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
-                            </div>
-                        </div>
-
-
-
-                        <div th:id="under_inputs">
-                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
-
-                    </form>
-
-
                 </div>
-                <!--
-                    END auth_container
-                -->
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 <!--
@@ -107,68 +56,104 @@
                 -->
                 <div th:id="auth_container" th:if="${progress != null}">
 
-                    <div th:id="password_recovery_body">
 
-                        <div class="title_with_shadow">
-                            <div class="tit_bck"></div>
-                            <p class="tit_text">Zapomniałeś hasło?</p>
+                    <div id="password_recovery_body">
+
+
+                        <div th:id="password_recovery_body">
+
+                            <div class="title_with_shadow">
+                                <div class="tit_bck"></div>
+                                <p class="tit_text">Zapomniałeś hasło?</p>
+                            </div>
+
+                            <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+
                         </div>
 
-                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+                        <!-- TODO fast recovering password displays error of cooldown -->
+
+                        <form th:id="password_recovery_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH}" th:action="@{/auth/startPasswordRecoveryProcess}" method="POST">
+
+                            <!--
+                                INPUT GROUP - Input with its elements
+                            -->
+                            <div class="input_group">
+                                <input id="data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
+                                <label for="data_email"> Email: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
+                            </div>
+
+
+
+                            <div th:id="under_inputs">
+                                <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
+
+                        </form>
+
+
+
+                        <form th:id="new_password_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).NEW_PASSWORD_CREATION}" th:action="@{/auth/confirmPasswordRecovery}" method="POST">
+
+                            <!--
+                                INPUT GROUP - Input with its elements
+                            -->
+                            <div class="input_group">
+                                <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
+                                <label for="data_password"> Nowe hasło: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
+                            </div>
+
+
+
+
+                            <!--
+                                INPUT GROUP - Input with its elements
+                            -->
+                            <div class="input_group">
+                                <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password_repeat" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
+                                <label for="data_password_repeat"> Powtórz hasło: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
+                            </div>
+
+
+
+                            <div th:id="under_inputs">
+                                <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
+
+                        </form>
 
                     </div>
-
-
-                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
-                            <label for="data_password"> Nowe hasło: </label>
-
-                            <!--
-                                TOOLTIP - Information about corectness of data
-                            -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
-                            </div>
-                        </div>
-
-
-
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password_repeat" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
-                            <label for="data_password_repeat"> Powtórz hasło: </label>
-
-                            <!--
-                                TOOLTIP - Information about corectness of data
-                            -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
-                            </div>
-                        </div>
-
-
-
-                        <div th:id="under_inputs">
-                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
-
-                    </form>
-
 
                 </div>
                 <!--
                     END auth_container
                 -->
+
+
 
             </div>
 
@@ -192,7 +177,6 @@
     $("#password_recovery_form").submit(function(e) {
         if (!checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("data_email").value)) {
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-            return;
         }
     });
 
@@ -202,7 +186,8 @@
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            //checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            // TODO checkInputData() for password aswell
         }
 
     /*]]>*/
