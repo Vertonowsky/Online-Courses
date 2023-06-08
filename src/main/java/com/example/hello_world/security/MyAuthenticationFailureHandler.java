@@ -1,5 +1,6 @@
 package com.example.hello_world.security;
 
+import com.example.hello_world.VerificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -43,7 +44,7 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         }
         else if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
             request.setAttribute("error", "Konto powiązane z podanym adresem email wymaga weryfikacji!");
-            request.setAttribute("optionalErrorInfo", String.format("%s/weryfikacja?email=%s&loginAttempt=true", request.getContextPath(), request.getParameter("email")));
+            request.setAttribute("optionalErrorInfo", String.format("%s/weryfikacja?email=%s&verificationType=%d", request.getContextPath(), request.getParameter("email"), VerificationType.EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()));
         }
         else
             request.setAttribute("error", "Nie udało się zalogować.");

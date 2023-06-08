@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <title>Weryfikacja adresu email</title>
+    <title>Weryfikacja | Kursowo.pl </title>
 
     <link rel="stylesheet" href="/css/auth.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
@@ -42,26 +42,39 @@
                 <!--
                     START auth_body
                 -->
-                <div id="auth_body">
+                <div th:id="auth_body">
 
                     <i class="center_icon fas fa-info-circle"></i>
 
-                    <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'">Nie posiadasz jeszcze żadnego kursu.</h1>
-                    <h2 class="head_desc" th:if="${loginAttempt == null || !loginAttempt}"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
-                    <h2 class="head_desc" th:if="${loginAttempt}"> Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.</h2>
 
-                    <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
+                    <div th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
+                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
+                        <h2 class="head_desc"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
+                    </div>
 
-                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
+                    <div th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
+                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
+                        <h2 class="head_desc"> Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.</h2>
+                    </div>
 
-                    <span id="timer" class="hidden"></span>
+                    <div th:if="${verificationType == T(com.example.hello_world.VerificationType).PASSWORD_RECOVER_NEW.getIndex()}">
+                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
+                        <h2 class="head_desc">Na podany przez Ciebie adres email została wysłana wiadomość potwierdzająca rozpoczęcie procesu odzyskiwania hasła. Podążaj za instrukacjami zawartymi w otrzymanej wiadomości.</h2>
+                    </div>
+
+
+                    <p th:id="resend_email"> Email weryfikacyjny nie dotarł?</p>
+
+                    <button th:id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
+
+                    <span th:id="timer" class="hidden"></span>
 
                 </div>
-
-
                 <!--
                     END auth_body
                 -->
+
+
 
             </div>
 
@@ -82,34 +95,16 @@
 <script th:inline="javascript">
 
 
-    $("#login_form").submit(function(e) {
-        let correctData = 0; // Count correct data
-        if (checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value)) correctData++;
-        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))  correctData++;
-
-        if (correctData != 2)
-            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-    });
-
-    function closeRegistrationInfo() {
-        const info = document.getElementById("registration_info_bg");
-        info.style.display = "none";
-    }
-
     /*<![CDATA[*/
         let error = /*[[${error}]]*/ "";
+        let resendUrl = /*[[${resendUrl}]]*/ "";
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
-            checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
+            //checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            //checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
         }
     /*]]>*/
-
-
-
-
-
 
 
     function resendEmail(email) {
@@ -120,7 +115,7 @@
             data: { "email": email }, // Serializes the form's elements
             type: "POST",
             dataType: "json",
-            url: "auth/resendVerificationEmail",
+            url: resendUrl,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token)
             },
@@ -176,10 +171,6 @@
         intervalId = setInterval(updateTimer, 1000);
     }
 
-
-
-
 </script>
-
 
 </html>
