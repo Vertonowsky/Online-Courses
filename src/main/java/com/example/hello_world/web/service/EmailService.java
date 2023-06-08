@@ -43,7 +43,7 @@ public class EmailService {
     }
 
 
-    public void sendVerificationEmail(String to, String subject, HashMap<String, Object> variables, String htmlFilePath) {
+    public void sendHtmlEmail(String to, String subject, HashMap<String, Object> variables, String htmlFilePath) {
 
         CompletableFuture.runAsync(() -> {
             try {

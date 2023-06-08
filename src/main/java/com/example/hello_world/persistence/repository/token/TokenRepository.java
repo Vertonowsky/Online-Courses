@@ -18,7 +18,7 @@ public interface TokenRepository<T extends Token> extends CrudRepository<T, Inte
     Optional<T> findByToken(UUID uuid);
 
     //@Query("SELECT t FROM #{#entityName} t WHERE t.user = :user AND t.valid = :valid")
-    //Optional<T> findByUserAndValid(User user, boolean valid);
+    Optional<T> findByUserAndValid(User user, boolean valid);
 
     List<T> findAllByUser(User user);
 
