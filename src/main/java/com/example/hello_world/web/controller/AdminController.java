@@ -72,7 +72,7 @@ public class AdminController {
             variables.put("to", "nieznane656@gmail.com");
             variables.put("url", "http://localhost:8080/rejestracja/weryfikacja&token=iuahdiuoshd123123azsdasd");
 
-            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/test-email.html");
+            emailService.sendVerificationEmail("nieznane656@gmail.com", "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/template-email-verification.html");
 
         } catch(Exception e) {
             System.out.println(e.getMessage());

@@ -3,11 +3,15 @@ package com.example.hello_world.web.controller;
 
 import com.example.hello_world.RecoverPasswordStage;
 import com.example.hello_world.Regex;
+import com.example.hello_world.VerificationType;
 import com.example.hello_world.persistence.model.User;
+import com.example.hello_world.validation.InvalidEmailFormatException;
+import com.example.hello_world.validation.LowDelayException;
+import com.example.hello_world.validation.UserNotFoundException;
 import com.example.hello_world.web.dto.UserDto;
-import com.example.hello_world.web.service.PasswordRecoveryTokenService;
 import com.example.hello_world.web.service.UserService;
-import com.example.hello_world.web.service.VerificationTokenService;
+import com.example.hello_world.web.service.token.PasswordRecoveryTokenService;
+import com.example.hello_world.web.service.token.VerificationTokenService;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +56,6 @@ public class AuthController {
         mav.addObject("registered", registered);
         return mav;
     }
-
 
 
     @PostMapping("/logowanie")
@@ -124,9 +127,9 @@ public class AuthController {
         HashMap<String, Object> map = new HashMap<>();
         try {
 
-            verificationTokenService.resendVerificationEmail(email);
+            verificationTokenService.resendEmail(email);
             map.put("success", true);
-            map.put("message", "Wysłano nowy token weryfikacyjny. Sprawdź pocztę e-mail.");
+            map.put("message", "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
             map.put("tokenCooldown", 120);
 
         } catch (Exception e) {
@@ -141,15 +144,18 @@ public class AuthController {
 
 
     @GetMapping("/weryfikacja")
-    public ModelAndView showVerifyForm(@RequestParam(value = "email") String email, @RequestParam(value = "loginAttempt", required = false) boolean loginAttempt, Model model) {
+    public ModelAndView showVerifyForm(@RequestParam(value = "email") String email, @RequestParam(value = "verificationType") Integer verificationType, Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
+        if (!VerificationType.isValidIndex(verificationType)) return new ModelAndView( "redirect:/");
 
         model.addAttribute("email", email);
-        model.addAttribute("loginAttempt", loginAttempt);
+        model.addAttribute("resendUrl", "/auth/resendVerificationEmail");
+        model.addAttribute("verificationType", verificationType);
         return new ModelAndView( "weryfikacja");
     }
+
 
 
     @GetMapping("/przywracanie-hasla")
@@ -158,25 +164,66 @@ public class AuthController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
+        model.addAttribute("progress", RecoverPasswordStage.FRESH);
         return new ModelAndView( "przywracanie-hasla");
     }
 
 
 
-    @PostMapping("/auth/recoverPassword")
+    @PostMapping("/auth/startPasswordRecoveryProcess")
     public ModelAndView startRecoveryProcess(@RequestParam(value = "email") String email, Model model) {
         try {
 
             passwordRecoveryTokenService.createPasswordRecoveryToken(email);
-            model.addAttribute("progress", RecoverPasswordStage.NEW_PASSWORD);
 
-        } catch (Exception e) {
+        } catch (InvalidEmailFormatException | UserNotFoundException | LowDelayException e) {
             model.addAttribute("error", "Błąd: " + e.getMessage());
             model.addAttribute("dataEmail", email);
         }
 
+        model.addAttribute("email", email);
+        model.addAttribute("resendUrl", "/auth/resendPasswordRecoveryEmail");
+        model.addAttribute("verificationType", VerificationType.PASSWORD_RECOVER_NEW.getIndex());
+        return new ModelAndView("weryfikacja");
+    }
+
+
+    @GetMapping("/auth/recoverPassword")
+    public ModelAndView verifyPasswordToken(Model model, @RequestParam(value = "token") String tokenUuid) {
+        try {
+
+            passwordRecoveryTokenService.verifyToken(tokenUuid);
+            model.addAttribute("progress", RecoverPasswordStage.NEW_PASSWORD_CREATION);
+
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+
         return new ModelAndView("przywracanie-hasla");
     }
+
+
+
+
+    @PostMapping("/auth/resendPasswordRecoveryEmail")
+    public HashMap<String, Object> resendPasswordRecoveryEmail(@RequestParam(value = "email") String email) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+
+            passwordRecoveryTokenService.resendEmail(email);
+            map.put("success", true);
+            map.put("message", "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
+            map.put("tokenCooldown", 120);
+
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("message", e.getMessage());
+            map.put("tokenCooldown", passwordRecoveryTokenService.getLastValidTokenCooldown(email));
+        }
+
+        return map;
+    }
+
 
 
     /**
