@@ -196,7 +196,7 @@
         if (checkInputData(2, AuthDataTypeEnum.PasswordRepeat, document.getElementById("register_data_password_repeat").value)) correctData++;
         if (checkInputData(3, AuthDataTypeEnum.Terms, document.getElementById("register_data_terms").checked)) correctData++;
 
-        if (correctData != 4)
+        if (correctData != 4 || document.getElementById("register_data_password").value != document.getElementById("register_data_password_repeat").value)
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
     });
 

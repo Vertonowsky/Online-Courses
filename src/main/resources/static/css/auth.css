@@ -165,12 +165,12 @@
             margin: 15px 0 0 0;
         }
 
-        #auth_body .list_link {
+        #auth_body .list_link, #recovery_error_info .list_link{
             color: var(--color-blue);
             padding-bottom: 3px;
         }
 
-        #auth_body .list_link:after {
+        #auth_body .list_link:after, #recovery_error_info .list_link:after {
             bottom: -1px;
         }
 
