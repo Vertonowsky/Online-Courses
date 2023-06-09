@@ -23,18 +23,10 @@
 
         <div id="auth_content">
 
-            <div class="left">
-
-                <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
-
-                <p id="left_title">Masz już konto?</p>
-                <p id="left_desc">Załóż darmowe konto i skorzystaj z wysokiej jakości kursów online przygotowanych przez specjalistów!</p>
-                <a th:href="@{/logowanie}" class="button_blue"> Logowanie <i class="fas fa-arrow-circle-right"></i></a>
-
-            </div>
-
-
-
+            <!--
+                Insert left panel
+            -->
+            <th:block th:insert="~{rejestracja :: authLeftLoginPanel}"></th:block>
 
 
             <div class="right">

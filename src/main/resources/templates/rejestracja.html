@@ -16,7 +16,7 @@
 
         <div id="auth_content">
 
-            <div class="left">
+            <div class="left" th:fragment="authLeftLoginPanel">
 
                 <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
 
@@ -163,13 +163,6 @@
             -->
             <div th:insert="~{popup :: popup}"></div>
 
-            <!--<div id="respond">
-                <i class="fas fa-exclamation-triangle"></i>
-                <label id="respond_text"></label>
-                <i id="close_respond" class="fas fa-times" onclick="closePopup()"></i>
-            </div>
-            -->
-
         </div>
 
 
@@ -182,11 +175,6 @@
 
 
 <script th:inline="javascript">
-
-    /*$("#register_form").submit(function(e) {
-        e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-        sendAuthenticationData("register", $(this), document.getElementById("register_data_email").value, document.getElementById("register_data_password").value, document.getElementById("register_data_password_repeat").value, document.getElementById("register_data_terms").checked);
-    });*/
 
 
     $("#register_form").submit(function(e) {
