@@ -53,11 +53,11 @@ public class VerificationTokenService extends TokenService<VerificationToken, Ve
 
 
     @Override
-    public void resendEmail(String email) throws InvalidEmailFormatException, UserNotFoundException, TokenExpiredException, LowDelayException {
+    public void resendEmail(String email) throws InvalidEmailFormatException, UserNotFoundException, LowDelayException, UserVerificationException {
         User user = findUser(email);
 
         // Check is account isn't already verified
-        if (user.isVerified()) throw new TokenExpiredException("Konto zostało już aktywowane.");
+        if (user.isVerified()) throw new UserVerificationException("Konto zostało już aktywowane.");
 
         super.resendEmail(user);
     }

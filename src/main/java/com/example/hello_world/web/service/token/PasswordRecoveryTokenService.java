@@ -27,8 +27,13 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
     }
 
 
-    public void initializeToken(String email) throws InvalidEmailFormatException, UserNotFoundException, LowDelayException, TokenExpiredException {
-        super.resendEmail(email);
+    public void initializeToken(String email) throws InvalidEmailFormatException, UserNotFoundException, LowDelayException, TokenExpiredException, UserVerificationException {
+        User user = findUser(email);
+
+        // Check is account isn't already verified
+        if (!user.isVerified()) throw new UserVerificationException("Konto nie jest aktywne.");
+
+        super.resendEmail(user);
     }
 
 
@@ -59,7 +64,7 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
     }
 
 
-    public void changeUserPassword(PasswordRecoverDto recoverPasswordDto) throws InvalidPasswordFormatException, PasswordsNotEqualException, InvalidUUIDFormatException, TokenExpiredException, TokenNotFoundException, UserNotFoundException {
+    public void changeUserPassword(PasswordRecoverDto recoverPasswordDto) throws InvalidPasswordFormatException, PasswordsNotEqualException, InvalidUUIDFormatException, TokenExpiredException, TokenNotFoundException, UserNotFoundException, UserVerificationException {
 
         PasswordRecoveryToken token = findToken(recoverPasswordDto.getToken().toString());
 
@@ -72,6 +77,9 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
         Optional<User> user = userService.getUserByPasswordRecoveryToken(recoverPasswordDto.getToken());
         if (user.isEmpty())
             throw new UserNotFoundException("Nie odnaleziono użytkownika.");
+
+        // Check is account isn't already verified
+        if (!user.get().isVerified()) throw new UserVerificationException("Konto nie jest aktywne.");
 
         userService.changePassword(user.get(), recoverPasswordDto.getPassword());
         token.setRecoverPasswordStage(RecoverPasswordStage.PASSWORD_CHANGED);

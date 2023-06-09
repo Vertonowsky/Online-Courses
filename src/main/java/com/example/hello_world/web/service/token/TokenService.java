@@ -61,7 +61,7 @@ public abstract class TokenService<T extends Token, S extends TokenRepository<T>
 
 
 
-    public void resendEmail(String email) throws UserNotFoundException, LowDelayException, InvalidEmailFormatException, TokenExpiredException {
+    public void resendEmail(String email) throws UserNotFoundException, LowDelayException, InvalidEmailFormatException, UserVerificationException {
         resendEmail(findUser(email));
     }
 
@@ -87,7 +87,7 @@ public abstract class TokenService<T extends Token, S extends TokenRepository<T>
         if (optionalToken.isEmpty()) throw new TokenNotFoundException("Nie odnaleziono tokenu.");
 
         T token = optionalToken.get();
-        if (!token.isValid() || token.getExpiryDate().getTime() <= System.currentTimeMillis()) throw new TokenExpiredException("Wskazany token utracił swoją ważność.");
+        if (!token.isValid() || token.getExpiryDate().getTime() <= System.currentTimeMillis()) throw new TokenExpiredException("Okres ważności tokenu uległ wygaśnięciu.");
 
         return token;
     }

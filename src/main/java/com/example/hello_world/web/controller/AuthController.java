@@ -1,6 +1,7 @@
 package com.example.hello_world.web.controller;
 
 
+import com.example.hello_world.VerificationType;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.UserService;
@@ -77,6 +78,7 @@ public class AuthController {
             userService.registerNewUserAccount(userDto);
             RedirectView rv = new RedirectView("weryfikacja", true);
             rv.addStaticAttribute("email", userDto.getEmail());
+            rv.addStaticAttribute("verificationType", VerificationType.EMAIL_VERIFICATION_NEW.getIndex());
             return new ModelAndView(rv);
 
         } catch (Exception e) {

@@ -76,8 +76,12 @@ public class VerificationController {
         if (!VerificationType.isValidIndex(verificationType)) return new ModelAndView( "redirect:/");
 
         model.addAttribute("email", email);
-        model.addAttribute("resendUrl", "/auth/resendVerificationEmail");
         model.addAttribute("verificationType", verificationType);
+
+        if (verificationType == VerificationType.EMAIL_VERIFICATION_NEW.getIndex() || verificationType == VerificationType.EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex())
+            model.addAttribute("resendUrl", "/auth/resendVerificationEmail");
+        else if (verificationType == VerificationType.PASSWORD_RECOVER_NEW.getIndex())
+            model.addAttribute("resendUrl", "/auth/resendPasswordRecoveryEmail");
         return new ModelAndView( "weryfikacja");
     }
 

@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 
@@ -46,15 +47,17 @@ public class PasswordRecoveryController {
 
             passwordRecoveryTokenService.initializeToken(email);
 
-        } catch (InvalidEmailFormatException | UserNotFoundException | LowDelayException | TokenExpiredException e) {
+        } catch (InvalidEmailFormatException | UserNotFoundException | LowDelayException | TokenExpiredException | UserVerificationException e) {
             model.addAttribute("error", "Błąd: " + e.getMessage());
             model.addAttribute("dataEmail", email);
+            model.addAttribute("progress", RecoverPasswordStage.FRESH);
+            return new ModelAndView("przywracanie-hasla");
         }
 
-        model.addAttribute("email", email);
-        model.addAttribute("resendUrl", "/auth/resendPasswordRecoveryEmail");
-        model.addAttribute("verificationType", VerificationType.PASSWORD_RECOVER_NEW.getIndex());
-        return new ModelAndView("weryfikacja");
+        RedirectView rv = new RedirectView("/weryfikacja", true);
+        rv.addStaticAttribute("email", email);
+        rv.addStaticAttribute("verificationType", VerificationType.PASSWORD_RECOVER_NEW.getIndex());
+        return new ModelAndView(rv);
     }
 
 
@@ -72,7 +75,7 @@ public class PasswordRecoveryController {
             model.addAttribute("passwordDto", passwordDto);
 
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute("criticalError", e.getMessage());
         }
 
         return new ModelAndView("przywracanie-hasla");
@@ -121,7 +124,7 @@ public class PasswordRecoveryController {
             model.addAttribute("progress", RecoverPasswordStage.PASSWORD_CHANGED);
 
         } catch (InvalidPasswordFormatException | PasswordsNotEqualException | InvalidUUIDFormatException |
-                 TokenExpiredException | TokenNotFoundException | UserNotFoundException e) {
+                 TokenExpiredException | TokenNotFoundException | UserNotFoundException | UserVerificationException e) {
 
             model.addAttribute("error", e.getMessage());
 
