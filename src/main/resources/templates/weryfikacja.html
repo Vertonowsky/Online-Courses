@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <title>Weryfikacja adresu email</title>
+    <title>Weryfikacja | Kursowo.pl </title>
 
     <link rel="stylesheet" href="/css/auth.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
@@ -23,45 +23,52 @@
 
         <div id="auth_content">
 
-            <div class="left">
-
-                <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
-
-                <p id="left_title">Masz już konto?</p>
-                <p id="left_desc">Załóż darmowe konto i skorzystaj z wysokiej jakości kursów online przygotowanych przez specjalistów!</p>
-                <a th:href="@{/logowanie}" class="button_blue"> Logowanie <i class="fas fa-arrow-circle-right"></i></a>
-
-            </div>
-
-
-
+            <!--
+                Insert left panel
+            -->
+            <th:block th:insert="~{rejestracja :: authLeftLoginPanel}"></th:block>
 
 
             <div class="right">
 
                 <!--
-                    START auth_body
+                    START #auth_info
                 -->
-                <div id="auth_body">
+                <div id="auth_info" class="window no_data_found">
 
-                    <i class="center_icon fas fa-info-circle"></i>
 
-                    <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'">Nie posiadasz jeszcze żadnego kursu.</h1>
-                    <h2 class="head_desc" th:if="${loginAttempt == null || !loginAttempt}"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
-                    <h2 class="head_desc" th:if="${loginAttempt}"> Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.</h2>
+                    <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
+                        <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', null)"></th:block>
 
-                    <p id="resend_email"> Email z adresem weryfikacyjnym nie dotarł?</p>
+                        <p class="description"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</p>
+
+                    </th:block>
+
+                    <div th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
+
+                        <th:block th:insert="dependencies :: noDataFound('red fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.')"></th:block>
+
+                    </div>
+
+                    <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).PASSWORD_RECOVER_NEW.getIndex()}">
+
+                        <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Na podany przez Ciebie adres email została wysłana wiadomość potwierdzająca rozpoczęcie procesu odzyskiwania hasła. Podążaj za instrukacjami zawartymi w otrzymanej wiadomości.')"></th:block>
+
+                    </th:block>
+
+
+                    <p id="resend_email"> Email weryfikacyjny nie dotarł?</p>
 
                     <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
 
                     <span id="timer" class="hidden"></span>
 
                 </div>
-
-
                 <!--
-                    END auth_body
+                    END auth_info
                 -->
+
+
 
             </div>
 
@@ -82,34 +89,16 @@
 <script th:inline="javascript">
 
 
-    $("#login_form").submit(function(e) {
-        let correctData = 0; // Count correct data
-        if (checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value)) correctData++;
-        if (checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value))  correctData++;
-
-        if (correctData != 2)
-            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-    });
-
-    function closeRegistrationInfo() {
-        const info = document.getElementById("registration_info_bg");
-        info.style.display = "none";
-    }
-
     /*<![CDATA[*/
         let error = /*[[${error}]]*/ "";
+        let resendUrl = /*[[${resendUrl}]]*/ "";
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
-            checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
+            //checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            //checkInputData(1, AuthDataTypeEnum.PasswordLogin, document.getElementById("login_data_password").value);
         }
     /*]]>*/
-
-
-
-
-
 
 
     function resendEmail(email) {
@@ -120,7 +109,7 @@
             data: { "email": email }, // Serializes the form's elements
             type: "POST",
             dataType: "json",
-            url: "auth/resendVerificationEmail",
+            url: resendUrl,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token)
             },
@@ -176,10 +165,6 @@
         intervalId = setInterval(updateTimer, 1000);
     }
 
-
-
-
 </script>
-
 
 </html>

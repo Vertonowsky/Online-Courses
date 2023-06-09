@@ -723,7 +723,7 @@
             position: relative;
             box-sizing: border-box;
             width: 90%;
-            padding-bottom: 50px;
+            padding: 30px;
             margin: 50px auto 50px auto;
             background: #FFF;
             border-radius: 20px;
@@ -749,7 +749,7 @@
                 position: relative;
                 width: 100%;
                 text-align: center;
-                margin: 70px 0 0 0;
+                margin: 30px 0 0 0;
             }
 
                
@@ -758,15 +758,13 @@
 
 
 
-
-
-        .modal .modal_center_icon {
-            margin-top: 30px;
-            font-size: 120px;
-            color: #33B3E8;
+        .modal #purchase_successful .button_gray {
+            position: relative;
+            padding: 12px 0;
         }
 
         .modal .bottom .button_gray {
+            display: inline-block;
             width: 240px;
             margin-right: 15px;
         }
@@ -824,9 +822,8 @@
             vertical-align: top;
             box-sizing: border-box;
             text-align: left;
-            width: 75%;
+            width: 80%;
             height: 100%;
-            padding-top: 30px;
         }
 
 
@@ -885,7 +882,8 @@
 
                 #payment_container .button_gray {
                     position: relative;
-                    padding: 16px 0;
+                    font-size: 14px;
+                    padding: 14px 0;
                 }
 
                 #payment_container .input_group {
@@ -896,15 +894,15 @@
                     width: 280px;
                 }
 
-                        #payment_container .input_group .input {
+                        #payment_container #discount_code_input {
                             background: transparent;
                             border: 2px solid #849EBD;
                             border-radius: 5px;
-                            font-size: 15px;
-                            padding: 16px 0 12px 12px;
+                            font-size: 14px;
+                            padding: 14px 0 10px 12px;
                         }
 
-                        #payment_container .input_group .input.disabled {
+                        #payment_container #discount_code_input.disabled {
                             background: #CCE3FF;
                             border: 2px solid #83A8C9;
                             color: #29323D;
@@ -926,7 +924,7 @@
                                     color: #18BCF0;
                                 }
                 
-                                #payment_container .input_group .input.disabled ~ #discount_icon {
+                                #payment_container #discount_code_input.disabled ~ #discount_icon {
                                     cursor: not-allowed;
                                     color: #29323D;
                                 }
@@ -937,7 +935,7 @@
                             border-color: #878A99;
                         }
         
-                        #payment_container .input_group .input.disabled ~ label {
+                        #payment_container #discount_code_input.disabled ~ label {
                             display: none;
                         }
 
@@ -1194,12 +1192,6 @@
                 font-size: 18px;
             }
 
-
-            .modal .modal_center_icon {
-                margin-top: 25px;
-                font-size: 90px;
-            }
-
             .modal .subtitle {
                 font-size: 16px;
             }
@@ -1263,8 +1255,16 @@
             }
 
 
+            #payment_container .content {
+                width: 100%;
+            }
+
+            #payment_container .input_group {
+                width: 240px;
+            }
+
             .modal .tab_section .buttons {
-                margin: 50px 0 0 0;
+                margin: 35px 0 0 0;
             }
 
                 .modal .bottom .button_gray {
@@ -1388,6 +1388,12 @@
             }
 
 
+            .modal .bottom .button_gray {
+                width: 260px;
+                margin: 0 auto 10px auto;
+            }
+
+
 
 
         .modal_content {
@@ -1403,11 +1409,6 @@
             margin-bottom: 25px;
         }
 
-
-            .modal .modal_center_icon {
-                margin-top: 20px;
-                font-size: 70px;
-            }
 
                 .modal .subtitle {
                     font-size: 16px;
@@ -1427,34 +1428,34 @@
 
 
 
-        #payment_container .content {
-            width: 90%;
-            padding-top: 20px;
+
+
+            #payment_container td {
+                width: calc(100% - 70px);
+                font-size: var(--font-size-smaller);
+            }
+
+            #payment_container td:nth-child(2n) {
+                width: 70px;
+                font-size: var(--font-size-normal);
+            }
+
+            #payment_container .course_title {
+                font-size: var(--font-size-smaller);
+            }
+
+            #payment_container .category {
+                font-size: var(--font-size-phone);
+            }
+
+            #final_price {
+                font-size: var(--font-size-normal);
+            }
+
+
+        .modal .tab_section .buttons {
+            text-align: center;
         }
-
-                #payment_container td {
-                    width: calc(100% - 70px);
-                    font-size: var(--font-size-smaller);
-                }
-
-                #payment_container td:nth-child(2n) {
-                    width: 70px;
-                    font-size: var(--font-size-normal);
-                }
-
-                #payment_container .course_title {
-                    font-size: var(--font-size-smaller);
-                }
-
-                #payment_container .category {
-                    font-size: var(--font-size-phone);
-                }
-
-                #final_price {
-                    font-size: var(--font-size-normal);
-                }
-
-
 
         #payment_container .checkbox_body {
             left: 0;
@@ -1463,17 +1464,6 @@
         #payment_container .input_group {
             display: block;
             margin: 0 auto 10px auto;
-            width: 260px;
-        }
-
-        #payment_container .input_group .input {
-            font-size: 14px;
-            padding: 14px 0 10px 10px;
-        }
-
-        #payment_container .button_gray {
-            position: relative;
-            padding: 14px 0;
             width: 260px;
         }
 
@@ -1547,14 +1537,12 @@
             width: 80%;
         }
 
-            .modal .tab_section .buttons {
-                margin: 30px 0 0 0;
-            }
+
+        .modal .bottom {
+            padding: 20px;
+        }
 
             .modal .bottom .button_gray {
-                display: block;
-                width: 200px;
-                margin: 0 auto 10px auto;
                 font-size: var(--font-size-smaller);
             }
 
@@ -1658,7 +1646,7 @@
         }
 
             .plan_container .title {
-                font-size: var(--font-size-smaller);
+                font-size: var(--font-size-normal);
             }
 
             .plan_container .price_block {
@@ -1714,9 +1702,6 @@
             font-size: var(--font-size-phone);
         }
 
-            .modal .tab_section .buttons {
-                margin: 35px 0 0 0;
-            }
 
             .modal .bottom .button_gray {
                 font-size: var(--font-size-phone);
@@ -1758,6 +1743,15 @@
             width: 90%;
         }
 
+    }
+
+    @media screen and (max-width: 390px) {
+
+        #purchase_successful .button_gray {
+            font-size: var(--font-size-phone);
+            padding: 8px 0;
+            width: 100%;
+        }
 
     }
     

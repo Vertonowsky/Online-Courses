@@ -322,33 +322,10 @@
         margin: auto;
     }
 
-        #display_panel #no_data_found {
-            box-sizing: border-box;
-            width: 95%;
-            text-align: center;
-            font-size: 15px;
-            padding: 30px 30px;
-            box-shadow: 0 0 4px 2px #EBEBEB;
-            margin: auto;
-            border-radius: 20px;
-        }
-
-        #no_data_found .center_icon {
-            font-size: 70px;
-            color: #33B3E8;
-            margin-bottom: 15px;
-        }
-
-        #no_data_found .subtitle {
-            font-size: 16px;
-            margin: 0;
-        }
-
-        #no_data_found .desc {
-            font-size: 14px;
-            font-weight: normal;
-            margin: 10px 0 0 0;
-        }
+#admin_content #no_results_found {
+    width: 95%;
+    background: transparent;
+}
 
 
 

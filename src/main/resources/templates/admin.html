@@ -129,18 +129,20 @@
                     <div id="display_content" th:fragment="course_preview">
 
                         <h1 class="headline" id="introduction"> Podgląd </h1>
-                        <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
 
-                            <div th:if="${!#lists.isEmpty(selectedCourse)}">
-                                <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_data_found" class="window">
-                                    <i class="center_icon fas fa-exclamation-circle"></i>
+                        <!--
+                            No Data Found container
+                        -->
+                        <th:block th:if="${!#lists.isEmpty(selectedCourse)}">
+                            <div th:if="${selectedCourse.getChapters() == null || #lists.isEmpty(selectedCourse.getChapters())}" id="no_results_found" class="window no_data_found">
 
-                                    <h2 class="subtitle">Kurs nie zawiera żadnych materiałów!</h2>
-                                    <p class="desc">Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.</p>
+                                <th:block th:insert="dependencies :: noDataFound('big fas fa-exclamation-circle', 'Kurs nie zawiera żadnych materiałów!', 'Utwórz nowy rozdział, aby zobaczyć go w tym miejscu.')"></th:block>
 
-                                </div>
                             </div>
+                        </th:block>
 
+
+                        <div id="right_content" th:if="${!#lists.isEmpty(selectedCourse) || selectedCourse != null}">
 
                             <div class="chapter_menu" th:each="chapter : ${selectedCourse.chapters}" th:id="'right_chapter_id' + ${chapter.id}">
                                 <div class="chapter_header">

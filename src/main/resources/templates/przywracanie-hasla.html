@@ -23,66 +23,137 @@
 
         <div id="auth_content">
 
-            <!-- TODO make one version of left panel for different pages -->
-            <div class="left">
 
-                <a th:href="@{/}" id="nav_logo"><img alt="Logo serwisu kursowo.pl" src="/images/logo-image.png"/><span>Kursowo.pl</span></a>
-
-                <p id="left_title">Masz już konto?</p>
-                <p id="left_desc">Załóż darmowe konto i skorzystaj z wysokiej jakości kursów online przygotowanych przez specjalistów!</p>
-                <a th:href="@{/logowanie}" class="button_blue"> Logowanie <i class="fas fa-arrow-circle-right"></i></a>
-
-            </div>
-
-
+            <!--
+                Insert left panel
+            -->
+            <th:block th:insert="~{rejestracja :: authLeftLoginPanel}"></th:block>
 
 
 
             <div class="right">
 
+
+                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null || progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+                    <th:block th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+
+                        <th:block th:insert="dependencies :: noDataFound('fas fa-check-circle', 'Pomyślnie zmieniono hasło!', null)"></th:block>
+
+                        <a th:href="@{/logowanie}" class="button_gray">Logowanie <i class="fas fa-arrow-circle-right"></i></a>
+
+                    </th:block>
+
+                    <th:block th:if="${criticalError != null}">
+
+                        <th:block th:insert="dependencies :: noDataFound('red fas fa-exclamation-circle', 'Nie udało się zmienić hasła.', ${criticalError})"></th:block>
+
+                    </th:block>
+
+                </div>
+
+
                 <!--
                     START auth_container
                 -->
-                <div id="auth_container" th:if="${progress == null}">
+                <div id="auth_container" th:if="${progress != null}">
 
-                    <div th:id="password_recovery_body">
+                    <div id="password_recovery_body">
 
-                        <div class="title_with_shadow">
-                            <div class="tit_bck"></div>
-                            <p class="tit_text">Zapomniałeś hasło?</p>
-                        </div>
+                        <th:block th:if="${progress != T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED && criticalError == null}">
+                            <div class="title_with_shadow">
+                                <div class="tit_bck"></div>
+                                <p class="tit_text">Zapomniałeś hasła?</p>
+                            </div>
 
-                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+                            <p class="desc" th:text="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH ? 'Podaj adres email, z którym powiązane jest Twoje konto' : 'Wprowadź nowe hasło'}"></p>
+                        </th:block>
 
-                    </div>
 
-
-                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input id="data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
-                            <label for="data_email"> Email: </label>
+                        <form th:id="password_recovery_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH}" th:action="@{/auth/startPasswordRecoveryProcess}" method="POST">
 
                             <!--
-                                TOOLTIP - Information about corectness of data
+                                INPUT GROUP - Input with its elements
                             -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
+                            <div class="input_group">
+                                <input id="data_email" class="input" type="text" name="email" th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
+                                <label for="data_email"> Email: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
                             </div>
-                        </div>
 
 
 
-                        <div th:id="under_inputs">
-                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
+                            <div th:id="under_inputs">
+                                <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
 
-                    </form>
+                        </form>
 
+
+
+                        <form th:id="new_password_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).NEW_PASSWORD_CREATION}" th:action="@{/auth/confirmPasswordChange}" th:object="${passwordDto}" method="POST">
+
+                            <input th:if="${param.token != null}" type="hidden" name="token" th:value="${param.token}">
+
+                            <!--
+                                INPUT GROUP - Input with its elements
+                            -->
+                            <div class="input_group">
+                                <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="register_data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(0, AuthDataTypeEnum.Password, this.value)" onfocusout="checkPasswordsEquality()">
+                                <label for="register_data_password"> Nowe hasło: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
+                            </div>
+
+
+
+
+                            <!--
+                                INPUT GROUP - Input with its elements
+                            -->
+                            <div class="input_group">
+                                <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="register_data_password_repeat" class="input" type="password" name="passwordRepeat" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordRepeat, this.value)" onfocusout="checkPasswordsEquality()">
+                                <label for="register_data_password_repeat"> Powtórz hasło: </label>
+
+                                <!--
+                                    TOOLTIP - Information about corectness of data
+                                -->
+                                <div class="tooltip">
+                                    <i class="fas tooltip_icon"></i>
+                                    <span class="tooltip_text"></span>
+                                </div>
+                            </div>
+
+
+                            <!--
+                                PASSWORD STRENGTH - Bar describing the strength of the password
+                            -->
+                            <div id="password_strength">
+                                <div id="password_strength_inside"></div>
+                            </div>
+                            <p id="optionalErrorInfo"> <i class='fas fa-times error'></i> Podane hasła nie są identyczne! </p>
+
+
+
+                            <div th:id="under_inputs">
+                                <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
+
+                        </form>
+
+                    </div>
 
                 </div>
                 <!--
@@ -90,85 +161,6 @@
                 -->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-                <!--
-                    START auth_container
-                -->
-                <div th:id="auth_container" th:if="${progress != null}">
-
-                    <div th:id="password_recovery_body">
-
-                        <div class="title_with_shadow">
-                            <div class="tit_bck"></div>
-                            <p class="tit_text">Zapomniałeś hasło?</p>
-                        </div>
-
-                        <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
-
-                    </div>
-
-
-                    <form th:id="password_recovery_form" th:action="@{/auth/recoverPassword}" method="POST">
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
-                            <label for="data_password"> Nowe hasło: </label>
-
-                            <!--
-                                TOOLTIP - Information about corectness of data
-                            -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
-                            </div>
-                        </div>
-
-
-
-
-                        <!--
-                            INPUT GROUP - Input with its elements
-                        -->
-                        <div class="input_group">
-                            <input th:value="${#strings.isEmpty(dataPassword)} ? '' : ${dataPassword}" id="data_password_repeat" class="input" type="password" name="password" autocomplete="current-password" oninput="checkInputData(1, AuthDataTypeEnum.PasswordLogin, this.value)">
-                            <label for="data_password_repeat"> Powtórz hasło: </label>
-
-                            <!--
-                                TOOLTIP - Information about corectness of data
-                            -->
-                            <div class="tooltip">
-                                <i class="fas tooltip_icon"></i>
-                                <span class="tooltip_text"></span>
-                            </div>
-                        </div>
-
-
-
-                        <div th:id="under_inputs">
-                            <button type="submit" th:id="button_password_recovery" class="button_blue">Przywróć hasło <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
-
-                    </form>
-
-
-                </div>
-                <!--
-                    END auth_container
-                -->
 
             </div>
 
@@ -192,9 +184,19 @@
     $("#password_recovery_form").submit(function(e) {
         if (!checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("data_email").value)) {
             e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
-            return;
         }
     });
+
+
+    $("#new_password_form").submit(function(e) {
+        let correctData = 0; // Count correct data
+        if (checkInputData(0, AuthDataTypeEnum.Password, document.getElementById("register_data_password").value)) correctData++;
+        if (checkInputData(1, AuthDataTypeEnum.PasswordRepeat, document.getElementById("register_data_password_repeat").value)) correctData++;
+
+        if (correctData != 2 || document.getElementById("register_data_password").value != document.getElementById("register_data_password_repeat").value)
+            e.preventDefault(); // AVOID TO EXECUTE THE ACTUAL SUBMIT OF THE FORM.
+    });
+
 
 
     /*<![CDATA[*/
@@ -202,7 +204,9 @@
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
+            if (document.getElementById("data_email") != null)
+                checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("data_email").value);
+
         }
 
     /*]]>*/

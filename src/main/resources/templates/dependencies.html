@@ -21,4 +21,16 @@
     </th:block>
 
 </head>
+
+<body>
+
+    <th:block th:fragment="noDataFound(icon, title, description)">
+        <i th:class="${icon == null ? 'center_icon fas fa-info-circle' : 'center_icon ' + icon}"></i>
+
+        <h2 class="title" th:if="${title != null}" th:text="${title}"></h2>
+        <p class="description" th:if="${description != null}" th:text="${description}"></p>
+    </th:block>
+
+</body>
+
 </html>
