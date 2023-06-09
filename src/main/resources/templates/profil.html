@@ -26,11 +26,12 @@
                 <div id="courses_list">
                     <h1 class="heading">Kursy</h1>
 
-                    <div th:if="${#lists.isEmpty(ownedCourses)}" id="no_courses_found" class="window">
-                        <i class="center_icon fas fa-exclamation-circle"></i>
+                    <!--
+                        No Data Found container
+                    -->
+                    <div th:if="${#lists.isEmpty(ownedCourses)}" id="no_results_found" class="window no_data_found">
 
-                        <h2 class="subtitle">Nie posiadasz jeszcze żadnego kursu.</h2>
-                        <h3 class="desc">Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!</h3>
+                        <th:block th:insert="dependencies :: noDataFound('big fas fa-exclamation-circle', 'Nie posiadasz jeszcze żadnego kursu.', 'Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!')"></th:block>
                         <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
 
                     </div>
@@ -105,9 +106,11 @@
                 <div id="payment_history" class="window">
                     <h2 class="heading">Historia transakcji</h2>
 
-                    <div th:if="${#lists.isEmpty(paymentHistory)}" id="no_payment_history_found">
-                        <i class="center_icon fas fa-hourglass-half"></i>
-                        <h2 class="desc">Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!</h2>
+                    <!--
+                        No Data Found container
+                    -->
+                    <div th:if="${#lists.isEmpty(paymentHistory)}" id="no_payment_history_found" class="no_data_found">
+                        <th:block th:insert="dependencies :: noDataFound('fas fa-hourglass-half', null, 'Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!')"></th:block>
                     </div>
 
 

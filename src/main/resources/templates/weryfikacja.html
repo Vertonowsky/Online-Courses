@@ -32,26 +32,31 @@
             <div class="right">
 
                 <!--
-                    START auth_body
+                    START #auth_info
                 -->
-                <div th:id="auth_body">
+                <div id="auth_info" class="window no_data_found">
 
-                    <i class="center_icon fas fa-info-circle"></i>
+<!--                    <i class="center_icon fas fa-info-circle"></i>-->
 
 
+                    <!-- TODO-->
                     <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
-                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
-                        <h2 class="head_desc"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</h2>
+                        <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', null)"></th:block>
+
+                        <p class="description"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</p>
+
                     </th:block>
 
-                    <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
-                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
-                        <h2 class="head_desc"> Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.</h2>
-                    </th:block>
+                    <div th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
+
+                        <th:block th:insert="dependencies :: noDataFound('red fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.')"></th:block>
+
+                    </div>
 
                     <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).PASSWORD_RECOVER_NEW.getIndex()}">
-                        <h1 class="head_title" th:text="'Cześć, ' + ${email} + '!'"></h1>
-                        <h2 class="head_desc">Na podany przez Ciebie adres email została wysłana wiadomość potwierdzająca rozpoczęcie procesu odzyskiwania hasła. Podążaj za instrukacjami zawartymi w otrzymanej wiadomości.</h2>
+
+                        <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Na podany przez Ciebie adres email została wysłana wiadomość potwierdzająca rozpoczęcie procesu odzyskiwania hasła. Podążaj za instrukacjami zawartymi w otrzymanej wiadomości.')"></th:block>
+
                     </th:block>
 
 
@@ -63,7 +68,7 @@
 
                 </div>
                 <!--
-                    END auth_body
+                    END auth_info
                 -->
 
 

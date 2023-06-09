@@ -135,51 +135,31 @@
 
 
 
-#auth_body {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    width: 700px;
-    padding: 30px 15px;
+#auth_info {
+    width: 600px;
     top: 20%;
     left: 10%;
-    text-align: center;
-    box-shadow: 0 2px 5px 2px #E6E6E6;
+    padding: 30px 15px;
     border-radius: 15px;
+    background: transparent;
 }
 
-        #auth_body .center_icon {
-            font-size: 80px;
-            color: #33B3E8;
-            margin-bottom: 15px;
-        }
 
-        #auth_body .head_title {
-            font-size: 18px;
-            margin: 0;
-        }
-
-        #auth_body .head_desc {
-            font-size: 15px;
-            font-weight: normal;
-            margin: 15px 0 0 0;
-        }
-
-        #auth_body .list_link, #recovery_error_info .list_link{
+        #auth_info .list_link {
             color: var(--color-blue);
             padding-bottom: 3px;
         }
 
-        #auth_body .list_link:after, #recovery_error_info .list_link:after {
+        #auth_info .list_link:after {
             bottom: -1px;
         }
 
-        #auth_body #resend_email {
+        #auth_info #resend_email {
             margin: 40px 0 0 0;
             font-size: 15px;
         }
 
-        #auth_body #send_email {
+        #auth_info #send_email {
             font-size: 15px;
             margin-top: 3px;
             background: transparent;
@@ -412,6 +392,7 @@
             padding: 30px 15px;
             border-radius: 20px;
             z-index: 20;
+            box-shadow: none;
         }
 
 
@@ -435,34 +416,6 @@
         #recovery_error_info .subtitle {
             font-size: 17px;
             margin: 0;
-        }
-
-
-
-        #registration_info .center_icon {
-            font-size: 80px;
-            color: #33B3E8;
-            margin-bottom: 15px;
-        }
-
-        #registration_info .center_icon.red {
-            color: #FA6B69;
-        }
-
-        #registration_info .subtitle {
-            font-size: 18px;
-            margin: 0;
-        }
-
-        #registration_info .desc {
-            font-size: 15px;
-            font-weight: normal;
-            margin: 10px 0 0 0;
-        }
-
-        #registration_info .button_gray {
-            display: block;
-            margin: 20px auto 0 auto;
         }
 
 
@@ -525,6 +478,13 @@
                             display: block;
                         }
 
+
+            #auth_info {
+                top: 20%;
+                left: auto;
+                margin: auto;
+            }
+
         }
 
 
@@ -583,6 +543,10 @@
             }
 
             #registration_info {
+                width: 90%;
+            }
+
+            #auth_info {
                 width: 90%;
             }
 

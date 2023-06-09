@@ -23,18 +23,17 @@
 
         <div id="auth_content">
 
-            <div id="registration_info_bg" th:if="${!#strings.isEmpty(verified)}">
-                <div class="window" th:id="registration_info" th:if="${verified}">
-                    <i class="center_icon fas fa-check-circle"></i>
-                    <h2 class="subtitle">Proces rejestracji zakończony sukcesem!</h2>
-                    <h3 class="desc">Możesz się teraz zalogować na swoje konto.</h3>
-                    <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
-                </div>
 
-                <div class="window" th:id="registration_info" th:if="!${verified}">
-                    <i class="center_icon red fas fa-times-circle"></i>
-                    <h2 class="subtitle">Weryfikacja adresu email zakończona niepowodzeniem!</h2>
-                    <h3 class="desc" th:text="${verificationMessage}"></h3>
+            <!--
+                No Data Found container
+            -->
+            <div id="registration_info_bg" th:if="${!#strings.isEmpty(verified)}">
+                <div class="window no_data_found" id="registration_info" >
+
+                    <th:block th:if="${verified}" th:insert="dependencies :: noDataFound('big fas fa-check-circle', 'Proces rejestracji zakończony sukcesem!', 'Możesz się teraz zalogować na swoje konto.')"></th:block>
+
+                    <th:block th:if="!${verified}" th:insert="dependencies :: noDataFound('big red fas fa-times-circle', 'Weryfikacja adresu email zakończona niepowodzeniem!', ${verificationMessage})"></th:block>
+
                     <div class="button_gray" onclick="closeRegistrationInfo()">Zamknij <i class="fas fa-arrow-circle-right"></i></div>
                 </div>
             </div>

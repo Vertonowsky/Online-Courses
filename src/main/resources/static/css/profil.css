@@ -16,16 +16,6 @@ body {
     margin: auto;
 }
 
-.window {
-    position: relative;
-    box-sizing: border-box;
-    background: #FCFCFC;
-    border: 1px solid #EDEDED;
-    box-shadow: 0 5px 5px 2px #E6E6E6;
-    border-radius: 7px;
-    width: 100%;
-}
-
 
 #content_left {
     position: relative;
@@ -38,6 +28,7 @@ body {
 
 
 
+        /* Left container */
         #courses_list {
             padding: 15px 20px;
         }
@@ -50,53 +41,16 @@ body {
                 text-align: left;
             }
 
-            #content_left #no_courses_found {
-                box-sizing: border-box;
-                width: 100%;
-                text-align: center;
-                font-size: 15px;
-                padding: 30px 15px;
-            }
-
-            #no_courses_found .center_icon {
-                font-size: 80px;
-                color: #33B3E8;
-                margin-bottom: 15px;
-            }
-
-            #no_courses_found .subtitle {
-                font-size: 17px;
-                margin: 0;
-            }
-
-            #no_courses_found .desc, #no_payment_history_found .desc {
-                font-size: 15px;
-                font-weight: normal;
-                margin: 7px 0 0 0;
-            }
-
-            #no_courses_found .button_gray {
-                display: block;
-                margin: 20px auto 0 auto;
-            }
 
             #no_payment_history_found {
-                position: relative;
-                box-sizing: border-box;
-                text-align: center;
-                margin-top: 80px;
-            }
-
-            #no_payment_history_found .center_icon {
-                font-size: 50px;
-                color: #33B3E8;
-                margin: 0 0 15px 0;
+                margin: 80px auto 0 auto;
             }
 
 
 
 
 
+/* Right container */
 #content_right {
     position: sticky;
     top: 100px;
@@ -106,75 +60,76 @@ body {
 }
 
 
-    #statistics {
-        display: block;
-        padding: 20px 8px;
-        text-align: center;
-    }
+/* Statistics window */
+#statistics {
+    display: block;
+    padding: 20px 8px;
+    text-align: center;
+}
 
-            #statistics .section {
-                position: relative;
-                display: block;
-                width: 100%;
-                height: auto;
-                border-bottom: 1px solid #BFBFBF;
-            }
+        #statistics .section {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #BFBFBF;
+        }
 
-            #statistics .section:last-child {
-                border-bottom: none;
-            }
-
-
-            .progress_background {
-                position: relative;
-                box-sizing: border-box;
-                width: 96%;
-                height: 35px;
-                border-radius: 10px;
-                background: #A3DEFF;
-                font-size: var(--font-size-normal);
-                color: #1C5473;
-                margin: 0 auto 4px auto;
-            }
-
-            .progress_background:last-of-type {
-                margin-bottom: 0;
-            }
-
-            .progress_fill {
-                position: absolute;
-                box-sizing: border-box;
-                width: 0;
-                height: 100%;
-                transition: all 1.25s;
-                border-radius: 10px;
-                background: #5CC5FF;
-                margin: auto;
-            }
-
-            .progresss_info {
-                position: absolute;
-                left: 8px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
+        #statistics .section:last-child {
+            border-bottom: none;
+        }
 
 
-            .progresss_target {
-                position: absolute;
-                right: 8px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
+        .progress_background {
+            position: relative;
+            box-sizing: border-box;
+            width: 96%;
+            height: 35px;
+            border-radius: 10px;
+            background: #A3DEFF;
+            font-size: var(--font-size-normal);
+            color: #1C5473;
+            margin: 0 auto 4px auto;
+        }
+
+        .progress_background:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .progress_fill {
+            position: absolute;
+            box-sizing: border-box;
+            width: 0;
+            height: 100%;
+            transition: all 1.25s;
+            border-radius: 10px;
+            background: #5CC5FF;
+            margin: auto;
+        }
+
+        .progresss_info {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
 
-
-
-            
+        .progresss_target {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
 
 
 
+
+
+
+
+/* Payment history window */
 #payment_history {
     display: block;
     min-height: 400px;
@@ -205,6 +160,8 @@ body {
             border-radius: 5px;
         }
 
+
+        /* Activity is one payment with details*/
         #payment_history .activity_section {
             position: relative;
             box-sizing: border-box;
@@ -377,24 +334,6 @@ body {
             }
 
 
-            #no_courses_found .center_icon {
-                font-size: 60px;
-            }
-
-            #no_courses_found .subtitle {
-                font-size: 15px;
-            }
-
-            #no_courses_found .desc, #no_payment_history_found .desc {
-                font-size: var(--font-size-smaller);
-            }
-
-            #no_courses_found .button_gray {
-                font-size: 14px;
-                padding: 10px 0;
-            }
-
-
 
         #statistics {
             display: block;
@@ -418,15 +357,8 @@ body {
 
             #no_payment_history_found {
                 margin-top: 40px;
+                width: 70%;
             }
-
-                #no_payment_history_found .center_icon {
-                    font-size: 45px;
-                }
-
-                #no_payment_history_found .desc {
-                    font-size: var(--font-size-smaller);
-                }
 
             .activity .data {
                 font-size: var(--font-size-smaller);
@@ -450,29 +382,8 @@ body {
         }
 
 
-
-        #no_courses_found .center_icon {
-            font-size: 55px;
-        }
-
-        #no_courses_found .subtitle {
-            font-size: var(--font-size-smaller);
-        }
-
-        #no_courses_found .desc, #no_payment_history_found .desc {
-            font-size: var(--font-size-phone);
-        }
-
-
-
-
-
-        #no_payment_history_found .center_icon {
-            font-size: 40px;
-        }
-
-        #no_payment_history_found .desc {
-            font-size: var(--font-size-phone);
+        #no_payment_history_found {
+            width: 100%;
         }
 
     }

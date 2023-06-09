@@ -33,35 +33,41 @@
 
             <div class="right">
 
+
+                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null || progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+                    <th:block th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+
+                        <th:block th:insert="dependencies :: noDataFound('fas fa-check-circle', 'Pomyślnie zmieniono hasło!', null)"></th:block>
+
+                        <a th:href="@{/logowanie}" class="button_gray">Logowanie <i class="fas fa-arrow-circle-right"></i></a>
+
+                    </th:block>
+
+                    <th:block th:if="${criticalError != null}">
+
+                        <th:block th:insert="dependencies :: noDataFound('red fas fa-exclamation-circle', 'Nie udało się zmienić hasła.', ${criticalError})"></th:block>
+
+                    </th:block>
+
+                </div>
+
+
                 <!--
                     START auth_container
                 -->
-                <div th:id="auth_container" th:if="${progress != null}">
+                <div id="auth_container" th:if="${progress != null}">
 
                     <div id="password_recovery_body">
 
-                        <!-- TODO make error window compatible with small screens. Make one version of the error style for every page -->
-
-                        <!-- TODO Error message display window aswell -->
-
-                        <div class="window" th:id="recovery_error_info" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
-                            <i class="center_icon fas fa-check-circle"></i>
-                            <h2 class="subtitle"> Pomyślnie zmieniono hasło!</h2>
-                            <p class="desc"> Przejdź do strony <a class="list_link" th:href="@{/logowanie}">logowania </a> i uwierzytelnij się używając nowego utworzonego hasła!</p>
-                        </div>
-
-
-                        <th:block th:if="${progress != T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+                        <th:block th:if="${progress != T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED && criticalError == null}">
                             <div class="title_with_shadow">
                                 <div class="tit_bck"></div>
-                                <p class="tit_text">Zapomniałeś hasło?</p>
+                                <p class="tit_text">Zapomniałeś hasła?</p>
                             </div>
 
-                            <p class="desc">Podaj adres email, z którym powiązane jest Twoje konto</p>
+                            <p class="desc" th:text="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH ? 'Podaj adres email, z którym powiązane jest Twoje konto' : 'Wprowadź nowe hasło'}"></p>
                         </th:block>
 
-
-                        <!-- TODO fast recovering password displays error of cooldown -->
 
                         <form th:id="password_recovery_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH}" th:action="@{/auth/startPasswordRecoveryProcess}" method="POST">
 
@@ -69,7 +75,7 @@
                                 INPUT GROUP - Input with its elements
                             -->
                             <div class="input_group">
-                                <input id="data_email" class="input" type="text" name="email" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
+                                <input id="data_email" class="input" type="text" name="email" th:value="${#strings.isEmpty(dataEmail)} ? '' : ${dataEmail}" autofocus autocomplete="email" oninput="checkInputData(0, AuthDataTypeEnum.Email, this.value)">
                                 <label for="data_email"> Email: </label>
 
                                 <!--
@@ -198,8 +204,9 @@
 
         if (error != "" && error != null) {
             showPopup(error,  0);
-            //checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("login_data_email").value);
-            // TODO checkInputData() for password aswell
+            if (document.getElementById("data_email") != null)
+                checkInputData(0, AuthDataTypeEnum.Email, document.getElementById("data_email").value);
+
         }
 
     /*]]>*/
