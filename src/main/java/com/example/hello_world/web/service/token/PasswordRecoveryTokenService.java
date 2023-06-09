@@ -1,26 +1,36 @@
 package com.example.hello_world.web.service.token;
 
 import com.example.hello_world.RecoverPasswordStage;
-import com.example.hello_world.Regex;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.model.token.PasswordRecoveryToken;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.persistence.repository.token.PasswordRecoveryTokenRepository;
 import com.example.hello_world.validation.*;
+import com.example.hello_world.web.dto.PasswordRecoverDto;
+import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.EmailService;
+import com.example.hello_world.web.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryToken, PasswordRecoveryTokenRepository> {
 
+    private final UserService userService;
 
-    public PasswordRecoveryTokenService(EmailService emailService, UserRepository userRepository, PasswordRecoveryTokenRepository tokenRepository) {
+
+    public PasswordRecoveryTokenService(EmailService emailService, UserRepository userRepository, PasswordRecoveryTokenRepository tokenRepository, UserService userService) {
         super(emailService, userRepository, tokenRepository);
+        this.userService = userService;
     }
+
+
+    public void initializeToken(String email) throws InvalidEmailFormatException, UserNotFoundException, LowDelayException, TokenExpiredException {
+        super.resendEmail(email);
+    }
+
 
 
     @Override
@@ -40,45 +50,32 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
 
 
 
+    @Override
+    public void verifyToken(String tokenUuid) throws InvalidUUIDFormatException, TokenNotFoundException, TokenExpiredException {
+        PasswordRecoveryToken token = super.findToken(tokenUuid);
 
-    public void createPasswordRecoveryToken(String email) throws InvalidEmailFormatException, UserNotFoundException, LowDelayException {
-        if (!Regex.EMAIL_PATTERN.matches(email))
-            throw new InvalidEmailFormatException("Nieprawidłowy format adresu e-mail.");
-
-        // Check if user exists
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) throw new UserNotFoundException(String.format("Nie odnaleziono konta o adresie email %s", email));
-
-
-        // TODO check if user isn't currently changing his password
-
-
-        // Check if user has recently sent request for resending email
-        verifyCooldown(user.get());
-
-
-        // Set already awaiting password recovry tokens invalid
-        disableOldTokens(user.get());
-
-        // Create new verification token
-        createTokenAndSendEmail(user.get());
+        token.setRecoverPasswordStage(RecoverPasswordStage.NEW_PASSWORD_CREATION);
+        tokenRepository.save(token);
     }
 
 
+    public void changeUserPassword(PasswordRecoverDto recoverPasswordDto) throws InvalidPasswordFormatException, PasswordsNotEqualException, InvalidUUIDFormatException, TokenExpiredException, TokenNotFoundException, UserNotFoundException {
 
+        PasswordRecoveryToken token = findToken(recoverPasswordDto.getToken().toString());
 
-    public void verifyToken(String tokenUuid) throws InvalidUUIDFormatException, TokenNotFoundException, TokenExpiredException {
-        // Check if token UUID matches the pattern
-        if (!Regex.UUID_PATTERN.matches(tokenUuid)) throw new InvalidUUIDFormatException("Nieprawidłowy token.");
+        if (!UserDto.isPasswordValid(recoverPasswordDto.getPassword()))
+            throw new InvalidPasswordFormatException("Hasło nie spełnia wymagań bezpieczeństwa.");
 
-        //Check if token exists
-        Optional<PasswordRecoveryToken> optionalToken = tokenRepository.findByToken(UUID.fromString(tokenUuid));
-        if (optionalToken.isEmpty()) throw new TokenNotFoundException("Nie odnaleziono tokenu.");
+        if (!recoverPasswordDto.arePasswordsEqual())
+            throw new PasswordsNotEqualException("Podane hasła nie są identyczne.");
 
-        PasswordRecoveryToken token = optionalToken.get();
-        if (!token.isValid() || token.getExpiryDate().getTime() <= System.currentTimeMillis()) throw new TokenExpiredException("Wskazany token utracił swoją ważność.");
+        Optional<User> user = userService.getUserByPasswordRecoveryToken(recoverPasswordDto.getToken());
+        if (user.isEmpty())
+            throw new UserNotFoundException("Nie odnaleziono użytkownika.");
 
-        token.setRecoverPasswordStage(RecoverPasswordStage.NEW_PASSWORD_CREATION);
+        userService.changePassword(user.get(), recoverPasswordDto.getPassword());
+        token.setRecoverPasswordStage(RecoverPasswordStage.PASSWORD_CHANGED);
+        token.setValid(false);
         tokenRepository.save(token);
     }
 
