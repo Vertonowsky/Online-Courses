@@ -16,11 +16,6 @@
 </head>
 <body>
 
-<!--
-
-Wczytanie advantages
-
--->
 
 
         <!--
@@ -30,7 +25,7 @@ Wczytanie advantages
         <div th:insert="~{header :: shadow}"></div>
         <div th:insert="~{header :: minHeader}"></div>
 
-        <!-- Trzeba dodać tutaj usuwanie kodu promocyjnego ze zmiennej typu $_SESSION -->
+        <!-- TODO Trzeba dodać tutaj usuwanie kodu promocyjnego ze zmiennej typu $_SESSION -->
 
         <div id="display_content">
 
@@ -210,8 +205,8 @@ Wczytanie advantages
                             </div>
 
                             <!--
-                                                                INPUT GROUP - Input with its elements
-                                                            -->
+                                INPUT GROUP - Input with its elements
+                            -->
                             <div class="buttons">
 
                                 <!--
@@ -235,7 +230,7 @@ Wczytanie advantages
 
                                 <div class="input_group">
                                     <input id="discount_code_input" class="input" type="text" placeholder="...">
-                                    <label>Kod rabatowy: </label>
+                                    <label for="discount_code_input">Kod rabatowy: </label>
                                     <!--<form id="discount_form" th:action="@{/purchase/useDiscountCode}" method="POST">
                                         <button type="submit"> <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i></button>
                                         <input name="courseId" value="1"/>
@@ -255,30 +250,23 @@ Wczytanie advantages
 
 
 
-                    <div th:class="'tab_section ' + ${!loggedIn ? 'active' : ''}">
+                    <div th:class="'tab_section no_data_found ' + ${!loggedIn ? 'active' : ''}">
 
-                        <i class="modal_center_icon fas fa-user-circle"></i>
-
-                        <h2 class="subtitle">Zaloguj się aby móc kontynuować</h2>
-                        <h3 class="desc">Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.</h3>
+                        <th:block th:insert="dependencies :: noDataFound('big fas fa-user-circle', 'Zaloguj się aby móc kontynuować', 'Musisz posiadać konto, aby móc korzystać ze wszystkich funkcjonalności kursu.')"></th:block>
 
                         <div class="buttons">
-
                             <a th:href="@{/rejestracja}" class="button_gray">Stwórz nowe konto <i class="fas fa-arrow-circle-right"></i></a>
                             <a th:href="@{/logowanie}" class="button_gray">Zaloguj <i class="fas fa-arrow-circle-right"></i></a>
-
                         </div>
                     </div>
 
 
 
-                    <div class="tab_section">
-                        <i class="modal_center_icon fas fa-check-circle"></i>
+                    <div class="tab_section no_data_found" id="purchase_successful">
 
-                        <h2 class="subtitle">Pomyślnie dokonano zakupu.</h2>
-                        <h3 class="desc">Wszystkie zakupione kursy dostępne są w
-                        <a class="list_link" th:href="@{/profil}"><span class="bold">panelu użytkownika</span></a>
-                        </h3>
+                        <th:block th:insert="dependencies :: noDataFound('big fas fa-check-circle', 'Pomyślnie dokonano zakupu.', null)"></th:block>
+
+                        <p class="description">Wszystkie zakupione kursy dostępne są w <a class="list_link" th:href="@{/profil}">panelu użytkownika</a></p>
 
                         <div class="buttons">
                             <button class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></button>

@@ -808,7 +808,7 @@ body {
 
         .button_blue, .button_gray {
             font-size: var(--font-size-smaller);
-            padding: 6px 0 6px 2px;
+            padding: 10px 0;
         }
 
         .checkbox-label {
@@ -840,11 +840,6 @@ body {
             font-size: var(--font-size-smaller);
         }
 
-        .no_data_found .button_gray {
-            font-size: 14px;
-            padding: 10px 0;
-        }
-
     }
 
 
@@ -867,7 +862,6 @@ body {
 
         .button_blue, .button_gray {
             font-size: var(--font-size-phone);
-            padding: 4px 0 4px 2px;
         }
 
 

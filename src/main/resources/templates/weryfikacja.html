@@ -36,10 +36,7 @@
                 -->
                 <div id="auth_info" class="window no_data_found">
 
-<!--                    <i class="center_icon fas fa-info-circle"></i>-->
 
-
-                    <!-- TODO-->
                     <th:block th:if="${verificationType == T(com.example.hello_world.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
                         <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', null)"></th:block>
 
@@ -60,11 +57,11 @@
                     </th:block>
 
 
-                    <p th:id="resend_email"> Email weryfikacyjny nie dotarł?</p>
+                    <p id="resend_email"> Email weryfikacyjny nie dotarł?</p>
 
-                    <button th:id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
+                    <button id="send_email" class="list_link" th:attr="onclick=|resendEmail(&quot;${email}&quot;)|" > Wyślij email ponownie! </button>
 
-                    <span th:id="timer" class="hidden"></span>
+                    <span id="timer" class="hidden"></span>
 
                 </div>
                 <!--
