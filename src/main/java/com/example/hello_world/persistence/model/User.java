@@ -1,6 +1,7 @@
 package com.example.hello_world.persistence.model;
 
 
+import com.example.hello_world.persistence.model.token.PasswordRecoveryToken;
 import com.example.hello_world.persistence.model.token.VerificationToken;
 import com.example.hello_world.security.CustomOidcUser;
 import com.example.hello_world.security.CustomUserDetails;
@@ -35,7 +36,7 @@ public class User {
     private boolean verified;
 
 
-    private String roles;
+    //private String roles;
 
     //@Column(nullable = false, length = 32)
     //Rank rank;
@@ -59,6 +60,16 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<VerificationToken> verificationTokens;
+
+    @OneToMany(mappedBy = "user")
+    private Set<PasswordRecoveryToken> passwordRecoveryTokens;
+
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+
 
 
     public User() {
@@ -102,8 +113,13 @@ public class User {
     }
 
 
+    public Role getRole() {
+        return role;
+    }
 
-
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public Integer getId() {
         return id;
@@ -125,13 +141,6 @@ public class User {
         this.password = password;
     }
 
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
 
     public boolean isVerified() {
         return verified;
@@ -210,6 +219,11 @@ public class User {
         this.registrationMethod = registrationMethod;
     }
 
+    public Set<PasswordRecoveryToken> getPasswordRecoveryTokens() {
+        return passwordRecoveryTokens;
+    }
+
+
     public boolean isCourseOwnedAndValid(Course course) {
         for (CourseOwned courseOwned : coursesOwned) {
             if (!courseOwned.getCourse().equals(course)) continue;
@@ -244,13 +258,12 @@ public class User {
                 this.email.equals(comparing.email) &&
                 this.password.equals(comparing.password) &&
                 this.verified == comparing.verified) &&
-                this.roles.equals(comparing.roles) &&
                 this.registrationDate.equals(comparing.registrationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, verified, roles, registrationDate);
+        return Objects.hash(id, email, password, verified, registrationDate);
     }
 
 
