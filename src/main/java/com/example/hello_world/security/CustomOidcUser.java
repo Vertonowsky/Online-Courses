@@ -14,13 +14,11 @@ import java.util.stream.Collectors;
 public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 
     private final Map<String, Object> attributes;
-
     private final OidcUser oidcUser;
-
     private final String email;
     private boolean verified;
-
     private List<GrantedAuthority> authorities;
+
 
     public CustomOidcUser(OidcUser oidcUser) {
         this.oidcUser   = oidcUser;
@@ -28,6 +26,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
         this.email      = (String) attributes.get("email");
         this.verified   = true;
     }
+
 
     public String getId() {
         return (String) attributes.get("sub");
@@ -41,8 +40,9 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
         return email;
     }
 
+
     public void setAuthorities(List<Role> roles) {
-        this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
+        this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().toString())).collect(Collectors.toList());
 
 //        this.authorities = Arrays.stream(roles.split(","))
 //                .map(SimpleGrantedAuthority::new)

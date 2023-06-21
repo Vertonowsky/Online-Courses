@@ -15,28 +15,13 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
     private final boolean verified;
     private final List<GrantedAuthority> authorities;
 
+
     public CustomUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.verified = user.isVerified();
-
-        System.out.println(user.getRole().getRoleType());
-
-        this.authorities = getAuthorities2(Collections.singletonList(user.getRole()));
-//        this.authorities = Arrays.stream(user.getRoles().split(","))
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
+        this.authorities = getAuthorities(Collections.singletonList(user.getRole()));
     }
-
-
-
-//    private List<GrantedAuthority> getAuthorities(List<Role> roles) {
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        for (Role role : roles) {
-//            authorities.add(new SimpleGrantedAuthority(role.toString()));
-//        }
-//        return authorities;
-//    }
 
 
     @Override

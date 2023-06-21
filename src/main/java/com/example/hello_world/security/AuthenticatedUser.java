@@ -13,12 +13,16 @@ public interface AuthenticatedUser {
 
     String getPassword();
 
-    List<GrantedAuthority> getAuthorities();
-
     boolean isEnabled();
 
 
-    default List<GrantedAuthority> getAuthorities2(List<Role> roles) {
+    /**
+     * Cast user's authorities into List<GrantedAuthority> basing on his role
+     *
+     * @param roles List of user's role. Current version of application supports only one role. List is a futuristic implementation
+     * @return List<GrantedAuthority> containing different RoleTypes
+     */
+    default List<GrantedAuthority> getAuthorities(List<Role> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles)
             authorities.add(new SimpleGrantedAuthority(role.getRoleType().toString()));

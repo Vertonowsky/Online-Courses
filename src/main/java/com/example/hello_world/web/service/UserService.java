@@ -24,10 +24,10 @@ import java.util.UUID;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final VerificationTokenService verificationTokenService;
-    private final PasswordEncoder passwordEncoder;
     private final PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
+    private final VerificationTokenService verificationTokenService;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserService(UserRepository userRepository, VerificationTokenService verificationTokenService, PasswordEncoder passwordEncoder, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository, RoleService roleService) {
