@@ -1,12 +1,12 @@
 package com.example.hello_world.security;
 
+import com.example.hello_world.persistence.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,13 +14,11 @@ import java.util.stream.Collectors;
 public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 
     private final Map<String, Object> attributes;
-
     private final OidcUser oidcUser;
-
     private final String email;
     private boolean verified;
-
     private List<GrantedAuthority> authorities;
+
 
     public CustomOidcUser(OidcUser oidcUser) {
         this.oidcUser   = oidcUser;
@@ -28,6 +26,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
         this.email      = (String) attributes.get("email");
         this.verified   = true;
     }
+
 
     public String getId() {
         return (String) attributes.get("sub");
@@ -41,10 +40,13 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
         return email;
     }
 
-    public void setAuthorities(String roles) {
-        this.authorities = Arrays.stream(roles.split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+
+    public void setAuthorities(List<Role> roles) {
+        this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().toString())).collect(Collectors.toList());
+
+//        this.authorities = Arrays.stream(roles.split(","))
+//                .map(SimpleGrantedAuthority::new)
+//                .collect(Collectors.toList());
     }
 
     public void setVerified(boolean verified) { this.verified = verified; }

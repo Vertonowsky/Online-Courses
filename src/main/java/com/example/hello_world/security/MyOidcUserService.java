@@ -4,7 +4,6 @@ import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.repository.UserRepository;
 import com.example.hello_world.web.dto.UserDto;
 import com.example.hello_world.web.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -12,16 +11,19 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
 public class MyOidcUserService extends OidcUserService {
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public MyOidcUserService(IUserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -49,7 +51,7 @@ public class MyOidcUserService extends OidcUserService {
         Optional<User> user = userRepository.findByEmail(googleUser.getEmail());
         if (user.isPresent()) {
             googleUser.setVerified(user.get().isVerified());
-            googleUser.setAuthorities(user.get().getRoles());
+            googleUser.setAuthorities(Collections.singletonList(user.get().getRole()));
         }
 
         return googleUser;

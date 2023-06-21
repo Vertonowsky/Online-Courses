@@ -1,5 +1,7 @@
 package com.example.hello_world.web.service;
 
+import com.example.hello_world.RoleType;
+import com.example.hello_world.persistence.model.Role;
 import com.example.hello_world.persistence.model.User;
 import com.example.hello_world.persistence.model.token.PasswordRecoveryToken;
 import com.example.hello_world.persistence.repository.UserRepository;
@@ -22,17 +24,20 @@ import java.util.UUID;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final VerificationTokenService verificationTokenService;
-    private final PasswordEncoder passwordEncoder;
     private final PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
+    private final VerificationTokenService verificationTokenService;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserService(UserRepository userRepository, VerificationTokenService verificationTokenService, PasswordEncoder passwordEncoder, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository) {
+    public UserService(UserRepository userRepository, VerificationTokenService verificationTokenService, PasswordEncoder passwordEncoder, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository, RoleService roleService) {
         this.userRepository = userRepository;
         this.verificationTokenService = verificationTokenService;
         this.passwordEncoder = passwordEncoder;
         this.passwordRecoveryTokenRepository = passwordRecoveryTokenRepository;
+        this.roleService = roleService;
     }
+
 
     @Override
     public void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidPasswordFormatException, PasswordsNotEqualException, TermsNotAcceptedException {
@@ -61,7 +66,10 @@ public class UserService implements IUserService {
             user.setPassword(null);
             user.setVerified(true);
         }
-        user.setRoles("ROLE_USER");
+
+        Role role = roleService.createRoleIfNotExists(RoleType.ROLE_USER);
+        user.setRole(role);
+
         user.setRegistrationDate(new Date(System.currentTimeMillis()));
         user.setRegistrationMethod(userDto.getRegistrationMethod());
         userRepository.save(user);
