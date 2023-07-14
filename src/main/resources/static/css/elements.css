@@ -390,7 +390,7 @@ body {
     border-radius: 8px;
     padding: 12px 0;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background 0.3s, color 0.3s;
     width: 160px;
 }
 
@@ -406,7 +406,7 @@ body {
     width: 0;
     opacity: 0;
     padding-left: 2px;
-    transition: all 0.3s;
+    transition: font-size 0.3s, width 0.3s, opacity 0.3s;
     color: #fff;
 }
 

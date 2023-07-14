@@ -22,9 +22,66 @@
 
         <div id="profile_content">
 
+
             <div id="content_left">
-                <div id="courses_list">
-                    <h1 class="heading">Kursy</h1>
+                <div id="statistics" class="window">
+                    <div class="section">
+
+
+                        <div id="profile_picture">
+                            <i id="icon" class="fas fa-user"></i>
+                        </div>
+
+                        <p id="credentials"> [[${#authentication.getPrincipal().getEmail()}]] </p>
+
+
+                        <div class="progress_background">
+                            <div class="progress_fill" th:attr="data-done=${lastDayPercentage}"></div>  <!-- Percentage progress through the same day. -->
+                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${lastDay} + ']'"></span>
+                            <span class="progresss_target">1 kurs</span>
+                        </div>
+
+
+                        <div class="progress_background">
+                            <div class="progress_fill" th:attr="data-done=${lastWeekPercentage}"></div>  <!-- Percentage progress through whole week. -->
+                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${lastWeek} + ']'"></span>
+                            <span class="progresss_target">7 kursów</span>
+                        </div>
+
+
+                        <div class="progress_background">
+                            <div class="progress_fill" th:attr="data-done=${lastMonthPercentage}"></div>  <!-- Percentage progress through whole month. -->
+                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${lastMonth} + ']'"></span>
+                            <span class="progresss_target">30 kursów</span>
+                        </div>
+                    </div>
+
+
+                    <div class="legend">
+
+                        <button class="legend_link active" data-id="1" onclick="openTab(this)"> <i class="fas fa-laptop"></i> Kursy </button>
+                        <button class="legend_link" data-id="2" onclick="openTab(this)"> <i class="fas fa-history"></i> Historia transakcji </button>
+                        <button class="legend_link" data-id="3" onclick="openTab(this)"> <i class="fas fa-user-circle"></i> Moje dane </button>
+                        <button class="legend_link" data-id="4" onclick="openTab(this)"> <i class="fas fa-cog"></i> Ustawienia </button>
+
+                    </div>
+
+                    <form th:action="@{/logout}" method="POST" modelAttribute="_csrf">
+                        <button id="logout_button" class="button_gray" type="submit"><i class="far fa-arrow-alt-circle-left"></i> Wyloguj się</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+            <div id="content_right">
+
+                <div id="courses_list" class="pageable active">
 
                     <!--
                         No Data Found container
@@ -71,40 +128,12 @@
 
                     </div>
                 </div>
-            </div>
-
-
-            <div id="content_right">
-                <div id="statistics" class="window">
-                    <div class="section">
-                        <h2 class="heading">Osiągnięte cele</h2>
-
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastDayPercentage}"></div>  <!-- Percentage progress through the same day. -->
-                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${lastDay} + ']'"></span>
-                            <span class="progresss_target">1 kurs</span>
-                        </div>
-
-
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastWeekPercentage}"></div>  <!-- Percentage progress through whole week. -->
-                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${lastWeek} + ']'"></span>
-                            <span class="progresss_target">7 kursów</span>
-                        </div>
-
-
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastMonthPercentage}"></div>  <!-- Percentage progress through whole month. -->
-                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${lastMonth} + ']'"></span>
-                            <span class="progresss_target">30 kursów</span>
-                        </div>
-                    </div>
-                </div>
 
 
 
-                <div id="payment_history" class="window">
-                    <h2 class="heading">Historia transakcji</h2>
+
+
+                <div id="payment_history" class="pageable">
 
                     <!--
                         No Data Found container
@@ -116,18 +145,27 @@
 
                     <div class="activity_section" th:if="${!#lists.isEmpty(paymentHistory)}">
 
-                        <div class="activity" th:each="payment : ${paymentHistory}">
-                            <p class="date circular" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
-                            <p class="price circular" th:text="${payment.getAmountInt()} + 'zł'"></p>
+                        <div class="activity_header">
+                            <p class="lp detail">Lp. <p>
+                            <p class="date detail">Data zakupu</p>
+                            <p class="title detail">Nazwa</p>
+                            <p class="price detail">Cena</p>
+                        </div>
 
-                            <p class="title circular" th:text="${payment.course.name}"></p>
+                        <div class="activity" th:each="payment, iteration : ${paymentHistory}">
+                            <p class="lp detail"><span th:text="'#' + ${iteration.count}"></span></p>
+                            <p class="date detail" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
+                            <p class="title detail" th:text="${payment.course.name}"></p>
+                            <p class="price detail" th:text="${payment.getAmountInt()} + ' zł'"></p>
                         </div>
 
                     </div>
 
                 </div>
 
+
             </div>
+
 
         </div>
 
@@ -167,6 +205,34 @@
                 progress_fill[i].style.width = progress_fill[i].dataset.done + "%";
             }
         }
+
+
+
+
+
+
+        const tabcontent  = document.getElementsByClassName("pageable");
+        const tablinks    = document.getElementsByClassName("legend_link");
+
+
+        function openTab(e) {
+            let tabIndex = e.getAttribute('data-id');
+            for (let i = 0; i < tabcontent.length; i++) {
+                if (tabcontent[i].classList.contains("active"))
+                    tabcontent[i].classList.remove("active");
+            }
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            if (tabcontent[tabIndex -1] != null)
+                tabcontent[tabIndex -1].classList.add("active")
+
+            e.classList.add("active");
+        }
+
+
+
 
     </script>
 

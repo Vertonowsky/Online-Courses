@@ -10,7 +10,7 @@
     border: 2px solid transparent;
     font-size: 0;
     box-shadow: 0 2px 2px 2px #E6E6E6;
-    transition: all 0.3s;
+    transition: border 0.3s;
 }
 
 .course_container:hover {
