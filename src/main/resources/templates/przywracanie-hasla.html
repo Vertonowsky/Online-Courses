@@ -34,8 +34,8 @@
             <div class="right">
 
 
-                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null || progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
-                    <th:block th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED}">
+                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null || progress == T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED}">
+                    <th:block th:if="${progress == T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED}">
 
                         <th:block th:insert="dependencies :: noDataFound('fas fa-check-circle', 'Pomyślnie zmieniono hasło!', null)"></th:block>
 
@@ -59,17 +59,17 @@
 
                     <div id="password_recovery_body">
 
-                        <th:block th:if="${progress != T(com.example.hello_world.RecoverPasswordStage).PASSWORD_CHANGED && criticalError == null}">
+                        <th:block th:if="${progress != T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED && criticalError == null}">
                             <div class="title_with_shadow">
                                 <div class="tit_bck"></div>
                                 <p class="tit_text">Zapomniałeś hasła?</p>
                             </div>
 
-                            <p class="desc" th:text="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH ? 'Podaj adres email, z którym powiązane jest Twoje konto' : 'Wprowadź nowe hasło'}"></p>
+                            <p class="desc" th:text="${progress == T(com.example.vertonowsky.token.RecoverPasswordStage).FRESH ? 'Podaj adres email, z którym powiązane jest Twoje konto' : 'Wprowadź nowe hasło'}"></p>
                         </th:block>
 
 
-                        <form th:id="password_recovery_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).FRESH}" th:action="@{/auth/startPasswordRecoveryProcess}" method="POST">
+                        <form th:id="password_recovery_form" th:if="${progress == T(com.example.vertonowsky.token.RecoverPasswordStage).FRESH}" th:action="@{/auth/startPasswordRecoveryProcess}" method="POST">
 
                             <!--
                                 INPUT GROUP - Input with its elements
@@ -97,7 +97,7 @@
 
 
 
-                        <form th:id="new_password_form" th:if="${progress == T(com.example.hello_world.RecoverPasswordStage).NEW_PASSWORD_CREATION}" th:action="@{/auth/confirmPasswordChange}" th:object="${passwordDto}" method="POST">
+                        <form th:id="new_password_form" th:if="${progress == T(com.example.vertonowsky.token.RecoverPasswordStage).NEW_PASSWORD_CREATION}" th:action="@{/auth/confirmPasswordChange}" th:object="${passwordDto}" method="POST">
 
                             <input th:if="${param.token != null}" type="hidden" name="token" th:value="${param.token}">
 
