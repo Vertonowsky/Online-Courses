@@ -236,6 +236,10 @@ body {
                     text-align: left;
                     padding: 0 8px;
                     font-weight: bold;
+                    background: #fff;
+                    box-shadow: 0 2px 2px 2px #E6E6E6;
+                    border-radius: 15px;
+                    z-index: 10;
                 }
 
                 .activity_section .activity {
