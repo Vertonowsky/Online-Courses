@@ -37,20 +37,20 @@
                 <div id="auth_info" class="window no_data_found">
 
 
-                    <th:block th:if="${verificationType == T(com.example.vertonowsky.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
+                    <th:block th:if="${verificationType == T(com.example.vertonowsky.token.VerificationType).EMAIL_VERIFICATION_NEW.getIndex()}">
                         <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', null)"></th:block>
 
                         <p class="description"> Dziękujemy za rejestrację na <a class="list_link" th:href="@{/}">kursowo.pl</a>. Na podany przez Ciebie adres email został wysłany link aktywacyjny. Kliknij go, aby aktywować konto!</p>
 
                     </th:block>
 
-                    <div th:if="${verificationType == T(com.example.vertonowsky.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
+                    <div th:if="${verificationType == T(com.example.vertonowsky.token.VerificationType).EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex()}">
 
                         <th:block th:insert="dependencies :: noDataFound('red fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Adres email połączony z Twoim kontem wymaga weryfikacji. Upewnij się, że Twoja skrzynka pocztowa nie zawiera wiadomości kończącej proces rejestracji.')"></th:block>
 
                     </div>
 
-                    <th:block th:if="${verificationType == T(com.example.vertonowsky.VerificationType).PASSWORD_RECOVER_NEW.getIndex()}">
+                    <th:block th:if="${verificationType == T(com.example.vertonowsky.token.VerificationType).PASSWORD_RECOVER_NEW.getIndex()}">
 
                         <th:block th:insert="dependencies :: noDataFound('fas fas fa-info-circle', 'Cześć, ' + ${email} + '!', 'Na podany przez Ciebie adres email została wysłana wiadomość potwierdzająca rozpoczęcie procesu odzyskiwania hasła. Podążaj za instrukacjami zawartymi w otrzymanej wiadomości.')"></th:block>
 
