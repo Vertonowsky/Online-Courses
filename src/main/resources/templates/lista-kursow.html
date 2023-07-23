@@ -29,10 +29,12 @@
             <div id="courses">
                 <div class="inner">
 
-                    <div class="left_panel">
-                        <div id="courses_list" th:insert="~{index :: courses_list}">
+                    <div id="left_panel">
 
-                        </div>
+                        <div id="top_panel" th:insert="~{index :: top_panel}"></div>
+
+                        <div id="courses_data" th:insert="~{index :: courses_data}"></div>
+
                     </div>
 
 
@@ -179,16 +181,45 @@
             let header = $("meta[name='_csrf_header']").attr("content");
 
             $.ajax({
-                type:"POST",
+                type:"GET",
                 dataType:"text",
                 data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters), "limit": limit },
-                url:"/kurs/getCourses",
+                url:"/api/courses/list",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token)
                 },
                 success: function(data) {
 
-                    $("#courses_list").html(data);
+                    loadTopPanel(typeFilters, categoryFilters, limit);
+
+                    $('#courses_data').html(data);
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.error(error);
+                }
+            });
+        }
+
+
+
+
+        function loadTopPanel(typeFilters, categoryFilters, limit) {
+            let token  = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type:"GET",
+                dataType:"text",
+                data: { "typeFilters": JSON.stringify(typeFilters), "categoryFilters": JSON.stringify(categoryFilters), "limit": limit },
+                url:"/api/courses/top-panel",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(data) {
+
+                    $('#top_panel').html(data);
 
                 },
                 error: function(xhr, status, error) {
