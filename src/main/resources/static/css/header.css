@@ -16,7 +16,7 @@
     background: transparent;
     border-bottom: 2px solid transparent;
     transition: all 0.4s;
-    padding: 10px 80px;
+    padding: 10px 120px;
     z-index: 30;
     font-size: 0;
 }
@@ -273,50 +273,74 @@
 
         .dropbtn {
             position: relative;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-sizing: border-box;
-            font-size: var(--font-size-normal);
-            font-weight: bold;
-            text-align: center;
-            color: #595959;
-            background: #fff;
-            height: 45px;
-            min-width: 200px;
-            padding: 0 30px 0 20px;
+            height: 66px;
+            width: 66px;
             cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 0 2px 2px #E0E0E0;
             transition: all 0.3s;
+            z-index: 29;
         }
 
-        .dropbtn div {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+            #avatar {
+                position: relative;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
 
-        .dropbtn i {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%) rotate(90deg);
-            font-size: 16px;
-            margin-left: 6px;
-            color: #4D4D4D;
-            transition: all 0.3s;
-        }
+                #avatar img {
+                    position: relative;
+                    box-sizing: border-box;
+                }
+
+                .dropbtn img {
+                    width: 85%;
+                    height: 85%;
+                }
+
+                #avatar:hover > .shadow {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                #avatar .shadow {
+                    position: absolute;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    height: 100%;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: opacity 0.3s, visibility 0.3s;
+                }
+
+                .dropbtn .shadow {
+                    border-radius: 50%;
+                    background: #B9E7EB;
+                }
+
 
         .dropdown_content {
             position: absolute;
             box-sizing: border-box;
             background: #fff;
-            top: 48px;
+            top: 0;
             opacity: 0;
-            min-width: 160px;
-            left: -40%;
-            width: 140%;
-            padding: 10px;
+            left: -87px;
+            width: 240px;
+            padding: 80px 10px 10px 10px;
             transition: all 0.1s;
-            border-radius: 8px 0 8px 8px;
+            border-radius: 8px;
             box-shadow: 0 0 2px 2px #E0E0E0;
             visibility: hidden;
         }
@@ -326,7 +350,7 @@
                 box-sizing: border-box;
                 display: block;
                 background: transparent;
-                text-align: left;
+                text-align: center;
                 color: var(--color-title);
                 font-size: 16px;
                 font-weight: normal;
@@ -374,18 +398,6 @@
                 opacity: 1;
             }
 
-            .dropdown:hover .dropbtn {
-                border-bottom-right-radius: 0;
-                border-bottom-left-radius: 0;
-                border-bottom: none;
-                background: rgba(39, 51, 59, 0.95);
-                background: #fff;
-                z-index: 10;
-            }
-
-            .dropbtn:hover {
-                color: var(--color-light-blue);
-            }
 
             .dropbtn:hover .dropbtn i {
                 color: var(--color-light-blue);
@@ -562,8 +574,8 @@
         @media screen and (max-width: 1500px) {
 
             #header {
-                padding-left: 40px;
-                padding-right: 40px;
+                padding-left: 100px;
+                padding-right: 100px;
             }
 
                 #header .header_nav_buttons {
@@ -576,14 +588,44 @@
         @media screen and (max-width: 1280px) {
 
 
-            .dropdown_content {
-                min-width: 180px;
+            #header {
+                padding-left: 50px;
+                padding-right: 100px;
             }
 
+                .dropdown_content {
+                    left: -77px;
+                    width: 220px;
+                }
 
-            #header .header_nav_buttons {
-                margin-left: 150px;
+                .dropdown_content .dropdown_link {
+                    text-align: center;
+                }
+
+                #header .header_nav_buttons {
+                    margin-left: 150px;
+                }
+
+
+            #mobile_avatar {
+                position: relative;
+                box-sizing: border-box;
+                height: 100px;
+                width: 100px;
+                margin: 0 auto 20px auto;
             }
+
+                #mobile_avatar img {
+                    width: 90%;
+                    height: 90%;
+                }
+
+                #mobile_avatar .shadow {
+                    border-radius: 50%;
+                    background: #B9E7EB;
+                }
+
+
 
         }
         

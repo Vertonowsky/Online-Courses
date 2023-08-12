@@ -1,5 +1,6 @@
 package com.example.vertonowsky.security.model;
 
+import com.example.vertonowsky.avatar.Avatar;
 import com.example.vertonowsky.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
     private final String email;
     private final String password;
     private final boolean verified;
+    private Avatar avatar;
     private final List<GrantedAuthority> authorities;
 
 
@@ -27,7 +29,15 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser {
     @Override
     public List<GrantedAuthority> getAuthorities() {
         return authorities;
-        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
+    @Override
+    public Avatar getAvatar() {
+        return avatar;
     }
 
     @Override

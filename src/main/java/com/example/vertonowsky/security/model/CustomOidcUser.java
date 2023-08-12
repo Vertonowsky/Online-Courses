@@ -1,5 +1,6 @@
 package com.example.vertonowsky.security.model;
 
+import com.example.vertonowsky.avatar.Avatar;
 import com.example.vertonowsky.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     private final OidcUser oidcUser;
     private final String email;
     private boolean verified;
+    private Avatar avatar;
     private List<GrantedAuthority> authorities;
 
 
@@ -49,7 +51,16 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 //                .collect(Collectors.toList());
     }
 
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+
     public void setVerified(boolean verified) { this.verified = verified; }
+
+    @Override
+    public Avatar getAvatar() {
+        return avatar;
+    }
 
     @Override
     public String getPassword() { return null; }
