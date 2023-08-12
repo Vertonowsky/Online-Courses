@@ -1,9 +1,12 @@
 package com.example.vertonowsky.profile;
 
 
+import com.example.vertonowsky.avatar.AvatarSerializer;
 import com.example.vertonowsky.course.dto.CourseOwnedDto;
 import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.UserInfoDto;
 import com.example.vertonowsky.user.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,7 +21,8 @@ import java.util.Optional;
 @Controller
 public class ProfileController {
 
-
+    @Value("${server.url}")
+    private String serverUrl;
     private final UserRepository userRepository;
     private final ProfileService profileService;
 
@@ -53,7 +57,12 @@ public class ProfileController {
             model.addAttribute(set.getKey(), set.getValue());
 
 
-        model.addAttribute("ownedCourses", courseOwnedDtos);
+        UserInfoDto userDto = new UserInfoDto();
+        userDto.setAvatar(AvatarSerializer.serialize(user.getAvatar()));
+        userDto.setCourses(courseOwnedDtos);
+
+        model.addAttribute("serverUrl", serverUrl);
+        model.addAttribute("user", userDto);
         model.addAttribute("paymentHistory", user.getPaymentHistories());
         return new ModelAndView("profil");
     }
