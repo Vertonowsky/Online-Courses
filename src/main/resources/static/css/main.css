@@ -812,7 +812,7 @@
 
 
 
-        #courses .left_panel {
+        #courses #left_panel {
             position: relative;
             box-sizing: border-box;
             width: 70%;
@@ -1115,7 +1115,7 @@
             }
     
 
-            #courses .left_panel, #courses #right_panel {
+            #courses #left_panel, #courses #right_panel {
                 width: 100%;
             }
 

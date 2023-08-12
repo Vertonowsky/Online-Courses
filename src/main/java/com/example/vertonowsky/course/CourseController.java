@@ -140,7 +140,7 @@ public class CourseController {
      * @return List of courses which match the filters
      * @throws JsonProcessingException exception thrown when there was a problem with parsing JSON filters
      */
-    @PostMapping("/kurs/getCourses")
+    @GetMapping("/api/courses/list")
     public ModelAndView getCourseInfo(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -150,13 +150,32 @@ public class CourseController {
         categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
 
         List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
+        model.addAttribute("courses", courses);
+
+        return new ModelAndView("index :: courses_data");
+    }
+
+
+
+    @GetMapping("/api/courses/top-panel")
+    public ModelAndView getCourseTopPanel(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (limit < 0) limit = 0;
+        List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
+        categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
+
+        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), categoryParamList);
-        model.addAttribute("topPanel", true);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
         model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
-        model.addAttribute("courses", courses);
-        return new ModelAndView("index :: courses_list");
+
+        return new ModelAndView("index :: top_panel");
     }
+
+
+
 
 
     /**

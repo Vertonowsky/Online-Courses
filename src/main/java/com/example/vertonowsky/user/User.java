@@ -1,6 +1,7 @@
 package com.example.vertonowsky.user;
 
 
+import com.example.vertonowsky.avatar.Avatar;
 import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.discount.model.DiscountCodeUsed;
@@ -42,8 +43,6 @@ public class User {
     private boolean verified;
 
 
-    //private String roles;
-
     //@Column(nullable = false, length = 32)
     //Rank rank;
 
@@ -70,11 +69,13 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<PasswordRecoveryToken> passwordRecoveryTokens;
 
-
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "avatar_id")
+    private Avatar avatar;
 
 
 
@@ -93,11 +94,6 @@ public class User {
         this.registrationMethod = registrationMethod;
     }
 
-    /*
-
-    Added authentication methods. Implemented functions: isLoggedIn(Authentication authentication), getEmail(Authentication authentication),hasAuthority(Authentication authentication, String name)
-
-     */
 
     public static String getEmail(Authentication authentication) {
         if (authentication.getPrincipal() instanceof CustomUserDetails) return ((CustomUserDetails) authentication.getPrincipal()).getEmail();
@@ -229,6 +225,17 @@ public class User {
         return passwordRecoveryTokens;
     }
 
+    public void setPasswordRecoveryTokens(Set<PasswordRecoveryToken> passwordRecoveryTokens) {
+        this.passwordRecoveryTokens = passwordRecoveryTokens;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
 
     public boolean isCourseOwnedAndValid(Course course) {
         for (CourseOwned courseOwned : coursesOwned) {

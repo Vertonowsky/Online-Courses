@@ -257,21 +257,19 @@
                     <h2 class="introduction">Nasze kursy:</h2>
 
 
-                    <div id="courses_list" th:fragment="courses_list">
+                    <div id="courses_list">
 
-                        <div id="top_panel" th:if="${topPanel}">
+                        <div id="top_panel" th:fragment="top_panel">
                             <h1 class="heading"><span class="bold" th:text="${topPanelPrefix}"></span> w kategorii <span class="category" th:text="${topPanelCategory}"></span></h1>
                             <div id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>
                         </div>
 
 
-                        <div th:id="courses_data" th:if="${courses} == null">
-                            <div id='empty_error'><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>
-                        </div>
+                        <div th:id="courses_data" th:fragment="courses_data">
 
-                        <div th:id="courses_data" th:if="${courses} != null">
+                            <div id="empty_error" th:if="${courses} == null" ><p>Błąd: Nie znaleziono danych do wyświetlenia.</p></div>
 
-                            <div class="course_container" th:each="course : ${courses}">
+                            <div class="course_container" th:if="${courses} != null" th:each="course : ${courses}">
                                 <div class="left">
                                     <div class="photo">
                                         <img alt="Miniatura kursu" th:src="@{'/images/course_photo_' + ${course.id} +'.png'}" />

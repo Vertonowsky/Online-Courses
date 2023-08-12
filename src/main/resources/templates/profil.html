@@ -9,6 +9,9 @@
 
     <th:block th:insert="~{dependencies :: dependencies}"></th:block>
 
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 </head>
 
 <body>
@@ -27,9 +30,13 @@
                 <div id="statistics" class="window">
                     <div class="section">
 
-
-                        <div id="profile_picture">
-                            <i id="icon" class="fas fa-user"></i>
+                        <div id="avatar_selection">
+                            <div id="profile_picture" th:fragment="avatar_detail">
+                                <img th:alt="${user.avatar.name}" th:src="${serverUrl + user.avatar.url}"/>
+                                <div class="shadow" onclick="listAvatars()">
+                                    <i class="fas fa-pencil-alt icon_add"></i>
+                                </div>
+                            </div>
                         </div>
 
                         <p id="credentials"> [[${#authentication.getPrincipal().getEmail()}]] </p>
@@ -81,12 +88,12 @@
 
             <div id="content_right">
 
-                <div id="courses_list" class="pageable active">
+                <div id="courses_list" class="pageable active" th:fragment="course-list">
 
                     <!--
                         No Data Found container
                     -->
-                    <div th:if="${#lists.isEmpty(ownedCourses)}" id="no_results_found" class="window no_data_found">
+                    <div th:if="${#lists.isEmpty(user.courses)}" id="no_results_found" class="window no_data_found">
 
                         <th:block th:insert="dependencies :: noDataFound('big fas fa-exclamation-circle', 'Nie posiadasz jeszcze żadnego kursu.', 'Zobacz naszą pełną ofertę i wybierz kurs, który interesuje Cię najbardziej!')"></th:block>
                         <a th:href="@{/lista-kursow}" class="button_gray">Lista kursów <i class="fas fa-arrow-circle-right"></i></a>
@@ -94,7 +101,7 @@
                     </div>
 
 
-                    <div th:each="ownedCourseDto : ${ownedCourses}" class="course_container">
+                    <div th:each="ownedCourseDto : ${user.courses}" class="course_container">
 
                         <div class="left">
                             <div class="photo">
@@ -166,8 +173,33 @@
 
             </div>
 
-
         </div>
+
+
+
+        <div id="modal_avatar" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal_content active">
+                <span class="modal_close" tabindex="0"><i class="fas fa-times"></i></span>
+
+                <div class="top">
+                    <h2 class="heading">Wybierz swój avatar:</h2>
+
+                    <div id="avatar_view">
+                        <dic class="avatar_container" th:fragment="avatar_container" th:if="${avatars != null}">
+
+                            <div class="avatar" th:each="avatar : ${avatars}" th:data-id="${avatar.id}">
+                                <img th:alt="${avatar.name}" th:src="${serverUrl + avatar.url}">
+                            </div>
+
+                        </dic>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <!--
             START popup
@@ -229,6 +261,84 @@
                 tabcontent[tabIndex -1].classList.add("active")
 
             e.classList.add("active");
+        }
+
+
+
+
+
+
+        const modal_avatar = document.getElementById('modal_avatar');
+
+        // Get the button that opens the modal
+        const button_buy = document.getElementById("button_buy");
+
+        // Get the <span> element that closes the modal
+        const close_btn = document.getElementsByClassName("modal_close")[0];
+
+
+        // When the user clicks the button, open the modal
+        function openModal() {
+            modal_avatar.classList.add("active");
+        }
+
+        function closeModal() {
+            modal_avatar.classList.remove("active");
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        close_btn.onclick = function() {
+            closeModal();
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.addEventListener("click", function(event) {
+            if (event.target == modal_avatar) {
+                closeModal();
+            }
+        });
+
+
+
+        function listAvatars() {
+            $("#avatar_view").load('/api/avatar/view', function(response, status) {
+                if (status == "success") {
+                    openModal();
+
+                    $('.avatar').click(function(){
+                        let id = $(this).attr('data-id');
+                        changeAvatar(id);
+                    });
+                }
+            });
+        }
+
+
+
+
+        function changeAvatar(id) {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type:"POST",
+                dataType:"json",
+                data: { id: id},
+                url:"/api/avatar/change",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function() {
+
+                    $("#avatar_selection").load('/api/avatar/detail');
+                    closeModal();
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.warn(xhr.responseText);
+                }
+            });
         }
 
 
