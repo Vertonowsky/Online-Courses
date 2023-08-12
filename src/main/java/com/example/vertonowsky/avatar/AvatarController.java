@@ -39,7 +39,7 @@ public class AvatarController {
     }
 
     @GetMapping("detail")
-    public ModelAndView detail(Model model) throws UserNotFoundException {
+    public ModelAndView detail(@RequestParam AvatarDetailType type, Model model) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = User.getEmail(auth);
         UserInfoDto userInfoDto = new UserInfoDto();
@@ -47,13 +47,20 @@ public class AvatarController {
         userInfoDto.setAvatar(avatarDto);
         model.addAttribute("serverUrl", serverUrl);
         model.addAttribute("user", userInfoDto);
-        return new ModelAndView("profil :: avatar_detail");
+
+        if (type.equals(AvatarDetailType.PROFILE))
+            return new ModelAndView("profil :: avatar_detail");
+
+        else if (type.equals(AvatarDetailType.HEADER))
+            return new ModelAndView("header :: avatar_detail");
+
+        return null;
     }
 
     @PostMapping("change")
     public boolean change(@RequestParam(value = "id") Integer id) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        avatarService.change(User.getEmail(auth), id);
+        avatarService.change(auth, User.getEmail(auth), id);
         return true;
     }
 

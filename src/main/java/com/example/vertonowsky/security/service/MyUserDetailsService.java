@@ -4,7 +4,6 @@ import com.example.vertonowsky.security.RegistrationMethod;
 import com.example.vertonowsky.security.model.CustomUserDetails;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,9 +26,11 @@ public class MyUserDetailsService implements UserDetailsService {
 
      */
 
+    private final UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    public MyUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -37,7 +38,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
         user.orElseThrow(() -> new UsernameNotFoundException("Błędny adres email lub hasło!"));
 
-        return user.map(CustomUserDetails::new).get();
+        CustomUserDetails userDetails = user.map(CustomUserDetails::new).get();
+        userDetails.setAvatar(user.get().getAvatar());
+
+        return userDetails;
     }
 
 

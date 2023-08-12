@@ -3,11 +3,11 @@
 <head>
     <title>Panel użytkownika</title>
 
-    <link rel="stylesheet" href="/css/profil.css"/>
+    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+
     <link rel="stylesheet" href="/css/popup.css"/>
     <link rel="stylesheet" href="/css/course_container.css">
-
-    <th:block th:insert="~{dependencies :: dependencies}"></th:block>
+    <link rel="stylesheet" href="/css/profil.css"/>
 
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
@@ -31,7 +31,7 @@
                     <div class="section">
 
                         <div id="avatar_selection">
-                            <div id="profile_picture" th:fragment="avatar_detail">
+                            <div id="avatar" th:fragment="avatar_detail">
                                 <img th:alt="${user.avatar.name}" th:src="${serverUrl + user.avatar.url}"/>
                                 <div class="shadow" onclick="listAvatars()">
                                     <i class="fas fa-pencil-alt icon_add"></i>
@@ -323,14 +323,20 @@
             $.ajax({
                 type:"POST",
                 dataType:"json",
-                data: { id: id},
+                data: { id: id, type: "PROFILE"},
                 url:"/api/avatar/change",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token)
                 },
                 success: function() {
 
-                    $("#avatar_selection").load('/api/avatar/detail');
+                    $("#avatar_selection").load('/api/avatar/detail?type=PROFILE');
+                    if (document.getElementById("header_dropbtn") != null)
+                        $("#header_dropbtn").load('/api/avatar/detail?type=HEADER');
+
+                    if (document.getElementById("mobile_avatar") != null)
+                        $("#mobile_avatar").load('/api/avatar/detail?type=HEADER');
+
                     closeModal();
 
                 },

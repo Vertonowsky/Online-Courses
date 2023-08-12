@@ -118,55 +118,29 @@ body {
         }
 
 
-        #profile_picture {
+        #avatar_selection {
             position: relative;
             box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             width: 128px;
             height: 128px;
             margin: auto;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        #profile_picture img {
-            position: relative;
-            box-sizing: border-box;
-            width: 90%;
-            height: 90%;
-        }
-
-        #profile_picture:hover > .shadow {
-            opacity: 1;
-            visibility: visible;
-        }
-
-            #profile_picture .shadow {
-                position: absolute;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                height: 100%;
+            #avatar_selection .shadow {
                 border-radius: 25%;
                 background: rgba(0, 0, 0, 0.2);
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity 0.3s, visibility 0.3s;
             }
 
-            #profile_picture .shadow .icon_add {
+            #avatar_selection .icon_add {
                 color: #fff;
                 font-size: 22px;
             }
 
-            #profile_picture #icon {
-                font-size: 100px;
-                color: #BFBFBF;
+            #avatar_selection img {
+                width: 90%;
+                height: 90%;
             }
+
 
         #statistics #credentials {
             position: relative;
