@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 @SpringBootApplication
 @Controller
-public class HelloWorldApplication extends SpringBootServletInitializer {
+public class OnlineCoursesApplication extends SpringBootServletInitializer {
 
 
     private CourseService courseService;
@@ -28,11 +28,11 @@ public class HelloWorldApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(HelloWorldApplication.class);
+        return application.sources(OnlineCoursesApplication.class);
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(HelloWorldApplication.class, args);
+        SpringApplication.run(OnlineCoursesApplication.class, args);
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("dev");
