@@ -14,12 +14,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class MyOidcUserService extends OidcUserService implements Serializable {
+public class MyOidcUserService extends OidcUserService {
 
     private final IUserService userService;
     private final UserRepository userRepository;

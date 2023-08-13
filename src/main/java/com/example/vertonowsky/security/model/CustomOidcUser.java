@@ -74,8 +74,15 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser, Serializable
     @Override
     public OidcIdToken getIdToken() { return oidcUser.getIdToken(); }
 
-    @Override
+    public String getId() {
+        return (String) oidcUser.getAttributes().get("sub");
+    }
+
     public String getName() {
-        return null;
+        return (String) oidcUser.getAttributes().get("name");
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

@@ -23,6 +23,7 @@ public class CustomUserDetails implements UserDetails, AuthenticatedUser, Serial
         this.password = user.getPassword();
         this.verified = user.isVerified();
         this.authorities = getAuthorities(Collections.singletonList(user.getRole()));
+        this.avatar = avatar;
     }
 
 
