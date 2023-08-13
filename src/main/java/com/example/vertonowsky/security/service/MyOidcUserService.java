@@ -54,7 +54,7 @@ public class MyOidcUserService extends OidcUserService {
         if (user.isPresent()) {
             googleUser.setVerified(user.get().isVerified());
             googleUser.setAuthorities(Collections.singletonList(user.get().getRole()));
-            googleUser.setAvatar(user.get().getAvatar());
+            //googleUser.setAvatar(user.get().getAvatar());
         }
 
         return googleUser;

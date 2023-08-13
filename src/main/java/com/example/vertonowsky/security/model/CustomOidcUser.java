@@ -1,6 +1,6 @@
 package com.example.vertonowsky.security.model;
 
-import com.example.vertonowsky.avatar.Avatar;
+import com.example.vertonowsky.avatar.AvatarDto;
 import com.example.vertonowsky.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,28 +14,29 @@ import java.util.stream.Collectors;
 
 public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 
-    private final Map<String, Object> attributes;
-    private final OidcUser oidcUser;
     private final String email;
     private boolean verified;
-    private Avatar avatar;
+    private AvatarDto avatar;
     private List<GrantedAuthority> authorities;
+    private String id;
+    private String name;
 
 
     public CustomOidcUser(OidcUser oidcUser) {
-        this.oidcUser   = oidcUser;
-        this.attributes = oidcUser.getAttributes();
-        this.email      = (String) attributes.get("email");
-        this.verified   = true;
+        Map<String, Object> attributes = oidcUser.getAttributes();
+        this.email = (String) attributes.get("email");
+        this.verified = true;
+        this.id = (String) attributes.get("sub");
+        this.name = (String) attributes.get("name");
     }
 
 
     public String getId() {
-        return (String) attributes.get("sub");
+        return id;
     }
 
     public String getName() {
-        return (String) attributes.get("name");
+        return name;
     }
 
     public String getEmail() {
@@ -51,14 +52,14 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 //                .collect(Collectors.toList());
     }
 
-    public void setAvatar(Avatar avatar) {
+    public void setAvatar(AvatarDto avatar) {
         this.avatar = avatar;
     }
 
     public void setVerified(boolean verified) { this.verified = verified; }
 
     @Override
-    public Avatar getAvatar() {
+    public AvatarDto getAvatar() {
         return avatar;
     }
 
@@ -66,13 +67,8 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     public String getPassword() { return null; }
 
     @Override
-    public <A> A getAttribute(String name) {
-        return oidcUser.getAttribute(name);
-    }
-
-    @Override
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return null;
     }
 
     @Override
@@ -84,11 +80,11 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
     public boolean isEnabled() { return verified; }
 
     @Override
-    public Map<String, Object> getClaims() { return oidcUser.getClaims(); }
+    public Map<String, Object> getClaims() { return null; }
 
     @Override
-    public OidcUserInfo getUserInfo() { return oidcUser.getUserInfo(); }
+    public OidcUserInfo getUserInfo() { return null; }
 
     @Override
-    public OidcIdToken getIdToken() { return oidcUser.getIdToken(); }
+    public OidcIdToken getIdToken() { return null; }
 }

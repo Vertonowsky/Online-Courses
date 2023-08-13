@@ -1,5 +1,6 @@
 package com.example.vertonowsky.security.service;
 
+import com.example.vertonowsky.avatar.AvatarSerializer;
 import com.example.vertonowsky.security.RegistrationMethod;
 import com.example.vertonowsky.security.model.CustomUserDetails;
 import com.example.vertonowsky.user.User;
@@ -38,10 +39,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         user.orElseThrow(() -> new UsernameNotFoundException("Błędny adres email lub hasło!"));
 
-        CustomUserDetails userDetails = user.map(CustomUserDetails::new).get();
-        userDetails.setAvatar(user.get().getAvatar());
-
-        return userDetails;
+        return user.map((u) -> new CustomUserDetails(u, AvatarSerializer.serialize(u.getAvatar()))).get();
     }
 
 
