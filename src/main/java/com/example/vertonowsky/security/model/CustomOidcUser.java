@@ -78,10 +78,12 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser, Serializable
         return (String) oidcUser.getAttributes().get("sub");
     }
 
+    @Override
     public String getName() {
         return (String) oidcUser.getAttributes().get("name");
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
