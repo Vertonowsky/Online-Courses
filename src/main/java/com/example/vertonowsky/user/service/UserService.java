@@ -1,15 +1,20 @@
 package com.example.vertonowsky.user.service;
 
+import com.example.vertonowsky.course.model.Course;
+import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.exception.*;
 import com.example.vertonowsky.role.Role;
 import com.example.vertonowsky.role.RoleService;
 import com.example.vertonowsky.role.RoleType;
+import com.example.vertonowsky.security.model.CustomOidcUser;
+import com.example.vertonowsky.security.model.CustomUserDetails;
 import com.example.vertonowsky.token.model.PasswordRecoveryToken;
 import com.example.vertonowsky.token.repository.PasswordRecoveryTokenRepository;
 import com.example.vertonowsky.token.service.VerificationTokenService;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserDto;
 import com.example.vertonowsky.user.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,9 +45,37 @@ public class UserService implements IUserService {
     }
 
 
+    public User get(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public User get(Authentication authentication) {
+        String email = getEmail(authentication);
+        if (email == null) return null;
+
+        return userRepository.findByEmail(getEmail(authentication)).orElse(null);
+    }
+
+    public String getEmail(Authentication authentication) {
+        if (authentication == null) return null;
+        if (authentication.getPrincipal() instanceof CustomUserDetails) return ((CustomUserDetails) authentication.getPrincipal()).getEmail();
+        if (authentication.getPrincipal() instanceof CustomOidcUser)    return ((CustomOidcUser)    authentication.getPrincipal()).getEmail();
+
+        return null;
+    }
+
+    public boolean isNull(User user) {
+        return user == null;
+    }
+
+    public boolean isLoggedIn(User user) {
+        return !isNull(user);
+    }
+
+
     @Override
     public void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidPasswordFormatException, PasswordsNotEqualException, TermsNotAcceptedException {
-        if (emailExists(userDto.getEmail()))
+        if (get(userDto.getEmail()) != null)
             throw new UserAlreadyExistsException(String.format("Konto o adresie %s już istnieje!", userDto.getEmail()));
 
         if (!UserDto.isEmailValid(userDto.getEmail()))
@@ -92,8 +125,22 @@ public class UserService implements IUserService {
     }
 
 
-    private boolean emailExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    /**
+     * Check if user's course is valid
+     *
+     * @param user user object
+     * @param course course object
+     * @return boolean. True if course is valid.
+     */
+    public boolean isCourseValid(User user, Course course) {
+        for (CourseOwned item : user.getCoursesOwned()) {
+            if (!item.getCourse().getId().equals(course.getId())) continue;
+
+            Date now = new Date(System.currentTimeMillis());
+            if (now.compareTo(item.getExpiryDate()) < 0) return true;
+        }
+        return false;
     }
+
 }
 

@@ -5,9 +5,7 @@ import com.example.vertonowsky.course.Category;
 public class CourseDto {
 
     private Integer id;
-
     private String name;
-
     private Category category;
 
     public CourseDto(Integer id, String name, Category category) {

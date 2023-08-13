@@ -22,10 +22,10 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
     List<CourseListDto> findAllDtos();
 
     @Query("SELECT DISTINCT c.type FROM Course c ORDER BY c.type ASC")
-    Iterable<String> findAllTypes();
+    List<String> findAllTypes();
 
     @Query("SELECT DISTINCT c.category FROM Course c ORDER BY c.category ASC")
-    Iterable<String> findAllCategories();
+    List<String> findAllCategories();
 
 
     @Query("SELECT NEW com.example.vertonowsky.course.dto.CourseDto(c.id, c.name, c.category) FROM Course c")

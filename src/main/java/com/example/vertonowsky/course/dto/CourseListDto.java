@@ -6,11 +6,8 @@ import org.springframework.util.StringUtils;
 public class CourseListDto {
 
     private final Integer id;
-
     private final String name;
-
     private final Category category;
-
     private final String description;
 
     public CourseListDto(Integer id, String name, Category category, String description) {

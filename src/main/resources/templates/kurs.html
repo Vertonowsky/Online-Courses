@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
-    <title th:text="'Kursowo | ' + ${topic.title}"></title>
+    <title th:text="'Kursowo | ' + ${data.selectedTopic.title}"></title>
 
     <link rel="stylesheet" href="/css/main.css"/>
     <link rel="stylesheet" href="/css/kurs.css"/>
@@ -30,27 +30,27 @@
 
                 <div id="all_topics" th:if="${data != null}">
 
-                    <div class="chapter_menu" th:each="chapterDto : ${data}" th:id="'right_chapter_id' + ${chapterDto.chapter.id}">
+                    <div class="chapter_menu" th:each="chapterDto : ${data.chapters}" th:id="'right_chapter_id' + ${chapterDto.id}">
                         <div class="chapter_header">
 
                             <div class="th_type">  <i class="far fa-dot-circle"></i> </div>
-                            <div class="th_title" th:text="${chapterDto.chapter.index} < 10 ? '0' + ${chapterDto.chapter.index} + ' - ' + ${chapterDto.chapter.title} : ${chapterDto.chapter.index} + ' - ' + ${chapterDto.chapter.title}"></div>
+                            <div class="th_title" th:text="${chapterDto.index} < 10 ? '0' + ${chapterDto.index} + ' - ' + ${chapterDto.title} : ${chapterDto.index} + ' - ' + ${chapterDto.title}"></div>
 
                         </div>
 
-                        <div class="topic_menu" th:if="${!#lists.isEmpty(chapterDto.topicDtoList)}">
-                            <button th:each="topicDto : ${chapterDto.topicDtoList}" th:class="${topicDto.active} ?  'topic_header ' + ${topicDto.getStatusAsString()} + ' active' : 'topic_header ' + ${topicDto.getStatusAsString()}" th:onclick="${topicDto.blocked} ? '' : ' openTopic(' + ${topicDto.topic.id} + ')'" th:attr="data-id=${topicDto.topic.getId()}">
+                        <div class="topic_menu" th:if="${!#lists.isEmpty(chapterDto.topics)}">
+                            <button th:each="topicDto : ${chapterDto.topics}" th:class="${topicDto.active} ?  'topic_header ' + ${topicDto.status} + ' active' : 'topic_header ' + ${topicDto.status}" th:onclick="${topicDto.blocked} ? '' : ' openTopic(' + ${topicDto.id} + ')'" th:attr="data-id=${topicDto.getId()}">
 
                                 <div class="td_left">
-                                    <i th:if="${topicDto.getStatusAsString()} == 'available'" class="far fa-circle"></i>
-                                    <i th:if="${topicDto.getStatusAsString()} == 'finished'" class="fas fa-check-circle"></i>
-                                    <i th:if="${topicDto.getStatusAsString()} == 'blocked'" class="fas fa-minus-circle"></i>
-                                    <div class="duration" th:text="'[' + ${topicDto.topic.formatDuration()} + ']'"></div>
+                                    <i th:if="${topicDto.status} == 'available'" class="far fa-circle"></i>
+                                    <i th:if="${topicDto.status} == 'finished'" class="fas fa-check-circle"></i>
+                                    <i th:if="${topicDto.status} == 'blocked'" class="fas fa-minus-circle"></i>
+                                    <div class="duration" th:text="'[' + ${topicDto.formatDuration()} + ']'"></div>
                                 </div>
 
                                 <div class="td_right">
                                     <div class="td_type"> <i class="far fa-dot-circle"></i> </div>
-                                    <div class="td_title" th:text="${topicDto.topic.title}"></div>
+                                    <div class="td_title" th:text="${topicDto.title}"></div>
                                 </div>
 
                             </button>
@@ -70,9 +70,9 @@
 
                 <div id="video_container" tabindex="0">
                     <div id="loader"></div>
-                    <h1 id="video_controls_title" th:text="${topic.title}"></h1>
+                    <h1 id="video_controls_title" th:text="${data.selectedTopic.title}"></h1>
 
-                    <video id="video" onloadeddata="initializeVideo()" th:src="${videosPath} + ${topic.location}"></video>
+                    <video id="video" onloadeddata="initializeVideo()" th:src="${videosPath} + ${data.selectedTopic.location}"></video>
 
                     <div id="center_volume_info"></div>
                     <div id="center_play_info" class="active"><i id="center_play_info_icon" class="fas fa-play"></i></div>
@@ -127,9 +127,9 @@
 
                     <div id="topic_info">
                         <div id="topic_type"> <i class="far fa-dot-circle"></i> </div>
-                        <p id="topic_title" th:text="${topic.title}"></p>
+                        <p id="topic_title" th:text="${data.selectedTopic.title}"></p>
                     </div>
-                    <button th:if="${loggedIn && courseOwned}" id="button_completed" th:class="${selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></button>
+                    <button th:if="${loggedIn && courseOwned}" id="button_completed" th:class="${data.selectedTopicFinished} ? 'active' : ''" onclick="markAsFinished()">Wykonano! <i class="fas fa-check"></i></button>
 
                 </div>
 
@@ -857,7 +857,7 @@
      * Controller and then data is proceeded by Java.
      */
     function markAsFinished() {
-        let topicId = /*[[${topic.id}]]*/ "";
+        let topicId = /*[[${data.selectedTopic.id}]]*/ "";
         if (topicId == "" || topicId <= 0) {
             alert("Wystąpił problem podczas wykonywania żądania.");
             return;
@@ -870,7 +870,7 @@
             type:"POST",
             dataType:"json",
             data: { topicId: topicId },
-            url:"/kurs/markAsFinished",
+            url:"/api/course/markAsFinished",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(header, token)
             },
