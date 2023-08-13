@@ -32,10 +32,10 @@
         <div sec:authorize="isAuthenticated()">
             <div class="dropdown">
                 <a id="header_dropbtn" class="dropbtn" th:href="@{/profil}">
-<!--                    <div th:id="avatar" th:fragment="avatar_detail">-->
-<!--                        <div class="shadow"></div>-->
-<!--                        <img th:alt="${#authentication.getPrincipal().getAvatar().getName()}" th:src="${#authentication.getPrincipal().getAvatar().getUrl()}"/>-->
-<!--                    </div>-->
+                    <div th:id="avatar" th:fragment="avatar_detail">
+                        <div class="shadow"></div>
+                        <img th:alt="${#authentication.getPrincipal().getAvatar().getName()}" th:src="${#authentication.getPrincipal().getAvatar().getUrl()}"/>
+                    </div>
                 </a>
 
                 <div class="dropdown_content">
@@ -82,7 +82,7 @@
 
         <div sec:authorize="isAuthenticated()">
             <div class="menu_content">
-<!--                <a id="mobile_avatar" th:href="@{/profil}" th:insert="~{header :: avatar_detail}"></a>-->
+                <a id="mobile_avatar" th:href="@{/profil}" th:insert="~{header :: avatar_detail}"></a>
 
                 <a class="menu_link" th:href="@{/profil}"><i class="fas fa-user-circle"></i> Moje konto</a>
 

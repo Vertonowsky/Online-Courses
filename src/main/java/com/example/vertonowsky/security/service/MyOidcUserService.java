@@ -1,5 +1,6 @@
 package com.example.vertonowsky.security.service;
 
+import com.example.vertonowsky.avatar.AvatarSerializer;
 import com.example.vertonowsky.security.RegistrationMethod;
 import com.example.vertonowsky.security.model.CustomOidcUser;
 import com.example.vertonowsky.user.User;
@@ -13,11 +14,12 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class MyOidcUserService extends OidcUserService {
+public class MyOidcUserService extends OidcUserService implements Serializable {
 
     private final IUserService userService;
     private final UserRepository userRepository;
@@ -54,7 +56,7 @@ public class MyOidcUserService extends OidcUserService {
         if (user.isPresent()) {
             googleUser.setVerified(user.get().isVerified());
             googleUser.setAuthorities(Collections.singletonList(user.get().getRole()));
-            //googleUser.setAvatar(user.get().getAvatar());
+            googleUser.setAvatar(AvatarSerializer.serialize(user.get().getAvatar()));
         }
 
         return googleUser;

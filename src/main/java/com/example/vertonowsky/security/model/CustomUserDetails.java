@@ -5,11 +5,11 @@ import com.example.vertonowsky.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomUserDetails implements UserDetails, AuthenticatedUser {
-
+public class CustomUserDetails implements UserDetails, AuthenticatedUser, Serializable {
 
     private final String email;
     private final String password;
