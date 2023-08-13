@@ -2,8 +2,10 @@ package com.example.vertonowsky.avatar;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AvatarDto {
+public class AvatarDto implements Serializable {
 
     private Integer id;
     private String name;

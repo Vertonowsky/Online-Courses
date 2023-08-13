@@ -1,6 +1,6 @@
 package com.example.vertonowsky.security.model;
 
-import com.example.vertonowsky.avatar.Avatar;
+import com.example.vertonowsky.avatar.AvatarDto;
 import com.example.vertonowsky.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,57 +8,39 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CustomOidcUser implements OidcUser, AuthenticatedUser {
+public class CustomOidcUser implements OidcUser, AuthenticatedUser, Serializable {
 
-    private final Map<String, Object> attributes;
+
     private final OidcUser oidcUser;
     private final String email;
     private boolean verified;
-    private Avatar avatar;
+    private AvatarDto avatar;
     private List<GrantedAuthority> authorities;
 
 
     public CustomOidcUser(OidcUser oidcUser) {
-        this.oidcUser   = oidcUser;
-        this.attributes = oidcUser.getAttributes();
-        this.email      = (String) attributes.get("email");
-        this.verified   = true;
-    }
-
-
-    public String getId() {
-        return (String) attributes.get("sub");
-    }
-
-    public String getName() {
-        return (String) attributes.get("name");
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-
-    public void setAuthorities(List<Role> roles) {
-        this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().toString())).collect(Collectors.toList());
-
-//        this.authorities = Arrays.stream(roles.split(","))
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
-    }
-
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
+        this.oidcUser= oidcUser;
+        this.email = (String) oidcUser.getAttributes() .get("email");
+        this.verified = true;
     }
 
     public void setVerified(boolean verified) { this.verified = verified; }
 
+    public void setAuthorities(List<Role> roles) {
+        this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleType().toString())).collect(Collectors.toList());
+    }
+
+    public void setAvatar(AvatarDto avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
-    public Avatar getAvatar() {
+    public AvatarDto getAvatar() {
         return avatar;
     }
 
@@ -72,7 +54,7 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return oidcUser.getAttributes();
     }
 
     @Override
@@ -91,4 +73,18 @@ public class CustomOidcUser implements OidcUser, AuthenticatedUser {
 
     @Override
     public OidcIdToken getIdToken() { return oidcUser.getIdToken(); }
+
+    public String getId() {
+        return (String) oidcUser.getAttributes().get("sub");
+    }
+
+    @Override
+    public String getName() {
+        return (String) oidcUser.getAttributes().get("name");
+    }
+
+    @Override
+    public String getEmail() {
+        return email;
+    }
 }

@@ -40,10 +40,10 @@ public class AvatarService {
         userRepository.save(user);
 
         if (auth != null)
-            updateAuthenticationUserAvatar(auth, avatar);
+            updateAuthenticationUserAvatar(auth, AvatarSerializer.serialize(user.getAvatar()));
     }
 
-    private void updateAuthenticationUserAvatar(Authentication authentication, Avatar avatar) {
+    private void updateAuthenticationUserAvatar(Authentication authentication, AvatarDto avatar) {
         if (authentication.getPrincipal() instanceof CustomUserDetails)
             ((CustomUserDetails) authentication.getPrincipal()).setAvatar(avatar);
         if (authentication.getPrincipal() instanceof CustomOidcUser)

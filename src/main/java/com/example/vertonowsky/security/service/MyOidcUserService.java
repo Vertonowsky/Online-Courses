@@ -1,5 +1,6 @@
 package com.example.vertonowsky.security.service;
 
+import com.example.vertonowsky.avatar.AvatarSerializer;
 import com.example.vertonowsky.security.RegistrationMethod;
 import com.example.vertonowsky.security.model.CustomOidcUser;
 import com.example.vertonowsky.user.User;
@@ -54,7 +55,7 @@ public class MyOidcUserService extends OidcUserService {
         if (user.isPresent()) {
             googleUser.setVerified(user.get().isVerified());
             googleUser.setAuthorities(Collections.singletonList(user.get().getRole()));
-            googleUser.setAvatar(user.get().getAvatar());
+            googleUser.setAvatar(AvatarSerializer.serialize(user.get().getAvatar()));
         }
 
         return googleUser;

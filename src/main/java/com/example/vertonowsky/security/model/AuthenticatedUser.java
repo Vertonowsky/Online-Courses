@@ -1,6 +1,6 @@
 package com.example.vertonowsky.security.model;
 
-import com.example.vertonowsky.avatar.Avatar;
+import com.example.vertonowsky.avatar.AvatarDto;
 import com.example.vertonowsky.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +14,7 @@ public interface AuthenticatedUser {
 
     String getPassword();
 
-    Avatar getAvatar();
+    AvatarDto getAvatar();
 
     boolean isEnabled();
 
