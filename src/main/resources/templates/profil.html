@@ -5,6 +5,7 @@
 
     <th:block th:insert="~{dependencies :: dependencies}"></th:block>
 
+    <link rel="stylesheet" href="/css/modal.css"/>
     <link rel="stylesheet" href="/css/popup.css"/>
     <link rel="stylesheet" href="/css/course_container.css">
     <link rel="stylesheet" href="/css/profil.css"/>
@@ -32,7 +33,7 @@
 
                         <div id="avatar_selection">
                             <div id="avatar" th:fragment="avatar_detail">
-                                <img th:alt="${user.avatar.name}" th:src="${serverUrl + user.avatar.url}"/>
+                                <img th:alt="${user.avatar.name}" th:src="${user.avatar.url}" onclick="listAvatars()"/>
                                 <div class="shadow" onclick="listAvatars()">
                                     <i class="fas fa-pencil-alt icon_add"></i>
                                 </div>
@@ -181,16 +182,16 @@
 
             <!-- Modal content -->
             <div class="modal_content active">
-                <span class="modal_close" tabindex="0"><i class="fas fa-times"></i></span>
+                <span class="modal_close" tabindex="0" onclick="closeModal()"><i class="fas fa-times"></i></span>
 
                 <div class="top">
-                    <h2 class="heading">Wybierz swój avatar:</h2>
+                    <h2 class="title">Wybierz swój avatar:</h2>
 
                     <div id="avatar_view">
                         <dic class="avatar_container" th:fragment="avatar_container" th:if="${avatars != null}">
 
                             <div class="avatar" th:each="avatar : ${avatars}" th:data-id="${avatar.id}">
-                                <img th:alt="${avatar.name}" th:src="${serverUrl + avatar.url}">
+                                <img th:alt="${avatar.name}" th:src="${avatar.url}">
                             </div>
 
                         </dic>
@@ -270,13 +271,6 @@
 
         const modal_avatar = document.getElementById('modal_avatar');
 
-        // Get the button that opens the modal
-        const button_buy = document.getElementById("button_buy");
-
-        // Get the <span> element that closes the modal
-        const close_btn = document.getElementsByClassName("modal_close")[0];
-
-
         // When the user clicks the button, open the modal
         function openModal() {
             modal_avatar.classList.add("active");
@@ -284,11 +278,6 @@
 
         function closeModal() {
             modal_avatar.classList.remove("active");
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        close_btn.onclick = function() {
-            closeModal();
         }
 
         // When the user clicks anywhere outside of the modal, close it
