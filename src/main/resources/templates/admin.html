@@ -3,13 +3,14 @@
 <head>
     <title>Panel Administracyjny</title>
 
-    <link rel="stylesheet" href="/css/main.css"/>
-    <link rel="stylesheet" href="/css/popup.css"/>
-    <link rel="stylesheet" href="/css/course_container.css"/>
-
     <th:block th:insert="~{dependencies :: dependencies}"></th:block>
 
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/popup.css"/>
+    <link rel="stylesheet" href="/css/modal.css"/>
+    <link rel="stylesheet" href="/css/course_container.css"/>
     <link rel="stylesheet" href="/css/admin.css"/>
+
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
@@ -191,7 +192,7 @@
 
             <!-- Modal content -->
             <div class="modal_content active">
-                <span class="close" tabindex="0"><i class="fas fa-times"></i></span>
+                <span class="modal_close" tabindex="0" onclick="closeModal()"><i class="fas fa-times"></i></span>
 
                 <div class="top">
                     <h2 class="title" id="modal_title"> Potwierdź akcje!</h2>
@@ -297,18 +298,9 @@
 
         const modal_confirmation = document.getElementById('modal_confirmation');
 
-        // Get the <span> element that closes the modal
-        const close_btn = document.getElementsByClassName("close")[0];
-
         function closeModal() {
             modal_confirmation.classList.remove("active");
         }
-
-        // When the user clicks on <span> (x), close the modal
-        close_btn.onclick = function() {
-            closeModal();
-        }
-
 
         const VideoEnum = Object.freeze({"NewTopic":1, "EditTopic":2});
 
