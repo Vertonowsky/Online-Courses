@@ -1,11 +1,12 @@
 package com.example.vertonowsky.profile;
 
-
-import com.example.vertonowsky.avatar.AvatarSerializer;
-import com.example.vertonowsky.course.dto.CourseOwnedDto;
+import com.example.vertonowsky.course.CourseSerializer;
+import com.example.vertonowsky.course.dto.CourseDto;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserInfoDto;
-import com.example.vertonowsky.user.UserRepository;
+import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.UserSerializer;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,23 +15,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
+import static com.example.vertonowsky.course.CourseSerializer.Task.PAYMENTS;
+import static com.example.vertonowsky.user.UserSerializer.Task.AVATAR;
 
 @Controller
 public class ProfileController {
 
     @Value("${server.url}")
     private String serverUrl;
-    private final UserRepository userRepository;
     private final ProfileService profileService;
+    private final UserService userService;
 
-    public ProfileController(UserRepository userRepository, ProfileService profileService) {
-        this.userRepository = userRepository;
+    public ProfileController(ProfileService profileService, UserService userService) {
         this.profileService = profileService;
+        this.userService = userService;
     }
-
 
     /**
      *
@@ -40,30 +42,21 @@ public class ProfileController {
     @GetMapping("/profil")
     public ModelAndView profil(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth)) return new ModelAndView("redirect:/");
+        User user = userService.get(auth, UserQueryType.FINISHED_TOPICS_AND_COURSES_OWNED_AND_PAYMENT_HISTORIES);
+        if (user == null) return new ModelAndView("redirect:/");
 
-        // Get the user
-        Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
-        if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
-
-        User user = optionalUser.get();
-
-
-        // Get every bought course progress
-        ArrayList<CourseOwnedDto> courseOwnedDtos = profileService.calculateCourseCompletion(user);
+        UserInfoDto userDto = UserSerializer.serialize(user, AVATAR, UserSerializer.Task.PAYMENTS);
+        if (user.getCoursesOwned() != null) {
+            // Get every bought course progress
+            List<CourseDto> courseDtos = user.getCoursesOwned().stream().map(courseOwned -> CourseSerializer.serialize(courseOwned, BASE, PAYMENTS)).toList();
+            profileService.calculateCourseCompletion(courseDtos, user);
+            userDto.setCourses(courseDtos);
+        }
 
         // Get recent progress based on topic completion
-        for (Map.Entry<String, Integer> set : profileService.calculateRecentProgress(user).entrySet())
-            model.addAttribute(set.getKey(), set.getValue());
-
-
-        UserInfoDto userDto = new UserInfoDto();
-        userDto.setAvatar(AvatarSerializer.serialize(user.getAvatar()));
-        userDto.setCourses(courseOwnedDtos);
-
+        model.addAttribute("recentProgress", profileService.calculateRecentProgress(user));
         model.addAttribute("serverUrl", serverUrl);
         model.addAttribute("user", userDto);
-        model.addAttribute("paymentHistory", user.getPaymentHistories());
         return new ModelAndView("profil");
     }
 }
