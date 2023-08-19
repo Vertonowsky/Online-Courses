@@ -1,5 +1,6 @@
 package com.example.vertonowsky.topic;
 
+import com.example.vertonowsky.topic.model.FinishedTopic;
 import com.example.vertonowsky.topic.model.Topic;
 
 public class TopicSerializer {
@@ -24,6 +25,13 @@ public class TopicSerializer {
     public static TopicDto serialize(Topic topic, TopicStatus status, boolean active, boolean blocked) {
         TopicDto dto = serialize(topic, status, active);
         dto.setBlocked(blocked);
+        return dto;
+    }
+
+
+    public static TopicDto serialize(FinishedTopic finishedTopic) {
+        TopicDto dto = serialize(finishedTopic.getTopic());
+        dto.setCompletionDate(finishedTopic.getDate());
         return dto;
     }
 

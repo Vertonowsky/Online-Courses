@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "topics")
 public class Topic {
 
     @Id

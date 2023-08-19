@@ -1,18 +1,54 @@
 package com.example.vertonowsky.topic;
 
+import java.time.OffsetDateTime;
+
 public class TopicDto {
 
-    private Integer id;
-    private Integer index;
-    private String title;
-    private String location;
-    private Integer duration;
-    private String status;
+
     private boolean active;
     private boolean blocked;
+    private OffsetDateTime completionDate;
+    private Integer duration;
+    private Integer id;
+    private Integer index;
+    private String location;
+    private String status;
+    private String title;
 
 
     public TopicDto() {
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public OffsetDateTime getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(OffsetDateTime completionDate) {
+        this.completionDate = completionDate;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 
     public Integer getId() {
@@ -31,14 +67,6 @@ public class TopicDto {
         this.index = index;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -47,20 +75,20 @@ public class TopicDto {
         this.location = location;
     }
 
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String formatDuration() {
@@ -74,19 +102,4 @@ public class TopicDto {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
 }
