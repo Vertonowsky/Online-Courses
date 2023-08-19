@@ -2,26 +2,22 @@ package com.example.vertonowsky.user;
 
 
 import com.example.vertonowsky.avatar.Avatar;
-import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.discount.model.DiscountCodeUsed;
 import com.example.vertonowsky.payment.PaymentHistory;
 import com.example.vertonowsky.role.Role;
 import com.example.vertonowsky.security.RegistrationMethod;
-import com.example.vertonowsky.security.model.CustomOidcUser;
-import com.example.vertonowsky.security.model.CustomUserDetails;
 import com.example.vertonowsky.token.model.PasswordRecoveryToken;
 import com.example.vertonowsky.token.model.VerificationToken;
 import com.example.vertonowsky.topic.model.FinishedTopic;
-import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
 public class User {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +43,7 @@ public class User {
     //Rank rank;
 
     @Column(name="registration_date", nullable = false)
-    private Date registrationDate;
+    private OffsetDateTime registrationDate;
 
 
     @OneToMany(mappedBy = "user")
@@ -95,36 +91,20 @@ public class User {
     }
 
 
-    public static String getEmail(Authentication authentication) {
-        if (authentication.getPrincipal() instanceof CustomUserDetails) return ((CustomUserDetails) authentication.getPrincipal()).getEmail();
-        if (authentication.getPrincipal() instanceof CustomOidcUser)    return ((CustomOidcUser)    authentication.getPrincipal()).getEmail();
-
-        return null;
-    }
-
-    public static boolean isLoggedIn(Authentication authentication) {
-        if (authentication == null) return false;
-        if (authentication.getPrincipal() instanceof CustomOidcUser) return true;
-        if (authentication.getPrincipal() instanceof CustomUserDetails) return true;
-
-        return false;
-    }
-
-    public static boolean hasAuthority(Authentication authentication, String name) {
-        return (authentication.getAuthorities().stream().anyMatch(usr -> usr.getAuthority().equals(name)));
-    }
-
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public RegistrationMethod getRegistrationMethod() {
+        return registrationMethod;
+    }
+
+    public void setRegistrationMethod(RegistrationMethod registrationMethod) {
+        this.registrationMethod = registrationMethod;
     }
 
     public String getEmail() {
@@ -143,7 +123,6 @@ public class User {
         this.password = password;
     }
 
-
     public boolean isVerified() {
         return verified;
     }
@@ -152,28 +131,13 @@ public class User {
         this.verified = verified;
     }
 
-    public Date getRegistrationDate() {
+    public OffsetDateTime getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(OffsetDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
-
-    public List<CourseOwned> getCoursesOwned() {
-        List<CourseOwned> arr = new ArrayList<>(coursesOwned);
-
-        //Sort owned courses by expiry date descending
-        Collections.sort(arr, new Comparator<CourseOwned>() {
-            @Override
-            public int compare(CourseOwned co1, CourseOwned co2) {
-                return co2.getExpiryDate().compareTo(co1.getExpiryDate());
-            }
-        });
-
-        return arr;
-    }
-
 
     public Set<DiscountCodeUsed> getCodes() {
         return codes;
@@ -183,12 +147,8 @@ public class User {
         this.codes = codes;
     }
 
-    public Set<VerificationToken> getVerificationTokens() {
-        return verificationTokens;
-    }
-
-    public void setVerificationTokens(Set<VerificationToken> verificationTokens) {
-        this.verificationTokens = verificationTokens;
+    public Set<CourseOwned> getCoursesOwned() {
+        return coursesOwned;
     }
 
     public void setCoursesOwned(Set<CourseOwned> coursesOwned) {
@@ -203,7 +163,6 @@ public class User {
         this.paymentHistories = paymentHistories;
     }
 
-
     public Set<FinishedTopic> getFinishedTopics() {
         return finishedTopics;
     }
@@ -212,13 +171,12 @@ public class User {
         this.finishedTopics = finishedTopics;
     }
 
-
-    public RegistrationMethod getRegistrationMethod() {
-        return registrationMethod;
+    public Set<VerificationToken> getVerificationTokens() {
+        return verificationTokens;
     }
 
-    public void setRegistrationMethod(RegistrationMethod registrationMethod) {
-        this.registrationMethod = registrationMethod;
+    public void setVerificationTokens(Set<VerificationToken> verificationTokens) {
+        this.verificationTokens = verificationTokens;
     }
 
     public Set<PasswordRecoveryToken> getPasswordRecoveryTokens() {
@@ -229,6 +187,14 @@ public class User {
         this.passwordRecoveryTokens = passwordRecoveryTokens;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public Avatar getAvatar() {
         return avatar;
     }
@@ -236,30 +202,6 @@ public class User {
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
-
-    public boolean isCourseOwnedAndValid(Course course) {
-        for (CourseOwned courseOwned : coursesOwned) {
-            if (!courseOwned.getCourse().equals(course)) continue;
-            if (courseOwned.getExpiryDate().compareTo(new Date(System.currentTimeMillis())) < 0) continue;
-            return true;
-        }
-        return false;
-    }
-
-
-    public boolean isTopicFinished(Integer topicId) {
-        for (FinishedTopic ft : finishedTopics) {
-            if (ft.getTopic().getId().equals((topicId)))
-                return true;
-        }
-        return false;
-    }
-
-
-
-
-
-
 
     @Override
     public boolean equals(Object o) {
