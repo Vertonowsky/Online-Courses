@@ -10,7 +10,8 @@ import com.example.vertonowsky.user.UserDto;
 import com.example.vertonowsky.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,14 +52,13 @@ public abstract class TokenService<T extends Token, S extends TokenRepository<T>
         // Check if user has recently sent request for resending email
         Optional<T> token = tokenRepository.findByUserAndValid(user, true);
         if (token.isPresent()) {
-            Date now = new Date(System.currentTimeMillis());
-            long duration = (now.getTime() - token.get().getCreationDate().getTime()) / 1000;
+            OffsetDateTime now = OffsetDateTime.now();
+            Duration duration = Duration.between(token.get().getCreationDate(), now);
+            long seconds = duration.getSeconds();
             // If delay is smaller than 120 seconds
-            if (duration < 120) throw new LowDelayException(String.format("Odczekaj %d sekund!", 120 - duration));
+            if (seconds < 120) throw new LowDelayException(String.format("Odczekaj %d sekund!", 120 - seconds));
         }
     }
-
-
 
 
     public void resendEmail(String email) throws UserNotFoundException, LowDelayException, InvalidEmailFormatException, UserVerificationException {
@@ -87,7 +87,7 @@ public abstract class TokenService<T extends Token, S extends TokenRepository<T>
         if (optionalToken.isEmpty()) throw new TokenNotFoundException("Nie odnaleziono tokenu.");
 
         T token = optionalToken.get();
-        if (!token.isValid() || token.getExpiryDate().getTime() <= System.currentTimeMillis()) throw new TokenExpiredException("Okres ważności tokenu uległ wygaśnięciu.");
+        if (!token.isValid() || OffsetDateTime.now().isAfter(token.getExpiryDate())) throw new TokenExpiredException("Okres ważności tokenu uległ wygaśnięciu.");
 
         return token;
     }
@@ -114,18 +114,15 @@ public abstract class TokenService<T extends Token, S extends TokenRepository<T>
         // Check if user has recently sent request for resending email
         Optional<T> token = tokenRepository.findByUserAndValid(user.get(), true);
         if (token.isPresent()) {
-            Date now = new Date(System.currentTimeMillis());
-            long duration = (now.getTime() - token.get().getCreationDate().getTime()) / 1000;
+            OffsetDateTime now = OffsetDateTime.now();
+            Duration duration = Duration.between(token.get().getCreationDate(), now);
+            long seconds = duration.getSeconds();
             // If delay is smaller than 120 seconds
-            if (duration > 120) return 0;
+            if (seconds > 120) return 0;
 
-            return 120 - duration;
+            return 120 - seconds;
         }
         return 0;
     }
-
-
-
-
 
 }

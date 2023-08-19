@@ -7,15 +7,12 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "password_recovery_tokens")
+@Table(name = "password_recovery_token")
 public class PasswordRecoveryToken extends Token {
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private RecoverPasswordStage recoverPasswordStage = RecoverPasswordStage.FRESH;
-
-
 
     public RecoverPasswordStage getRecoverPasswordStage() {
         return recoverPasswordStage;
@@ -24,8 +21,6 @@ public class PasswordRecoveryToken extends Token {
     public void setRecoverPasswordStage(RecoverPasswordStage recoverPasswordStage) {
         this.recoverPasswordStage = recoverPasswordStage;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -38,4 +33,5 @@ public class PasswordRecoveryToken extends Token {
     public int hashCode() {
         return Objects.hash(id, user, token, creationDate, expiryDate, valid, recoverPasswordStage);
     }
+
 }

@@ -6,7 +6,6 @@ public class PasswordRecoverDto {
 
     private UUID token;
     private String password;
-
     private String passwordRepeat;
 
 
@@ -45,4 +44,5 @@ public class PasswordRecoverDto {
     public void setPasswordRepeat(String passwordRepeat) {
         this.passwordRepeat = passwordRepeat;
     }
+
 }
