@@ -3,6 +3,8 @@ package com.example.vertonowsky.avatar;
 import com.example.vertonowsky.exception.UserNotFoundException;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserInfoDto;
+import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,9 +23,11 @@ public class AvatarController {
     @Value("${server.url}")
     private String serverUrl;
     private final AvatarService avatarService;
+    private final UserService userService;
 
-    public AvatarController(AvatarService avatarService) {
+    public AvatarController(AvatarService avatarService, UserService userService) {
         this.avatarService = avatarService;
+        this.userService = userService;
     }
 
     @GetMapping("list")
@@ -41,9 +45,10 @@ public class AvatarController {
     @GetMapping("detail")
     public ModelAndView detail(@RequestParam AvatarDetailType type, Model model) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = User.getEmail(auth);
+        User user = userService.get(auth, UserQueryType.ALL);
+        if (user == null) return null;
         UserInfoDto userInfoDto = new UserInfoDto();
-        AvatarDto avatarDto = AvatarSerializer.serialize(avatarService.findByUser(email));
+        AvatarDto avatarDto = AvatarSerializer.serialize(user.getAvatar());
         userInfoDto.setAvatar(avatarDto);
         model.addAttribute("serverUrl", serverUrl);
         model.addAttribute("user", userInfoDto);

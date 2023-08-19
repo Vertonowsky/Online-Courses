@@ -15,12 +15,15 @@ import java.util.Set;
 public class AvatarService {
 
     private final AvatarRepository avatarRepository;
-
     private final UserRepository userRepository;
 
     public AvatarService(AvatarRepository avatarRepository, UserRepository userRepository) {
         this.avatarRepository = avatarRepository;
         this.userRepository = userRepository;
+    }
+
+    public Avatar get(Integer id) {
+        return avatarRepository.findById(id).orElse(null);
     }
 
     public Set<Avatar> list() {

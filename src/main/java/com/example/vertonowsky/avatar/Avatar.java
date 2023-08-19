@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "avatar")
 public class Avatar {
 
 
@@ -25,6 +24,8 @@ public class Avatar {
     @OneToMany(mappedBy = "avatar")
     @JsonIgnore
     private Set<User> users;
+
+
 
 
     public Integer getId() {

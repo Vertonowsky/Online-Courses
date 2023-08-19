@@ -6,7 +6,7 @@ import com.example.vertonowsky.security.model.CustomOidcUser;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserDto;
 import com.example.vertonowsky.user.UserRepository;
-import com.example.vertonowsky.user.service.IUserService;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -20,10 +20,10 @@ import java.util.Optional;
 @Service
 public class MyOidcUserService extends OidcUserService {
 
-    private final IUserService userService;
+    private final UserService userService;
     private final UserRepository userRepository;
 
-    public MyOidcUserService(IUserService userService, UserRepository userRepository) {
+    public MyOidcUserService(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
     }
