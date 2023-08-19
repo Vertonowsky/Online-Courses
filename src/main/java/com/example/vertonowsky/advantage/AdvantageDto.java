@@ -1,38 +1,19 @@
 package com.example.vertonowsky.advantage;
 
-import com.example.vertonowsky.course.model.Course;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+public class AdvantageDto {
 
-import javax.persistence.*;
-
-@Entity
-public class Advantage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "advantage_id")
     private Integer id;
-
-    @Column(name = "advantage_index")
     private Integer index;
-
-    @Column(length = 150)
     private String title;
-
     private boolean premium;
-
-    @Column(name = "type", columnDefinition = "varchar(30) default 'DEFAULT'")
-    @Enumerated(EnumType.STRING)
     private AdvantageType advantageType;
-
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    @JsonIgnore
-    private Course course;
-
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getIndex() {
@@ -63,11 +44,8 @@ public class Advantage {
         return advantageType;
     }
 
-    public Course getCourse() {
-        return course;
+    public void setAdvantageType(AdvantageType advantageType) {
+        this.advantageType = advantageType;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
 }
