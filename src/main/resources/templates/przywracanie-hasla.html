@@ -34,7 +34,7 @@
             <div class="right">
 
 
-                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null || progress == T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED}">
+                <div id="auth_info" class="window no_data_found" th:if="${criticalError != null or progress == T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED}">
                     <th:block th:if="${progress == T(com.example.vertonowsky.token.RecoverPasswordStage).PASSWORD_CHANGED}">
 
                         <th:block th:insert="dependencies :: noDataFound('fas fa-check-circle', 'Pomyślnie zmieniono hasło!', null)"></th:block>

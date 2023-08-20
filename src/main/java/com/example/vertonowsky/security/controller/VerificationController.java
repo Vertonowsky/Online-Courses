@@ -34,7 +34,6 @@ public class VerificationController {
 
     @GetMapping("/auth/verify")
     public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
-        //TODO Fix - user can still enter the verification page after he is logged in
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userService.get(auth, UserQueryType.ALL) != null) return new ModelAndView( "redirect:/");
 

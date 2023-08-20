@@ -8,6 +8,8 @@ import com.example.vertonowsky.chapter.ChapterDto;
 import com.example.vertonowsky.chapter.ChapterSerializer;
 import com.example.vertonowsky.chapter.CourseInfoDto;
 import com.example.vertonowsky.course.model.Course;
+import com.example.vertonowsky.course.model.CourseOwned;
+import com.example.vertonowsky.course.repository.CourseOwnedRepository;
 import com.example.vertonowsky.course.repository.CourseRepository;
 import com.example.vertonowsky.topic.TopicDto;
 import com.example.vertonowsky.topic.TopicSerializer;
@@ -23,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
+import javax.transaction.Transactional;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,11 +39,13 @@ import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseOwnedRepository courseOwnedRepository;
     private final TopicService topicService;
     private final UserService userService;
 
-    public CourseService(CourseRepository courseRepository, TopicService topicService, UserService userService) {
+    public CourseService(CourseRepository courseRepository, CourseOwnedRepository courseOwnedRepository, TopicService topicService, UserService userService) {
         this.courseRepository = courseRepository;
+        this.courseOwnedRepository = courseOwnedRepository;
         this.topicService = topicService;
         this.userService = userService;
     }
@@ -255,6 +261,24 @@ public class CourseService {
                 advantage.setTitle(title);
             }
         }
+    }
+
+
+    @Transactional
+    public void updateExistingCourseExpiration(User user, Course course, OffsetDateTime since, OffsetDateTime till) {
+        courseOwnedRepository.updateExistingCourseExpiration(user, course, since, till);
+    }
+
+
+    public void newCourseOwned(User user, Course course, OffsetDateTime since, OffsetDateTime till) {
+        CourseOwned courseOwned = new CourseOwned();
+        courseOwned.setStatus(CourseStatus.NEW);
+        courseOwned.setBuyDate(since);
+        courseOwned.setExpiryDate(till);
+        courseOwned.setCourse(course);
+        courseOwned.setUser(user);
+
+        courseOwnedRepository.save(courseOwned);
     }
 
 
