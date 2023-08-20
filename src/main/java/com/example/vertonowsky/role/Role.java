@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id
@@ -17,15 +16,12 @@ public class Role {
     @Column(name = "role_id")
     private int id;
 
-
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
-
 
     @OneToMany(mappedBy = "role")
     @JsonIgnore
     private Set<User> users;
-
 
 
     public Role() {
@@ -34,7 +30,6 @@ public class Role {
     public Role(RoleType roleType) {
         this.roleType = roleType;
     }
-
 
 
 
@@ -62,8 +57,7 @@ public class Role {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Role)) return false;
-        Role role = (Role) o;
+        if (!(o instanceof Role role)) return false;
         return id == role.id && roleType == role.roleType && Objects.equals(users, role.users);
     }
 

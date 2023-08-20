@@ -4,7 +4,8 @@ package com.example.vertonowsky.security.controller;
 import com.example.vertonowsky.Regex;
 import com.example.vertonowsky.token.VerificationType;
 import com.example.vertonowsky.token.service.VerificationTokenService;
-import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,14 +25,19 @@ public class VerificationController {
 
     private final VerificationTokenService verificationTokenService;
 
-    public VerificationController(VerificationTokenService verificationTokenService) {
+    private final UserService userService;
+
+    public VerificationController(VerificationTokenService verificationTokenService, UserService userService) {
         this.verificationTokenService = verificationTokenService;
+        this.userService = userService;
     }
-
-
 
     @GetMapping("/auth/verify")
     public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
+        //TODO Fix - user can still enter the verification page after he is logged in
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userService.get(auth, UserQueryType.ALL) != null) return new ModelAndView( "redirect:/");
+
         try {
 
             verificationTokenService.verifyToken(tokenUuid);
@@ -72,7 +78,7 @@ public class VerificationController {
     public ModelAndView showVerifyForm(@RequestParam(value = "email") String email, @RequestParam(value = "verificationType") Integer verificationType, Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth) || !Regex.EMAIL_PATTERN.matches(email)) return new ModelAndView( "redirect:/");
         if (!VerificationType.isValidIndex(verificationType)) return new ModelAndView( "redirect:/");
 
         model.addAttribute("email", email);

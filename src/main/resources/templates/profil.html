@@ -43,23 +43,23 @@
                         <p id="credentials"> [[${#authentication.getPrincipal().getEmail()}]] </p>
 
 
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastDayPercentage}"></div>  <!-- Percentage progress through the same day. -->
-                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${lastDay} + ']'"></span>
+                        <div class="progress_background" th:with="progressInfo = ${recentProgress[0]}">
+                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through the same day. -->
+                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${progressInfo.count} + ']'"></span>
                             <span class="progresss_target">1 kurs</span>
                         </div>
 
 
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastWeekPercentage}"></div>  <!-- Percentage progress through whole week. -->
-                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${lastWeek} + ']'"></span>
+                        <div class="progress_background" th:with="progressInfo = ${recentProgress[1]}">
+                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole week. -->
+                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${progressInfo.count} + ']'"></span>
                             <span class="progresss_target">7 kursów</span>
                         </div>
 
 
-                        <div class="progress_background">
-                            <div class="progress_fill" th:attr="data-done=${lastMonthPercentage}"></div>  <!-- Percentage progress through whole month. -->
-                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${lastMonth} + ']'"></span>
+                        <div class="progress_background" th:with="progressInfo = ${recentProgress[2]}">
+                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole month. -->
+                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${progressInfo.count} + ']'"></span>
                             <span class="progresss_target">30 kursów</span>
                         </div>
                     </div>
@@ -106,19 +106,19 @@
 
                         <div class="left">
                             <div class="photo">
-                                <img alt="Miniaturka kursu" th:src="@{'/images/course_photo_' + ${ownedCourseDto.course.id} + '.png'}"/>
+                                <img alt="Miniaturka kursu" th:src="@{'/images/course_photo_' + ${ownedCourseDto.courseId} + '.png'}"/>
                             </div>
                             <div class="title_with_shadow_hidden">
-                                <span class="tit_text" th:inline="text"> [[${ownedCourseDto.course.name}]] <div class="tit_bck"></div></span>
+                                <span class="tit_text" th:inline="text"> [[${ownedCourseDto.name}]] <div class="tit_bck"></div></span>
                             </div>
                             
-                            <p class="category" th:text="'[' + ${ownedCourseDto.course.getCategoryAsString()} + ']'"></p>
+                            <p class="categoryType" th:text="'[' + ${ownedCourseDto.getCategoryType()} + ']'"></p>
                         </div>
 
                         <div class="right">
                             <div class="description">
                                 <div class="title_with_shadow" >
-                                    <span class="tit_text" th:inline="text"> [[${ownedCourseDto.course.name}]] <div class="tit_bck"></div></span>
+                                    <span class="tit_text" th:inline="text"> [[${ownedCourseDto.name}]] <div class="tit_bck"></div></span>
                                 </div>
 
                                 <div class="linear_buttons">
@@ -126,13 +126,13 @@
                                         <div class="progress_fill" th:attr="data-done=${ownedCourseDto.percentage}"></div>
                                         <span class="progresss_info" th:text="'Ukończono ' + ${ownedCourseDto.percentage} + '%'"></span>
                                     </div>
-                                    <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourseDto.course.id}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourseDto.courseId}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="expires" th:if="${ownedCourseDto.expiryDate.after(#dates.createNow())}" th:text="'Ważny do: ' + ${#dates.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
-                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.before(#dates.createNow())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#dates.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')}]]r</div>
+                        <div class="expires" th:if="${ownedCourseDto.expiryDate.isAfter(T(java.time.OffsetDateTime).now())}" th:text="'Ważny do: ' + ${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
+                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.isBefore(T(java.time.OffsetDateTime).now())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')}]]r</div>
 
                     </div>
                 </div>
@@ -146,12 +146,12 @@
                     <!--
                         No Data Found container
                     -->
-                    <div th:if="${#lists.isEmpty(paymentHistory)}" id="no_payment_history_found" class="no_data_found">
+                    <div th:if="${#lists.isEmpty(user.paymentHistories)}" id="no_payment_history_found" class="window no_data_found">
                         <th:block th:insert="dependencies :: noDataFound('fas fa-hourglass-half', null, 'Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!')"></th:block>
                     </div>
 
 
-                    <div class="activity_section" th:if="${!#lists.isEmpty(paymentHistory)}">
+                    <div class="activity_section" th:if="${!#lists.isEmpty(user.paymentHistories)}">
 
                         <div class="activity_header">
                             <p class="lp detail">Lp. <p>
@@ -160,17 +160,16 @@
                             <p class="price detail">Cena</p>
                         </div>
 
-                        <div class="activity" th:each="payment, iteration : ${paymentHistory}">
+                        <div class="activity" th:each="payment, iteration : ${user.paymentHistories}">
                             <p class="lp detail"><span th:text="'#' + ${iteration.count}"></span></p>
-                            <p class="date detail" th:text="${#dates.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
-                            <p class="title detail" th:text="${payment.course.name}"></p>
+                            <p class="date detail" th:text="${#temporals.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
+                            <p class="title detail" th:text="${payment.courseName}"></p>
                             <p class="price detail" th:text="${payment.getAmountInt()} + ' zł'"></p>
                         </div>
 
                     </div>
 
                 </div>
-
 
             </div>
 
@@ -188,13 +187,13 @@
                     <h2 class="title">Wybierz swój avatar:</h2>
 
                     <div id="avatar_view">
-                        <dic class="avatar_container" th:fragment="avatar_container" th:if="${avatars != null}">
+                        <div class="avatar_container" th:fragment="avatar_container" th:if="${avatars != null}">
 
                             <div class="avatar" th:each="avatar : ${avatars}" th:data-id="${avatar.id}">
                                 <img th:alt="${avatar.name}" th:src="${avatar.url}">
                             </div>
 
-                        </dic>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -280,7 +279,7 @@
             modal_avatar.classList.remove("active");
         }
 
-        // When the user clicks anywhere outside of the modal, close it
+        // When the user clicks anywhere outside the modal, close it
         window.addEventListener("click", function(event) {
             if (event.target == modal_avatar) {
                 closeModal();

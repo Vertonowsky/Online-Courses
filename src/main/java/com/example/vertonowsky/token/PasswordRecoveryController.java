@@ -2,7 +2,7 @@ package com.example.vertonowsky.token;
 
 import com.example.vertonowsky.exception.*;
 import com.example.vertonowsky.token.service.PasswordRecoveryTokenService;
-import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -15,19 +15,20 @@ import java.util.HashMap;
 @RestController
 public class PasswordRecoveryController {
 
+    private final UserService userService;
 
     private final PasswordRecoveryTokenService passwordRecoveryTokenService;
 
-    public PasswordRecoveryController(PasswordRecoveryTokenService passwordRecoveryTokenService) {
+    public PasswordRecoveryController(UserService userService, PasswordRecoveryTokenService passwordRecoveryTokenService) {
+        this.userService = userService;
         this.passwordRecoveryTokenService = passwordRecoveryTokenService;
     }
-
 
     @GetMapping("/przywracanie-hasla")
     public ModelAndView showPasswordRecoveryForm(Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         model.addAttribute("progress", RecoverPasswordStage.FRESH);
         return new ModelAndView( "przywracanie-hasla");
@@ -38,7 +39,7 @@ public class PasswordRecoveryController {
     @PostMapping("/auth/startPasswordRecoveryProcess")
     public ModelAndView startRecoveryProcess(@RequestParam(value = "email") String email, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         try {
 
@@ -61,7 +62,7 @@ public class PasswordRecoveryController {
     @GetMapping("/auth/recoverPassword")
     public ModelAndView verifyPasswordToken(Model model, @RequestParam(value = "token") String tokenUuid) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         try {
 
@@ -84,7 +85,7 @@ public class PasswordRecoveryController {
     @PostMapping("/auth/resendPasswordRecoveryEmail")
     public HashMap<String, Object> resendPasswordRecoveryEmail(@RequestParam(value = "email") String email) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) {
+        if (userService.isLoggedIn(auth)) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("success", false);
             map.put("message", "Błąd: Strona niedostępna dla zalogowanych użytkowników.");
@@ -113,7 +114,7 @@ public class PasswordRecoveryController {
     @PostMapping("/auth/confirmPasswordChange")
     public ModelAndView confirmPasswordChange(Model model, @ModelAttribute("passwordDto") PasswordRecoverDto passwordRecoverDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         try {
 

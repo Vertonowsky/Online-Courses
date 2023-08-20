@@ -2,7 +2,6 @@ package com.example.vertonowsky.security.controller;
 
 
 import com.example.vertonowsky.token.VerificationType;
-import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserDto;
 import com.example.vertonowsky.user.service.UserService;
 import org.springframework.core.ResolvableType;
@@ -22,22 +21,19 @@ import java.util.Arrays;
 @RestController
 public class AuthController {
 
-    private final UserService userService;
     private final ClientRegistrationRepository clientRegistrationRepository;
+    private final UserService userService;
 
-
-    public AuthController(UserService userService, ClientRegistrationRepository clientRegistrationRepository) {
-        this.userService = userService;
+    public AuthController(ClientRegistrationRepository clientRegistrationRepository, UserService userService) {
         this.clientRegistrationRepository = clientRegistrationRepository;
+        this.userService = userService;
     }
-
-
 
     @GetMapping("/logowanie")
     public ModelAndView showLoginForm(@RequestParam(value = "registered", required = false) boolean registered) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         ModelAndView mav = new ModelAndView( "logowanie");
         mav.addObject("googleUrl", getGoogleLoginUrl());
@@ -50,7 +46,7 @@ public class AuthController {
     public ModelAndView showLoginForm() {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         ModelAndView mav = new ModelAndView( "logowanie");
         mav.addObject("googleUrl", getGoogleLoginUrl());
@@ -63,7 +59,7 @@ public class AuthController {
     public ModelAndView showRegisterForm(Model model) {
         // Check if user is already logged in.
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
         UserDto userDto = new UserDto();
         model.addAttribute("user", userDto);

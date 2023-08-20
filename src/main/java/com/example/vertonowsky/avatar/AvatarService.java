@@ -15,7 +15,6 @@ import java.util.Set;
 public class AvatarService {
 
     private final AvatarRepository avatarRepository;
-
     private final UserRepository userRepository;
 
     public AvatarService(AvatarRepository avatarRepository, UserRepository userRepository) {
@@ -23,13 +22,12 @@ public class AvatarService {
         this.userRepository = userRepository;
     }
 
-    public Set<Avatar> list() {
-        return avatarRepository.findAll();
+    public Avatar get(Integer id) {
+        return avatarRepository.findById(id).orElse(null);
     }
 
-    public Avatar findByUser(String email) throws UserNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
-        return avatarRepository.findAvatarByUser(user).orElse(null);
+    public Set<Avatar> list() {
+        return avatarRepository.findAll();
     }
 
     public void change(Authentication auth, String email, Integer avatarId) throws UserNotFoundException {

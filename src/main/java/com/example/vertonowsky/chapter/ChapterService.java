@@ -1,30 +1,37 @@
 package com.example.vertonowsky.chapter;
 
 import com.example.vertonowsky.Regex;
+import com.example.vertonowsky.course.CourseQueryType;
+import com.example.vertonowsky.course.CourseService;
 import com.example.vertonowsky.course.model.Course;
-import com.example.vertonowsky.course.repository.CourseRepository;
 import com.example.vertonowsky.exception.ChapterNotFoundException;
 import com.example.vertonowsky.exception.CourseNotFoundException;
 import com.example.vertonowsky.exception.InvalidTextFormatException;
 import com.example.vertonowsky.topic.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.HashSet;
 
 @Service
 public class ChapterService {
 
-    private final TopicRepository topicRepository;
     private final ChapterRepository chapterRepository;
-    private final CourseRepository courseRepository;
+    private final TopicRepository topicRepository;
+    private final CourseService courseService;
 
-
-    public ChapterService(TopicRepository topicRepository, ChapterRepository chapterRepository, CourseRepository courseRepository) {
-        this.topicRepository = topicRepository;
+    public ChapterService(ChapterRepository chapterRepository, TopicRepository topicRepository, CourseService courseService) {
         this.chapterRepository = chapterRepository;
-        this.courseRepository = courseRepository;
+        this.topicRepository = topicRepository;
+        this.courseService = courseService;
     }
 
+    public Chapter get(Integer id) {
+        return chapterRepository.findById(id).orElse(null);
+    }
+
+    public Chapter getByTopicId(Integer topicId) {
+        return chapterRepository.findByTopicId(topicId).orElse(null);
+    }
 
     /**
      * Add a new chapter to the specified course and save it into the database
@@ -36,9 +43,8 @@ public class ChapterService {
      * @throws InvalidTextFormatException thrown when user provides banned characters
      */
     public void createNewChapter(Integer courseId, String title, Integer index) throws CourseNotFoundException, InvalidTextFormatException {
-
-        Optional<Course> course = courseRepository.findById(courseId);
-        if (course.isEmpty())
+        Course course = courseService.get(courseId, CourseQueryType.BASE);
+        if (course == null)
             throw new CourseNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
 
         if (!Regex.POLISH_TEXT_PATTERN.matches(title))
@@ -46,7 +52,7 @@ public class ChapterService {
 
 
         Chapter chapter = new Chapter();
-        chapter.setCourse(course.get());
+        chapter.setCourse(course);
         chapter.setIndex(index);
         chapter.setTitle(title);
         chapterRepository.save(chapter);
@@ -60,12 +66,13 @@ public class ChapterService {
      * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
      */
     public void deleteChapter(Integer chapterId) throws ChapterNotFoundException {
-        Optional<Chapter> chapter = chapterRepository.findById(chapterId);
-        if (chapter.isEmpty())
+        Chapter chapter = get(chapterId);
+        if (chapter == null)
             throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
 
-        topicRepository.deleteAll(chapter.get().getTopics());
-        chapterRepository.delete(chapter.get());
+        topicRepository.deleteAll(chapter.getTopics());
+        chapter.setTopics(new HashSet<>());
+        chapterRepository.delete(chapter);
     }
 
 
@@ -79,21 +86,17 @@ public class ChapterService {
      * @throws ChapterNotFoundException thrown when chapter with specified id doesn't exist
      */
     public void editChapter(Integer chapterId, Integer index, String title) throws InvalidTextFormatException, ChapterNotFoundException {
-        Optional<Chapter> optionalChapter = chapterRepository.findById(chapterId);
-        if (optionalChapter.isEmpty())
+        Chapter chapter = get(chapterId);
+        if (chapter == null)
             throw new ChapterNotFoundException("Błąd: Nie odnaleziono podanego rozdziału.");
 
         if (!Regex.POLISH_TEXT_PATTERN.matches(title))
             throw new InvalidTextFormatException("Błąd: Podany tutuł zawiera niedozwolone znaki.");
 
 
-        Chapter chapter = optionalChapter.get();
         chapter.setTitle(title);
         chapter.setIndex(index);
         chapterRepository.save(chapter);
     }
-
-
-
 
 }

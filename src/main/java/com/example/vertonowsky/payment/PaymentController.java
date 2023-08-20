@@ -1,6 +1,6 @@
 package com.example.vertonowsky.payment;
 
-import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,12 +16,12 @@ import java.util.Map;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final UserService userService;
 
-
-    public PaymentController(PaymentService paymentService) {
+    public PaymentController(PaymentService paymentService, UserService userService) {
         this.paymentService = paymentService;
+        this.userService = userService;
     }
-
 
     /**
      * Add the discount code to the current transaction
@@ -33,7 +33,7 @@ public class PaymentController {
     @PostMapping("/purchase/useDiscountCode")
     public Map<String, Object> useDiscountCode(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName") String codeName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth)) {
+        if (!userService.isLoggedIn(auth)) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
             map.put("message", "Błąd: Kody rabatowe dostępne są jedynie dla zalogowanych użytkowników.");
@@ -43,7 +43,7 @@ public class PaymentController {
         try {
 
             // Validate data given by user
-            return paymentService.useDiscoundCode(User.getEmail(auth), courseId, codeName, true);
+            return paymentService.useDiscoundCode(userService.getEmail(auth), courseId, codeName, true);
 
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
@@ -64,7 +64,7 @@ public class PaymentController {
     @PostMapping("/purchase/verifyPayment")
     public Map<String, Object> finalizePayment(@RequestParam(value = "courseId") Integer courseId, @RequestParam(value = "codeName", defaultValue = "") String codeName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth)) {
+        if (!userService.isLoggedIn(auth)) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
             map.put("message", "Błąd: Zakup kursu możliwy jedynie dla zalogowanych użytkowników.");
@@ -74,7 +74,7 @@ public class PaymentController {
         try {
 
             // Validate data given by user
-            return paymentService.finalizePayment(User.getEmail(auth), courseId, codeName, !codeName.isEmpty());
+            return paymentService.finalizePayment(userService.getEmail(auth), courseId, codeName, !codeName.isEmpty());
 
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();

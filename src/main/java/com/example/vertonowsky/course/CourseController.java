@@ -1,19 +1,11 @@
 package com.example.vertonowsky.course;
 
-import com.example.vertonowsky.chapter.Chapter;
-import com.example.vertonowsky.chapter.ChapterDto;
-import com.example.vertonowsky.course.dto.CourseListDto;
 import com.example.vertonowsky.course.model.Course;
-import com.example.vertonowsky.course.model.CourseOwned;
-import com.example.vertonowsky.course.repository.CourseRepository;
-import com.example.vertonowsky.topic.TopicDto;
 import com.example.vertonowsky.topic.TopicService;
-import com.example.vertonowsky.topic.TopicStatus;
-import com.example.vertonowsky.topic.model.Topic;
 import com.example.vertonowsky.user.User;
-import com.example.vertonowsky.user.UserRepository;
+import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -22,35 +14,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.*;
 
 @RestController
 public class CourseController {
 
-
     @Value("${course.videos.path}")
     private String courseVideoesPath;
-
-    private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
     private final CourseService courseService;
     private final TopicService topicService;
+    private final UserService userService;
 
-
-    public CourseController(UserRepository userRepository, CourseService courseService, TopicService topicService, CourseRepository courseRepository) {
-        this.userRepository = userRepository;
+    public CourseController(CourseService courseService, TopicService topicService, UserService userService) {
         this.courseService = courseService;
         this.topicService = topicService;
-        this.courseRepository = courseRepository;
+        this.userService = userService;
     }
-
 
     /*
-    @GetMapping("/list2")
-    public Iterable<Course> getCourses() {
-        return courseRepository.findAll();
-    }
-
     @PostMapping("/add2")
     public String addCourse() {
         Course course = new Course("Egzamin Ósmoklasisty",
@@ -110,18 +96,18 @@ public class CourseController {
 
 
     /**
-     * Opens page which contains all of the available courses
+     * Opens page which contains all the available courses
      *
      * @param model instance of the Model class. Used to pass attributes to the end user
      * @return HTML page
      */
     @GetMapping("/lista-kursow")
     public ModelAndView courseListView(Model model) {
-        model.addAttribute("subjects", courseRepository.findAllTypes());
-        model.addAttribute("categories", courseRepository.findAllCategories());
+        List<CourseDto> courses = courseService.getCoursesWithCriteria(new LinkedList<>(), new LinkedList<>(), 0); // limit = 0, means  there is no limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), null);
 
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is no limit for course count
-        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), new ArrayList<>());
+        model.addAttribute("subjects", courseService.listTypes());
+        model.addAttribute("categories", courseService.listCategories());
         model.addAttribute("topPanel", true);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
         model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
@@ -143,15 +129,9 @@ public class CourseController {
     @GetMapping("/api/courses/list")
     public ModelAndView getCourseInfo(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
+        List<CourseDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
 
-        if (limit < 0) limit = 0;
-        List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
-        List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
-        categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
-
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
         model.addAttribute("courses", courses);
-
         return new ModelAndView("index :: courses_data");
     }
 
@@ -160,17 +140,11 @@ public class CourseController {
     @GetMapping("/api/courses/top-panel")
     public ModelAndView getCourseTopPanel(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
+        List<CourseDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
+        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), courseService.convertCategoryParamList(mapper, categoryFilters));
 
-        if (limit < 0) limit = 0;
-        List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
-        List<String> categoryParamList = mapper.readValue(categoryFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
-        categoryParamList.replaceAll(String::toUpperCase); //make every string contain only big characters
-
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(typeParamList, categoryParamList, limit); // limit = 0, means  there is no limit for course count
-        HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), categoryParamList);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
         model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
-
         return new ModelAndView("index :: top_panel");
     }
 
@@ -189,19 +163,18 @@ public class CourseController {
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         // INVALID DATA, redirect to index page.
         if (id < 1) return new ModelAndView("redirect:/");
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isEmpty()) return new ModelAndView("redirect:/");
+        Course course = courseService.get(id);
+        if (course == null) return new ModelAndView("redirect:/");
 
         // Check if user is logged in
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (User.isLoggedIn(auth)) {
-            Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
-            if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
-        }
+        User user = userService.get(auth, UserQueryType.ALL);
 
-        model.addAttribute("loggedIn", User.isLoggedIn(auth));
-        model.addAttribute("course", course.get());
-        model.addAttribute("topics", null);
+        CourseDto courseDto = CourseSerializer.serialize(course, BASE, ADVANTAGES, CHAPTERS, PRICE);
+        courseService.calculateAdvantages(courseDto);
+
+        model.addAttribute("loggedIn", userService.isLoggedIn(user));
+        model.addAttribute("course", courseDto);
         return new ModelAndView("wyswietl");
     }
 
@@ -221,91 +194,45 @@ public class CourseController {
         // Check if data is valid
         if (courseId < 1 || topicId != null && topicId < 1) return new ModelAndView("redirect:/");
 
-        Optional<Course> optionalCourse = courseRepository.findById(courseId);
-        if (optionalCourse.isEmpty()) return new ModelAndView("redirect:/");
-
-        Course course = optionalCourse.get();
-        Topic selectedTopic = (topicId == null ? course.getFirstTopic() : course.getTopicById(topicId));
-        if (selectedTopic == null) return new ModelAndView("redirect:/");
-
+        Course course = courseService.get(courseId, CourseQueryType.CHAPTERS);
+        if (course == null) return new ModelAndView("redirect:/");
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-        if (User.isLoggedIn(auth)) {
-            Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
-            if (optionalUser.isPresent()) user = optionalUser.get();
-        }
+        User user = userService.get(auth, UserQueryType.ALL);
 
-        List<ChapterDto> chapterDtoList = new ArrayList<>();
-        int counter = 0;
-        boolean selectedTopicFinished = false; //mark if active topic has been finished
-        for (Chapter ch : course.getChapters()) {
-            List<TopicDto> topicDtoList = new ArrayList<>();
-            for (Topic t : ch.getTopics()) {
-
-                boolean blocked = false;  //refers to current topic status (is it blocked?)
-                if (user != null) {
-                    if (isCourseStillValid(user, course)) {
-                        TopicStatus status = TopicStatus.AVAILABLE;
-                        if (user.isTopicFinished(t.getId()))
-                            status = TopicStatus.FINISHED;
-
-                        if (t.equals(selectedTopic)) {
-                            topicDtoList.add(new TopicDto(t, status, true));  // true as last parameter means its active topic
-                            if (status == TopicStatus.FINISHED)
-                                selectedTopicFinished = true;
-                        } else
-                            topicDtoList.add(new TopicDto(t, status, false)); // false means it's not currently active topic
-                    }
-                }
-
-                if (user == null || (user != null && !isCourseStillValid(user, course))) {
-
-                    if (counter < 3) {
-                        if (t.equals(selectedTopic))
-                            topicDtoList.add(new TopicDto(t, TopicStatus.AVAILABLE, true));
-                        else
-                            topicDtoList.add(new TopicDto(t, TopicStatus.AVAILABLE, false));
-
-                    } else {
-                        topicDtoList.add(new TopicDto(t, TopicStatus.BLOCKED, false, true));
-                        blocked = true;
-                    }
-
-                }
-                counter++;
-
-                //Check if user has permission to access specified topic
-                if (t.equals(selectedTopic)) {
-                    if (blocked) return new ModelAndView("redirect:/");
-                }
-            }
-            chapterDtoList.add(new ChapterDto(topicDtoList, ch));
-        }
-
-
-        model.addAttribute("loggedIn", User.isLoggedIn(auth));
+        model.addAttribute("loggedIn", userService.isLoggedIn(user));
         model.addAttribute("videosPath", courseVideoesPath);
         model.addAttribute("courseId", courseId);
-        model.addAttribute("courseOwned", (user != null && user.isCourseOwnedAndValid(course)));
-        model.addAttribute("course", course);
-        model.addAttribute("topic", selectedTopic);
-        model.addAttribute("selectedTopicFinished", selectedTopicFinished);
-        model.addAttribute("data", chapterDtoList);
+        model.addAttribute("courseOwned", (user != null && userService.isCourseValid(user, course)));
+        model.addAttribute("data", courseService.getDetailedCourseInfo(user, course, topicId));
 
         return new ModelAndView("kurs");
     }
 
+
+
+    @GetMapping("/api/course/details/{courseId}")
+    public Course getDetails(@PathVariable("courseId") Integer courseId) {
+        // Check if data is valid
+        if (courseId < 1) return null;
+
+        Course course = courseService.get(courseId);
+        if (course == null) return null;
+
+        return course;
+    }
 
     /**
      * Mark video as already watched / finished
      *
      * @param topicId identifier of the topic
      */
-    @PostMapping("/kurs/markAsFinished")
+    @PostMapping("/api/course/markAsFinished")
     public Map<String, Object> markAsFinished(@RequestParam(value = "topicId") Integer topicId) {
         try {
+
             return topicService.markAsFinished(topicId);
+
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
@@ -314,25 +241,4 @@ public class CourseController {
         }
     }
 
-
-
-
-
-    /**
-     * Check if user's course is valid
-     *
-     * @param user user object
-     * @param course course object
-     * @return boolean. True if course is valid.
-     */
-    public boolean isCourseStillValid(User user, Course course) {
-        for (CourseOwned item : user.getCoursesOwned()) {
-            if (!item.getCourse().getId().equals(course.getId())) continue;
-
-            Date now = new Date(System.currentTimeMillis());
-            if (now.compareTo(item.getExpiryDate()) < 0) return true;
-
-        }
-        return false;
-    }
 }

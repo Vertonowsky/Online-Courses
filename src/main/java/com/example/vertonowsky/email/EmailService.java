@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class EmailService {
 
-
     private JavaMailSender javaMailSender;
     private ThreadPoolTaskExecutor taskExecutor;
 
@@ -72,4 +71,5 @@ public class EmailService {
             }
         }, taskExecutor);
     }
+
 }

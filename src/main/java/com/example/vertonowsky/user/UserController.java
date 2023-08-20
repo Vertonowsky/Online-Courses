@@ -1,5 +1,6 @@
 package com.example.vertonowsky.user;
 
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -8,29 +9,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
-
 @Controller
 public class UserController {
 
+    private final UserService userService;
 
-    private final UserRepository userRepository;
-
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/api/user/courses")
     public ModelAndView getUserData(@RequestParam("userDataType") String userDataType, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth)) return new ModelAndView("redirect:/");
+        if (!userService.isLoggedIn(auth)) return new ModelAndView("redirect:/");
 
         // Get the user
-        Optional<User> optionalUser = userRepository.findByEmail(User.getEmail(auth));
-        if (optionalUser.isEmpty()) return new ModelAndView("redirect:/");
-
-        User user = optionalUser.get();
-
+        User user = userService.get(auth, UserQueryType.COURSES_OWNED);
+        if (user == null) return null;
 
         model.addAttribute("ownedCourses", user.getCoursesOwned());
         return new ModelAndView("profil :: course-list");

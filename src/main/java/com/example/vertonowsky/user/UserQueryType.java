@@ -1,0 +1,13 @@
+package com.example.vertonowsky.user;
+
+public enum UserQueryType {
+
+    BASE,
+    FINISHED_TOPICS,
+    COURSES_OWNED,
+    FINISHED_TOPICS_AND_COURSES_OWNED,
+    FINISHED_TOPICS_AND_COURSES_OWNED_AND_PAYMENT_HISTORIES,
+    PAYMENT_HISTORIES,
+    ALL;
+
+}

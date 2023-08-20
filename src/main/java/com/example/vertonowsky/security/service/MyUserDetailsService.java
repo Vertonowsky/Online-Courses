@@ -42,5 +42,4 @@ public class MyUserDetailsService implements UserDetailsService {
         return user.map((u) -> new CustomUserDetails(u, AvatarSerializer.serialize(u.getAvatar()))).get();
     }
 
-
 }

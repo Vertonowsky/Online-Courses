@@ -20,7 +20,6 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
 
     private final UserService userService;
 
-
     public PasswordRecoveryTokenService(EmailService emailService, UserRepository userRepository, PasswordRecoveryTokenRepository tokenRepository, UserService userService) {
         super(emailService, userRepository, tokenRepository);
         this.userService = userService;
@@ -86,6 +85,5 @@ public class PasswordRecoveryTokenService extends TokenService<PasswordRecoveryT
         token.setValid(false);
         tokenRepository.save(token);
     }
-
 
 }

@@ -50,7 +50,7 @@
                         margin: auto;
                     }
 
-            .course_container .category {
+            .course_container .categoryType {
                 position: relative;
                 display: block;
                 margin: 10px 0 0 0;
@@ -584,7 +584,7 @@
                 font-size: var(--font-size-smaller);
             }
 
-            .course_container .category {
+            .course_container .categoryType {
                 font-size: var(--font-size-phone);
             }
 
@@ -645,7 +645,7 @@
                     height: 85%;
                 }
 
-                .course_container .category {
+                .course_container .categoryType {
                     display: none;
                 }
 

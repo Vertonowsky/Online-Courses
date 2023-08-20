@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "topics")
 public class Topic {
 
     @Id
@@ -103,17 +102,5 @@ public class Topic {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-
-    public String formatDuration() {
-        int hours   = duration/3600;
-        int minutes = (duration % 3600) / 60;
-        int seconds = (duration % 60);
-
-        if (hours > 0)
-            return String.format("%d:%02d:%02d", hours, minutes, seconds);
-
-        return String.format("%02d:%02d", minutes, seconds);
-    }
-
 
 }

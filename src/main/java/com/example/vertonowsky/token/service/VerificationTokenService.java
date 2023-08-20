@@ -62,6 +62,4 @@ public class VerificationTokenService extends TokenService<VerificationToken, Ve
         super.resendEmail(user);
     }
 
-
-
 }

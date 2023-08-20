@@ -749,13 +749,17 @@ body {
 
 
     /* Element duplicated on profil.html and admin.html */
-    #no_results_found {
+    #no_results_found, #no_payment_history_found {
         box-sizing: border-box;
         width: 100%;
         text-align: center;
         font-size: 15px;
         padding: 30px 15px;
         margin: auto;
+    }
+
+    #no_payment_history_found {
+        padding: 45px 15px;
     }
 
 

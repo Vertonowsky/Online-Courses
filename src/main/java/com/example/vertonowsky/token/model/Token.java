@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ public abstract class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="token_id")
+    @Column(name = "token_id")
     protected Integer id;
 
     @ManyToOne
@@ -30,35 +29,26 @@ public abstract class Token {
     @JsonIgnore
     protected User user;
 
-    @Type(type="uuid-char")
+    @Type(type = "uuid-char")
     @Column(nullable = false, length = 64)
     protected UUID token;
 
     @Column(name = "creation_date", nullable = false)
-    protected Date creationDate;
+    protected OffsetDateTime creationDate;
 
     @Column(name = "expiry_date", nullable = false)
-    protected Date expiryDate;
+    protected OffsetDateTime expiryDate;
 
     @Column(nullable = false)
     protected boolean valid = true;
 
 
-
     public Token() {
-        Date now = new Date(System.currentTimeMillis());
-
+        OffsetDateTime now = OffsetDateTime.now();
+        this.token = UUID.randomUUID();
         this.creationDate = now;
-        this.token        = UUID.randomUUID();
-
-        //Calculate expiryDate = creationDate + 24 hours
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.HOUR_OF_DAY, 24);
-
-        this.expiryDate = calendar.getTime();
+        this.expiryDate = now.plusHours(24);
     }
-
 
 
     public Integer getId() {
@@ -85,19 +75,19 @@ public abstract class Token {
         this.token = token;
     }
 
-    public Date getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(OffsetDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getExpiryDate() {
+    public OffsetDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(OffsetDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 

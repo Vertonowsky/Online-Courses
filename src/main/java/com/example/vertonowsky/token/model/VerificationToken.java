@@ -12,7 +12,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "verification_tokens")
+@Table(name = "verification_token")
 public class VerificationToken extends Token {
 
 

@@ -4,9 +4,9 @@ import com.example.vertonowsky.course.model.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "advantages")
 public class Advantage {
 
     @Id
@@ -31,20 +31,6 @@ public class Advantage {
     @JsonIgnore
     private Course course;
 
-
-
-
-    public Advantage() {
-
-    }
-
-    public Advantage(Integer index, String title, boolean premium, AdvantageType advantageType, Course course) {
-        this.index = index;
-        this.title = title;
-        this.premium = premium;
-        this.advantageType = advantageType;
-        this.course = course;
-    }
 
     public Integer getId() {
         return id;
@@ -84,5 +70,18 @@ public class Advantage {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Advantage advantage = (Advantage) o;
+        return premium == advantage.premium && Objects.equals(index, advantage.index) && Objects.equals(title, advantage.title) && advantageType == advantage.advantageType && Objects.equals(course, advantage.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, title, premium, advantageType, course);
     }
 }

@@ -5,6 +5,6 @@ import com.example.vertonowsky.user.UserDto;
 
 public interface IUserService {
 
-    void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidPasswordFormatException, PasswordsNotEqualException, TermsNotAcceptedException;
+    void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistsException, InvalidEmailFormatException, InvalidPasswordFormatException, PasswordsNotEqualException, TermsNotAcceptedException, InvalidDataException;
 
 }

@@ -2,7 +2,6 @@ package com.example.vertonowsky.environment;
 
 public class EnvironmentService {
 
-
     private final String profile;
 
     public EnvironmentService(String profile) {
@@ -13,4 +12,5 @@ public class EnvironmentService {
     public String toString() {
         return "EnvironmentService{" + "profile='" + profile + '\'' + '}';
     }
+
 }

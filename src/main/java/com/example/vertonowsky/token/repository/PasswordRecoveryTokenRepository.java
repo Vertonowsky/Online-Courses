@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface PasswordRecoveryTokenRepository extends TokenRepository<PasswordRecoveryToken> {
 
-
     @Query("SELECT t FROM PasswordRecoveryToken t WHERE t.user = :user AND t.valid = :valid")
     Optional<PasswordRecoveryToken> findByUserAndValid(User user, boolean valid);
 

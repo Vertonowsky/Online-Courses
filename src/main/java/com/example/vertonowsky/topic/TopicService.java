@@ -1,39 +1,50 @@
 package com.example.vertonowsky.topic;
 
+import com.example.vertonowsky.Collections;
 import com.example.vertonowsky.Regex;
 import com.example.vertonowsky.chapter.Chapter;
 import com.example.vertonowsky.chapter.ChapterRepository;
 import com.example.vertonowsky.course.model.Course;
+import com.example.vertonowsky.course.repository.CourseRepository;
 import com.example.vertonowsky.exception.*;
 import com.example.vertonowsky.topic.model.FinishedTopic;
 import com.example.vertonowsky.topic.model.Topic;
 import com.example.vertonowsky.topic.repository.FinishedTopicRepository;
 import com.example.vertonowsky.topic.repository.TopicRepository;
 import com.example.vertonowsky.user.User;
-import com.example.vertonowsky.user.UserRepository;
+import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TopicService {
 
-
-    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
     private final TopicRepository topicRepository;
     private final ChapterRepository chapterRepository;
     private final FinishedTopicRepository finishedTopicRepository;
+    private final UserService userService;
 
 
-    public TopicService(UserRepository userRepository, TopicRepository topicRepository, ChapterRepository chapterRepository, FinishedTopicRepository finishedTopicRepository) {
-        this.userRepository = userRepository;
+    public TopicService(CourseRepository courseRepository, TopicRepository topicRepository, ChapterRepository chapterRepository, FinishedTopicRepository finishedTopicRepository, UserService userService) {
+        this.courseRepository = courseRepository;
         this.topicRepository = topicRepository;
         this.chapterRepository = chapterRepository;
         this.finishedTopicRepository = finishedTopicRepository;
+        this.userService = userService;
     }
 
+    public Topic get(Integer id) {
+        return topicRepository.findById(id).orElse(null);
+    }
 
     /**
      *
@@ -46,19 +57,19 @@ public class TopicService {
     public Map<String, Object> markAsFinished(int topicId) throws TopicNotFoundException, UserNotLoggedInException, CourseNotOwnedException {
         if (topicId < 1) throw new TopicNotFoundException("Błąd: Nie odnaleziono tematu.");
 
-        Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-        if (optionalTopic.isEmpty()) throw new TopicNotFoundException("Błąd: Nie odnaleziono tematu.");
+        Topic topic = topicRepository.findById(topicId).orElse(null);
+        if (topic == null) throw new TopicNotFoundException("Błąd: Nie odnaleziono tematu.");
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!User.isLoggedIn(auth) || userRepository.findByEmail(User.getEmail(auth)).isEmpty()) throw new UserNotLoggedInException("Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
+        User user = userService.get(auth, UserQueryType.FINISHED_TOPICS_AND_COURSES_OWNED);
+        if (user == null) throw new UserNotLoggedInException("Błąd: Musisz byc zalogowany aby korzystać z tej funkcji!");
 
-        User user = userRepository.findByEmail(User.getEmail(auth)).get();
-        Course c = optionalTopic.get().getChapter().getCourse();
-        if (!user.isCourseOwnedAndValid(c)) throw new CourseNotOwnedException("Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
+        Course course = courseRepository.findByTopicId(topic.getId()).orElse(null);
+        if (course == null || !userService.isCourseValid(user, course)) throw new CourseNotOwnedException("Błąd: Musisz zakupić kurs aby skorzystać z tej opcji!");
 
-        Optional<FinishedTopic> foundTopic = finishedTopicRepository.findAllWithCondition(user, optionalTopic.get());
-        if (foundTopic.isEmpty()) {
-            FinishedTopic ft = new FinishedTopic(user, optionalTopic.get(), new Date(System.currentTimeMillis()));
+        FinishedTopic foundTopic = finishedTopicRepository.findAllWithCondition(user, topic).orElse(null);
+        if (foundTopic == null) {
+            FinishedTopic ft = new FinishedTopic(user, topic, OffsetDateTime.now());
             finishedTopicRepository.save(ft);
             Map<String, Object> map = new HashMap<>();
             map.put("success", true);
@@ -67,7 +78,7 @@ public class TopicService {
             return map;
         }
 
-        finishedTopicRepository.delete(foundTopic.get());
+        finishedTopicRepository.delete(foundTopic);
         Map<String, Object> map = new HashMap<>();
         map.put("success", true);
         map.put("type", 0);
@@ -193,5 +204,11 @@ public class TopicService {
 
     }
 
+    public Topic getTopicById(Course course, Integer id) {
+        if (Collections.isNullOrEmpty(course.getChapters()))
+            return null;
+
+        return course.getChapters().stream().flatMap(chapter -> chapter.getTopics().stream()).filter(topic -> topic.getId().equals(id)).findFirst().orElse(null);
+    }
 
 }

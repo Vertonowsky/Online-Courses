@@ -1,35 +1,48 @@
 package com.example.vertonowsky.chapter;
 
 import com.example.vertonowsky.topic.TopicDto;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChapterDto {
 
+    private Integer id;
+    private Integer index;
+    private String title;
+    private List<TopicDto> topics;
 
-    Chapter chapter;
-    List<TopicDto> topicDtoList;
 
-    public ChapterDto(List<TopicDto> topicDtoList, Chapter chapter) {
-        this.topicDtoList = topicDtoList;
-        this.chapter = chapter;
+    public Integer getId() {
+        return id;
     }
 
-
-
-    public Chapter getChapter() {
-        return chapter;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setChapter(Chapter chapter) {
-        this.chapter = chapter;
+    public Integer getIndex() {
+        return index;
     }
 
-    public List<TopicDto> getTopicDtoList() {
-        return topicDtoList;
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
-    public void setTopicDtoList(List<TopicDto> topicDtoList) {
-        this.topicDtoList = topicDtoList;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<TopicDto> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<TopicDto> topics) {
+        this.topics = topics;
     }
 }

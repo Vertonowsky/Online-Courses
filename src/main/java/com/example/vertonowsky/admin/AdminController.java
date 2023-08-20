@@ -1,23 +1,26 @@
 package com.example.vertonowsky.admin;
 
 import com.example.vertonowsky.chapter.Chapter;
-import com.example.vertonowsky.chapter.ChapterRepository;
+import com.example.vertonowsky.chapter.ChapterSerializer;
 import com.example.vertonowsky.chapter.ChapterService;
-import com.example.vertonowsky.course.repository.CourseRepository;
+import com.example.vertonowsky.course.CourseQueryType;
+import com.example.vertonowsky.course.CourseSerializer;
+import com.example.vertonowsky.course.CourseService;
+import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.exception.*;
+import com.example.vertonowsky.topic.TopicSerializer;
 import com.example.vertonowsky.topic.TopicService;
 import com.example.vertonowsky.topic.model.Topic;
-import com.example.vertonowsky.topic.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
+import static com.example.vertonowsky.course.CourseSerializer.Task.CHAPTERS;
 
 @RestController
 public class AdminController {
@@ -28,35 +31,32 @@ public class AdminController {
     @Value("${local.videos.path}")
     private String localVideoesPath;
 
-    private final TopicRepository topicRepository;
-    private final ChapterRepository chapterRepository;
-    private final CourseRepository courseRepository;
-    private final TopicService topicService;
+    private final AdminService adminService;
     private final ChapterService chapterService;
+    private final CourseService courseService;
+    private final TopicService topicService;
 
-
-    public AdminController(TopicRepository topicRepository, ChapterRepository chapterRepository, CourseRepository courseRepository, TopicService topicService, ChapterService chapterService) {
-        this.topicRepository = topicRepository;
-        this.chapterRepository = chapterRepository;
-        this.courseRepository = courseRepository;
-        this.topicService = topicService;
+    public AdminController(AdminService adminService, ChapterService chapterService, CourseService courseService, TopicService topicService) {
+        this.adminService = adminService;
         this.chapterService = chapterService;
+        this.courseService = courseService;
+        this.topicService = topicService;
     }
-
 
     @RequestMapping(value = {"/admin", "/admin/{id}"})
     public ModelAndView openAdminView(@PathVariable(name = "id", required = false) Integer id, Model model) {
-        model.addAttribute("courses", courseRepository.findAllCoursesNames());
-        model.addAttribute("videos", getVideoList());
+        model.addAttribute("courses", courseService.listAll().stream().map(course -> CourseSerializer.serialize(course, BASE)).toList());
+        model.addAttribute("videos", adminService.getVideoList(localVideoesPath));
         model.addAttribute("videosPath", courseVideoesPath);
 
         if (id == null)
             return new ModelAndView("admin");
 
-        if (id < 1 || courseRepository.findById(id).isEmpty())
+        Course course = courseService.get(id, CourseQueryType.CHAPTERS);
+        if (id < 1 || course == null)
             return new ModelAndView("redirect:/");
 
-        model.addAttribute("selectedCourse", courseRepository.findById(id).get());
+        model.addAttribute("selectedCourse", CourseSerializer.serialize(course, BASE, CHAPTERS));
         return new ModelAndView("admin");
     }
 
@@ -323,12 +323,13 @@ public class AdminController {
      */
     @GetMapping("/admin/getChapterEditDetails/{id}")
     public ModelAndView getChapterEditDetails(@PathVariable(name = "id") Integer chapterId, Model model) {
-        if (chapterId == null || chapterId < 1 || chapterRepository.findById(chapterId).isEmpty()) {
+        Chapter chapter = chapterService.get(chapterId);
+        if (chapterId == null || chapterId < 1 || chapter == null) {
             model.addAttribute("editChapter", null);
             return new ModelAndView("admin :: editChapter");
         }
 
-        model.addAttribute("editChapter", chapterRepository.findById(chapterId).get());
+        model.addAttribute("editChapter", ChapterSerializer.serialize(chapter));
         return new ModelAndView("admin :: editChapter");
     }
 
@@ -348,30 +349,23 @@ public class AdminController {
             return new ModelAndView("admin :: editTopic");
         }
 
-        if (courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
+        if (courseId < 1 || courseService.get(courseId) == null) {
             model.addAttribute("editTopic", null);
             return new ModelAndView("admin :: editTopic");
         }
 
-        if (topicId < 1 || topicRepository.findById(topicId).isEmpty()) {
+        if (topicId < 1 || topicService.get(topicId) == null) {
             model.addAttribute("editTopic", null);
             return new ModelAndView("admin :: editTopic");
         }
 
-        Topic finalTopic = topicRepository.findById(topicId).get();
-        Chapter finalChapter = null;
+        Topic finalTopic = topicService.get(topicId);
+        Chapter finalChapter = chapterService.getByTopicId(topicId);
 
-        for (Chapter chapter : chapterRepository.findAll()) {
-            if (chapter.getTopics().contains(finalTopic)) {
-                finalChapter = chapter;
-                break;
-            }
-        }
-
-        model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
-        model.addAttribute("videos", getVideoList());
-        model.addAttribute("finalChapter", finalChapter);
-        model.addAttribute("editTopic", finalTopic);
+        model.addAttribute("selectedCourse", courseService.get(courseId, CourseQueryType.CHAPTERS));
+        model.addAttribute("videos", adminService.getVideoList(localVideoesPath));
+        model.addAttribute("finalChapter", ChapterSerializer.serialize(finalChapter));
+        model.addAttribute("editTopic", TopicSerializer.serialize(finalTopic));
         return new ModelAndView("admin :: editTopic");
     }
 
@@ -385,12 +379,13 @@ public class AdminController {
      */
     @GetMapping("/admin/getCourseInfo/{id}")
     public ModelAndView getCourseInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
-        if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
+        Course course = courseService.get(courseId, CourseQueryType.CHAPTERS);
+        if (courseId == null || courseId < 1 || course == null) {
             model.addAttribute("selectedCourse", null);
             return new ModelAndView("admin :: course_preview");
         }
 
-        model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
+        model.addAttribute("selectedCourse", CourseSerializer.serialize(course, BASE, CHAPTERS));
         return new ModelAndView("admin :: course_preview");
     }
 
@@ -404,37 +399,14 @@ public class AdminController {
      */
     @GetMapping("/admin/getChaptersInfo/{id}")
     public ModelAndView getChaptersInfo(@PathVariable(name = "id", required = false) Integer courseId, Model model) {
-        if (courseId == null || courseId < 1 || courseRepository.findById(courseId).isEmpty()) {
+        Course course = courseService.get(courseId, CourseQueryType.CHAPTERS);
+        if (courseId == null || courseId < 1 || course == null) {
             model.addAttribute("selectedCourse", null);
             return new ModelAndView("admin :: chapter_select");
         }
 
-        model.addAttribute("selectedCourse", courseRepository.findById(courseId).get());
+        model.addAttribute("selectedCourse", CourseSerializer.serialize(course, BASE, CHAPTERS));
         return new ModelAndView("admin :: chapter_select");
     }
 
-
-    /**
-     * Get all paths of videos that can be used as topic media
-     *
-     * @return List containing all video paths
-     */
-    private List<String> getVideoList() {
-        File folder = new File(localVideoesPath);
-        if (!folder.exists()) return new ArrayList<>();
-
-        File[] listOfFiles = folder.listFiles();
-        List<String> allVideos = new ArrayList<>();
-
-
-        if (listOfFiles != null && listOfFiles.length > 0) {
-            for (File file : listOfFiles) {
-                if (file.isFile()) {
-                    allVideos.add(file.getName());
-                }
-            }
-        }
-
-        return allVideos;
-    }
 }

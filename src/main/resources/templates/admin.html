@@ -35,7 +35,7 @@
                         <button class="select_btn" onclick="toggleSelect('select_course')" th:text="${selectedCourse == null} ? 'Nie wybrano kursu..' : ${selectedCourse.name}" ></button>
                         <i class="fa fa-chevron-left"></i>
                         <ul class="select_content">
-                            <li class="select_option" tabindex="0" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.id})|" th:text="${course.name} + ' [' + ${course.category} + ']'"></li>
+                            <li class="select_option" tabindex="0" th:if="${!#lists.isEmpty(courses)}" th:each="course : ${courses}" th:onclick="|openCourse(${course.courseId})|" th:text="${course.name} + ' [' + ${course.categoryType} + ']'"></li>
                         </ul>
                     </div>
 
@@ -312,7 +312,6 @@
         video.onloadedmetadata = function() {
             duration = video.duration;
             if (Number.isNaN(duration)) duration = 0;
-            console.log(duration);
 
             if (videoOperation == null) return;
 
@@ -527,7 +526,7 @@
         const selected_course  = /*[[${selectedCourse}]]*/ 0;
         let selected_course_id = 0;
 
-        if (selected_course) selected_course_id = selected_course.id;
+        if (selected_course) selected_course_id = selected_course.courseId;
 
 
         function openTab(e, tabName) {
@@ -627,8 +626,6 @@
                 let path = /*[[${videosPath}]]*/"";
                 source.src = path + optionObject.innerHTML;
                 video.load();
-
-                console.log("haha");
             }
         }
 

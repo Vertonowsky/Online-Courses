@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class EmailConfig {
 
-
     @Bean(name = "threadPoolTaskExecutor")
     public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -20,6 +19,5 @@ public class EmailConfig {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         return executor;
     }
-
 
 }
