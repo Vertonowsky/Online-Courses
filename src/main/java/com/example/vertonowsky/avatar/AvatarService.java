@@ -9,7 +9,7 @@ import com.example.vertonowsky.user.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 public class AvatarService {
@@ -26,7 +26,7 @@ public class AvatarService {
         return avatarRepository.findById(id).orElse(null);
     }
 
-    public Set<Avatar> list() {
+    public List<Avatar> list() {
         return avatarRepository.findAll();
     }
 

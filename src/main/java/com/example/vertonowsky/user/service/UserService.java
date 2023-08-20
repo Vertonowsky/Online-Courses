@@ -136,9 +136,10 @@ public class UserService implements IUserService {
         Role role = roleService.createRoleIfNotExists(RoleType.ROLE_USER);
         user.setRole(role);
 
-        Avatar avatar = avatarService.get(1);
-        if (avatar == null) throw new InvalidDataException("Nie znaleziono żadnych dostępnych avatarów. Prosimy o kontakt z administracją.");
-        user.setAvatar(avatar);
+        List<Avatar> avatars = avatarService.list();
+        if (Collections.isNullOrEmpty(avatars)) throw new InvalidDataException("Nie znaleziono żadnych dostępnych avatarów. Prosimy o kontakt z administracją.");
+        Random rand = new Random();
+        user.setAvatar(avatars.get(rand.nextInt(avatars.size())));
 
         user.setRegistrationDate(OffsetDateTime.now());
         user.setRegistrationMethod(userDto.getRegistrationMethod());
