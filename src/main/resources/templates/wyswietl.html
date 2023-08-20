@@ -196,10 +196,6 @@
                                         <td th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></td>
                                     </tr>
 
-                                    <!--<tr>
-                                        <td>KOD RABATOWY</td>
-                                        <td>-74,99 zł</td>
-                                    </tr>-->
                                 </table>
 
                                 <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></div>
@@ -232,11 +228,7 @@
                                 <div class="input_group">
                                     <input id="discount_code_input" class="input" type="text" placeholder="...">
                                     <label for="discount_code_input">Kod rabatowy: </label>
-                                    <!--<form id="discount_form" th:action="@{/purchase/useDiscountCode}" method="POST">
-                                        <button type="submit"> <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i></button>
-                                        <input name="courseId" value="1"/>
-                                        <input name="codeName" value="jesien30"/>
-                                    </form>-->
+
                                     <i onclick="useDiscountCode()" id="discount_icon" class="fas fa-plus-circle"></i>
                                 </div>
 
@@ -438,8 +430,8 @@
                     if (data.success) {
 
                         let text = '<tr>'+
-                                        '<td>' + data.title + '</td>' +
-                                        '<td>-' + (data.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
+                                        '<td>' + data.payment.discountCode.title + '</td>' +
+                                        '<td>-' + (data.payment.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
                                     '</tr>';
 
 
@@ -450,7 +442,7 @@
                         discount_input.disabled = true;
                         discount_input.classList.add("disabled");
 
-                        document.getElementById('final_price').innerHTML = data.newPrice.toFixed(2).replaceAll(".", ",") + " zł";
+                        document.getElementById('final_price').innerHTML = data.payment.newPrice.toFixed(2).replaceAll(".", ",") + " zł";
                     }
 
 

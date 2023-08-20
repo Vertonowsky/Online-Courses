@@ -1,54 +1,48 @@
 package com.example.vertonowsky.payment;
 
 import com.example.vertonowsky.Regex;
-import com.example.vertonowsky.course.CourseStatus;
+import com.example.vertonowsky.course.CourseDto;
+import com.example.vertonowsky.course.CourseSerializer;
+import com.example.vertonowsky.course.CourseService;
 import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.course.repository.CourseOwnedRepository;
-import com.example.vertonowsky.course.repository.CourseRepository;
+import com.example.vertonowsky.discount.DiscountCodeDto;
+import com.example.vertonowsky.discount.DiscountCodeSerializer;
+import com.example.vertonowsky.discount.DiscountCodeService;
 import com.example.vertonowsky.discount.DiscountType;
 import com.example.vertonowsky.discount.model.DiscountCode;
-import com.example.vertonowsky.discount.model.DiscountCodeUsed;
-import com.example.vertonowsky.discount.repository.DiscountCodeRepository;
-import com.example.vertonowsky.discount.repository.DiscountCodeUsedRepository;
 import com.example.vertonowsky.exception.CourseNotFoundException;
 import com.example.vertonowsky.exception.DiscountCodeExpiredException;
 import com.example.vertonowsky.exception.DiscountCodeNotFoundException;
 import com.example.vertonowsky.exception.UserNotFoundException;
 import com.example.vertonowsky.user.User;
-import com.example.vertonowsky.user.UserRepository;
+import com.example.vertonowsky.user.UserSerializer;
+import com.example.vertonowsky.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
+import static com.example.vertonowsky.course.CourseSerializer.Task.PRICE;
 
 
 @Service
 public class PaymentService {
 
-    //TODO
-
-    private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
-    private final DiscountCodeRepository discountCodeRepository;
     private final CourseOwnedRepository courseOwnedRepository;
-    private final DiscountCodeUsedRepository discountCodeUsedRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
+    private final CourseService courseService;
+    private final DiscountCodeService discountCodeService;
+    private final UserService userService;
 
-    public PaymentService(UserRepository userRepository, CourseRepository courseRepository, DiscountCodeRepository discountCodeRepository, CourseOwnedRepository courseOwnedRepository, DiscountCodeUsedRepository discountCodeUsedRepository, PaymentHistoryRepository paymentHistoryRepository) {
-        this.userRepository = userRepository;
-        this.courseRepository = courseRepository;
-        this.discountCodeRepository = discountCodeRepository;
+    public PaymentService(CourseOwnedRepository courseOwnedRepository, PaymentHistoryRepository paymentHistoryRepository, CourseService courseService, DiscountCodeService discountCodeService, UserService userService) {
         this.courseOwnedRepository = courseOwnedRepository;
-        this.discountCodeUsedRepository = discountCodeUsedRepository;
         this.paymentHistoryRepository = paymentHistoryRepository;
+        this.courseService = courseService;
+        this.discountCodeService = discountCodeService;
+        this.userService = userService;
     }
-
-
-
-
 
     /**
      * Use discount code and calculate the discount
@@ -63,18 +57,10 @@ public class PaymentService {
      * @throws DiscountCodeExpiredException Thrown when discount code has expired
      * @throws UserNotFoundException Thrown when couldn't find a user with specified email
      */
-    public Map<String, Object> useDiscoundCode(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
-        Map<String, Object> data = verifyData(email, courseId, codeName, usingDiscount);
-
-        Course course = (Course) data.get("course");
-        DiscountCode discountCode = (DiscountCode) data.get("discountCode");
-
-        Map<String, Object> response = calculateDiscountPrice(course, discountCode);
-        response.put("success", true);
-        response.put("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
-        response.put("title", discountCode.getTitle());
-
-        return response;
+    public PaymentDto useDiscountCode(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
+        PaymentDto paymentDto = verifyData(email, courseId, codeName, usingDiscount);
+        calculateDiscountPrice(paymentDto);
+        return paymentDto;
     }
 
 
@@ -94,14 +80,16 @@ public class PaymentService {
      * @throws DiscountCodeExpiredException Thrown when discount code has expired
      * @throws UserNotFoundException Thrown when couldn't find a user with specified email
      */
-    public Map<String, Object> finalizePayment(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
-        Map<String, Object> data = verifyData(email, courseId, codeName, usingDiscount);
+    public PaymentDto finalizePayment(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
+        PaymentDto paymentDto = verifyData(email, courseId, codeName, usingDiscount);
+        calculateDiscountPrice(paymentDto);
 
-        User user = (User) data.get("user");
-        Course course = (Course) data.get("course");
-        DiscountCode discountCode = (DiscountCode) data.get("discountCode");
+        User user = userService.get(email);
+        Course course = courseService.get(courseId);
+        DiscountCode discountCode = discountCodeService.get(codeName);
 
-        return buyCourse(user, course, discountCode);
+        buyCourse(user, course, discountCode, paymentDto);
+        return paymentDto;
     }
 
 
@@ -121,71 +109,32 @@ public class PaymentService {
      * @throws DiscountCodeExpiredException Thrown when discount code has expired
      * @throws UserNotFoundException Thrown when couldn't find a user with specified email
      */
-    public Map<String, Object> verifyData(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
-        Map<String, Object> response = new HashMap<>();
+    public PaymentDto verifyData(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
+        PaymentDto paymentDto = new PaymentDto();
         OffsetDateTime now = OffsetDateTime.now();
 
         if (courseId < 1) throw new CourseNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
-        Optional<Course> course = courseRepository.findById(courseId);
-        if (course.isEmpty()) throw new CourseNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
+        Course course = courseService.get(courseId);
+        if (course == null) throw new CourseNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
 
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) throw new UserNotFoundException("Błąd: Nie odnaleziono użytkownika");
+        User user = userService.get(email);
+        if (user == null) throw new UserNotFoundException("Błąd: Nie odnaleziono użytkownika");
 
 
         if (usingDiscount) {
             if (codeName.isEmpty() || !Regex.DISCOUNT_PATTERN.matches(codeName)) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
-            Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
-            if (discountCode.isEmpty()) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
+            DiscountCode discountCode = discountCodeService.get(codeName);
+            if (discountCode == null) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
 
-            if (now.isAfter(discountCode.get().getExpiryDate())) throw new DiscountCodeExpiredException("Błąd: Podany kod utracił ważność.");
+            if (now.isAfter(discountCode.getExpiryDate())) throw new DiscountCodeExpiredException("Błąd: Podany kod utracił ważność.");
 
-            response.put("discountCode", discountCode.get());
+            paymentDto.setDiscountCode(DiscountCodeSerializer.serialize(discountCode));
         }
 
-        response.put("course", course.get());
-        response.put("user", user.get());
-        return response;
-    }
+        paymentDto.setCourse(CourseSerializer.serialize(course, BASE, PRICE));
+        paymentDto.setUser(UserSerializer.serialize(user, UserSerializer.Task.BASE));
 
-
-
-
-
-    /**
-     * Calculate how big discount shold be, based on course price
-     *
-     * @param course course object which price we want to reduce
-     * @param discountCode provided by user discount code
-     * @return Map of objects: discount, newPrice
-     */
-    public Map<String, Object> calculateDiscountPrice(Course course, DiscountCode discountCode) {
-        Double coursePrice = course.getPricePromotion() > 0 ? course.getPricePromotion() : course.getPrice();
-        Map<String, Object> map = new HashMap<>();
-        if (discountCode == null) {
-            map.put("discount", 0.0);
-            map.put("newPrice", coursePrice);
-            return map;
-        }
-
-        Double discount = 0.0;
-        double newPrice = 0.0;
-
-        //Calculate discount
-        if (discountCode.getType() == DiscountType.PERCENTAGE) {
-            double value = discountCode.getValue();
-            discount = (value/100) * coursePrice;
-            newPrice = coursePrice - discount;
-        }
-
-        if (discountCode.getType() == DiscountType.VALUE) {
-            discount = discountCode.getValue();
-            newPrice = coursePrice - discount;
-        }
-
-        map.put("discount", discount);
-        map.put("newPrice", newPrice);
-        return map;
+        return paymentDto;
     }
 
 
@@ -200,62 +149,80 @@ public class PaymentService {
      * @param discountCode discount code used during the transcation
      * @return map of objects: success, message, discount, newPrice
      */
-    public Map<String, Object> buyCourse(User user, Course course, DiscountCode discountCode) {
-        Map<String, Object> response = new HashMap<>();
-        Optional<CourseOwned> courseOwned = courseOwnedRepository.findIfAlreadyBought(user, course);
+    public void buyCourse(User user, Course course, DiscountCode discountCode, PaymentDto paymentDto) {
+        CourseOwned courseOwned = courseOwnedRepository.findIfAlreadyBought(user, course).orElse(null);
 
         OffsetDateTime now = OffsetDateTime.now();
-        OffsetDateTime validTill = now;
+        OffsetDateTime till = now;
+
+
+        // User haven't bought this course before
+        if (courseOwned == null)
+            courseService.newCourseOwned(user, course, now, now.plusDays(90));
+
 
         // User has bought this course before
-        if (courseOwned.isPresent()) {
-            OffsetDateTime expiryDate = courseOwned.get().getExpiryDate();
+        else {
+            OffsetDateTime expiryDate = courseOwned.getExpiryDate();
 
             // Check if course is still active (yes, it is)
-            if (now.isBefore(expiryDate))
-                validTill = expiryDate;
+            if (expiryDate.isAfter(now))
+                till = expiryDate;
 
-            // Otherways, when course isn't active anymore don't do anything
-
-            validTill = validTill.plusDays(90);
-            courseOwnedRepository.updateExistingCourseExpiration(user, course, now, validTill);
-
-        } else {
-
-            CourseOwned courseOwn = new CourseOwned();
-            courseOwn.setStatus(CourseStatus.NEW);
-            courseOwn.setBuyDate(now);
-            courseOwn.setExpiryDate(OffsetDateTime.now().plusDays(90));
-            courseOwn.setCourse(course);
-            courseOwn.setUser(user);
-
-            courseOwnedRepository.save(courseOwn);
+            courseService.updateExistingCourseExpiration(user, course, now, till.plusDays(90));
         }
 
+        // If user used any discount code, then save it to database -> validation was completed in previous steps
+        if (discountCode != null)
+            discountCodeService.newDiscountCodeUsed(user, discountCode);
 
-        // If user used any discount code then save this to database -> validation was at the start of the function
-        if (discountCode != null) {
-            DiscountCodeUsed discountCodeUsed = new DiscountCodeUsed();
-            discountCodeUsed.setDiscountCode(discountCode);
-            discountCodeUsed.setUser(user);
-            discountCodeUsed.setDate(now);
-            discountCodeUsedRepository.save(discountCodeUsed);
-        }
-
-        Map<String, Object> prices = calculateDiscountPrice(course, discountCode);
 
         // Save payment request in database
-        PaymentHistory paymentHistory = new PaymentHistory(now, (Double)(prices.get("newPrice")), "PLN", true);
+        newPaymentHistory(user, course, paymentDto.getNewPrice(), "PLN", true);
+
+    }
+
+    /**
+     * Calculate how big discount shold be, based on course price
+     *
+     * @param paymentDto paymentDto object containg information about course and used discount code
+     */
+    public void calculateDiscountPrice(PaymentDto paymentDto) {
+        CourseDto courseDto = paymentDto.getCourse();
+        Double coursePrice = courseDto.getPricePromotion() > 0 ? courseDto.getPricePromotion() : courseDto.getPrice();
+
+        DiscountCodeDto discountCodeDto = paymentDto.getDiscountCode();
+        if (discountCodeDto == null) {
+            paymentDto.setNewPrice(coursePrice);
+            return;
+        }
+
+        Double discount = 0.0;
+        Double newPrice = 0.0;
+
+        //Calculate discount
+        if (discountCodeDto.getType() == DiscountType.PERCENTAGE) {
+            Double value = discountCodeDto.getValue();
+            discount = (value/100) * coursePrice;
+            newPrice = coursePrice - discount;
+        }
+
+        if (discountCodeDto.getType() == DiscountType.VALUE) {
+            discount = discountCodeDto.getValue();
+            newPrice = coursePrice - discount;
+        }
+
+        paymentDto.setDiscount(discount);
+        paymentDto.setNewPrice(newPrice);
+    }
+
+
+    public void newPaymentHistory(User user, Course course, Double price, String currency, boolean success) {
+        PaymentHistory paymentHistory = new PaymentHistory(OffsetDateTime.now(), price, currency, success);
         paymentHistory.setCourse(course);
         paymentHistory.setUser(user);
-        paymentHistoryRepository.save(paymentHistory);
 
-        // Generate response
-        response.put("success", true);
-        response.put("message", String.format("Sukces: Zakupiono kurs %s!", course.getName()));
-        response.put("discount", prices.get("discount"));
-        response.put("newPrice", prices.get("newPrice"));
-        return response;
+        paymentHistoryRepository.save(paymentHistory);
     }
 
 }

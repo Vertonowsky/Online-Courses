@@ -164,7 +164,7 @@
                             <p class="lp detail"><span th:text="'#' + ${iteration.count}"></span></p>
                             <p class="date detail" th:text="${#temporals.format(payment.proceedDate, 'dd.MM.yyyy')}"></p>
                             <p class="title detail" th:text="${payment.courseName}"></p>
-                            <p class="price detail" th:text="${payment.getAmountInt()} + ' zł'"></p>
+                            <p class="price detail" th:text="${payment.getAmountAsString()} + ' zł'"></p>
                         </div>
 
                     </div>

@@ -2,6 +2,7 @@ package com.example.vertonowsky.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,8 +19,10 @@ public class PaymentHistoryDto {
         return amount;
     }
 
-    public Integer getAmountInt() {
-        return amount.intValue();
+    public String getAmountAsString() {
+        if (amount == null) return null;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        return df.format(amount);
     }
 
 

@@ -22,8 +22,8 @@ public interface CourseOwnedRepository extends JpaRepository<CourseOwned, Course
 
 
     @Modifying
-    @Query("UPDATE CourseOwned c SET c.buyDate = :buyDate, c.expiryDate = :expiryDate, c.status = com.example.vertonowsky.course.CourseStatus.RENEWED WHERE c.user = :user AND c.course = :course")
-    void updateExistingCourseExpiration(@Param("user") User user, @Param("course") Course course, @Param("buyDate") OffsetDateTime buyDate, @Param("expiryDate") OffsetDateTime expiryDate);
+    @Query("UPDATE CourseOwned c SET c.buyDate = :since, c.expiryDate = :till, c.status = com.example.vertonowsky.course.CourseStatus.RENEWED WHERE c.user = :user AND c.course = :course")
+    void updateExistingCourseExpiration(@Param("user") User user, @Param("course") Course course, @Param("since") OffsetDateTime since, @Param("till") OffsetDateTime till);
 
     List<CourseOwned> findAll();
 }

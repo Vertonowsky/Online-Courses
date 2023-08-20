@@ -43,7 +43,11 @@ public class PaymentController {
         try {
 
             // Validate data given by user
-            return paymentService.useDiscoundCode(userService.getEmail(auth), courseId, codeName, true);
+            Map<String, Object> map = new HashMap<>();
+            map.put("success", true);
+            map.put("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
+            map.put("payment", paymentService.useDiscountCode(userService.getEmail(auth), courseId, codeName, true));
+            return map;
 
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
@@ -74,7 +78,12 @@ public class PaymentController {
         try {
 
             // Validate data given by user
-            return paymentService.finalizePayment(userService.getEmail(auth), courseId, codeName, !codeName.isEmpty());
+
+            Map<String, Object> map = new HashMap<>();
+            PaymentDto paymentDto = paymentService.finalizePayment(userService.getEmail(auth), courseId, codeName, !codeName.isEmpty());
+            map.put("success", true);
+            map.put("message", String.format("Sukces: Zakupiono kurs %s!", paymentDto.getCourse().getName()));
+            return map;
 
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
