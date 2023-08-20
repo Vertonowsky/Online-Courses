@@ -2,8 +2,8 @@ package com.example.vertonowsky.avatar;
 
 import com.example.vertonowsky.exception.UserNotFoundException;
 import com.example.vertonowsky.user.User;
-import com.example.vertonowsky.user.UserInfoDto;
 import com.example.vertonowsky.user.UserQueryType;
+import com.example.vertonowsky.user.UserSerializer;
 import com.example.vertonowsky.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+
+import static com.example.vertonowsky.user.UserSerializer.Task.AVATAR;
 
 @RestController
 @Controller
@@ -43,15 +45,13 @@ public class AvatarController {
     }
 
     @GetMapping("detail")
-    public ModelAndView detail(@RequestParam AvatarDetailType type, Model model) throws UserNotFoundException {
+    public ModelAndView detail(@RequestParam AvatarDetailType type, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.get(auth, UserQueryType.ALL);
+        User user = userService.get(auth, UserQueryType.BASE);
         if (user == null) return null;
-        UserInfoDto userInfoDto = new UserInfoDto();
-        AvatarDto avatarDto = AvatarSerializer.serialize(user.getAvatar());
-        userInfoDto.setAvatar(avatarDto);
+
         model.addAttribute("serverUrl", serverUrl);
-        model.addAttribute("user", userInfoDto);
+        model.addAttribute("user", UserSerializer.serialize(user, AVATAR));
 
         if (type.equals(AvatarDetailType.PROFILE))
             return new ModelAndView("profil :: avatar_detail");
@@ -65,7 +65,7 @@ public class AvatarController {
     @PostMapping("change")
     public boolean change(@RequestParam(value = "id") Integer id) throws UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        avatarService.change(auth, User.getEmail(auth), id);
+        avatarService.change(auth, userService.getEmail(auth), id);
         return true;
     }
 

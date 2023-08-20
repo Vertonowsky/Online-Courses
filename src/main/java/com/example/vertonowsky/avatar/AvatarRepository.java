@@ -10,7 +10,6 @@ import java.util.Set;
 
 public interface AvatarRepository extends CrudRepository<Avatar, Integer> {
 
-
     Set<Avatar> findAll();
 
     @Query("SELECT a FROM Avatar a LEFT JOIN FETCH a.users u WHERE u = :user")

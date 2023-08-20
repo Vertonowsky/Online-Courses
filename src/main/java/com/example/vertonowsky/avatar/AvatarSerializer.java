@@ -2,7 +2,6 @@ package com.example.vertonowsky.avatar;
 
 public class AvatarSerializer {
 
-
     public static AvatarDto serialize(Avatar avatar) {
         if (avatar == null) return new AvatarDto();
 
@@ -12,6 +11,5 @@ public class AvatarSerializer {
         dto.setUrl(avatar.getUrl());
         return dto;
     }
-
 
 }

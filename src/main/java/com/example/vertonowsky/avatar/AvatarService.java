@@ -30,11 +30,6 @@ public class AvatarService {
         return avatarRepository.findAll();
     }
 
-    public Avatar findByUser(String email) throws UserNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
-        return avatarRepository.findAvatarByUser(user).orElse(null);
-    }
-
     public void change(Authentication auth, String email, Integer avatarId) throws UserNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
         Avatar avatar = avatarRepository.findById(avatarId).orElseThrow();
