@@ -143,6 +143,7 @@ public class CourseController {
         List<CourseDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), courseService.convertCategoryParamList(mapper, categoryFilters));
 
+        model.addAttribute("topPanel", true);
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
         model.addAttribute("topPanelCategory", topPanel.get("topPanelCategory"));
         return new ModelAndView("index :: top_panel");
@@ -163,7 +164,7 @@ public class CourseController {
     public ModelAndView courseSpectateView(@PathVariable("id") Integer id, Model model) {
         // INVALID DATA, redirect to index page.
         if (id < 1) return new ModelAndView("redirect:/");
-        Course course = courseService.get(id);
+        Course course = courseService.get(id, CourseQueryType.ALL);
         if (course == null) return new ModelAndView("redirect:/");
 
         // Check if user is logged in

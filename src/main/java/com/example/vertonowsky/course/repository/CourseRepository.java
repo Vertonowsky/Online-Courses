@@ -28,9 +28,6 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
     @Query("SELECT c FROM Course c WHERE c.type IN :tp OR c.categoryType IN :ctg ORDER BY c.name ASC")
     List<Course> findAllWithCondition(@Param("tp") List<String> types, @Param("ctg") List<CategoryType> categories);
 
-    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.advantages LEFT JOIN FETCH c.chapters AS chapters LEFT JOIN FETCH chapters.topics LEFT JOIN FETCH c.paymentHistories LEFT JOIN FETCH c.coursesOwned WHERE c.id = :id")
-    Optional<Course> findByIdAllData(Integer id);
-
     @Query("SELECT c FROM Course c LEFT JOIN FETCH c.advantages WHERE c.id = :id")
     Optional<Course> findByIdWithAdvantages(Integer id);
 
@@ -39,5 +36,8 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     @Query("SELECT c FROM Course c LEFT JOIN FETCH c.paymentHistories WHERE c.id = :id")
     Optional<Course> findByIdWithPaymentHistories(Integer id);
+
+    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.advantages LEFT JOIN FETCH c.chapters AS chapters LEFT JOIN FETCH chapters.topics LEFT JOIN FETCH c.paymentHistories LEFT JOIN FETCH c.coursesOwned WHERE c.id = :id")
+    Optional<Course> findByIdAllData(Integer id);
 
 }

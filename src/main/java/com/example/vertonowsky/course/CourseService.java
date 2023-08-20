@@ -231,6 +231,7 @@ public class CourseService {
 
     public void calculateAdvantages(CourseDto courseDto) {
         List<AdvantageDto> advantages = courseDto.getAdvantages();
+        if (advantages == null) return;
         for (AdvantageDto advantage : advantages) {
             if (advantage.getAdvantageType().equals(AdvantageType.TOTAL_DURATION)) {
                 long totalDuration = getTotalDuration(courseDto);
