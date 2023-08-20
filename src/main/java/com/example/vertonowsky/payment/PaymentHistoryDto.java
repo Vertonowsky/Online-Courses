@@ -2,7 +2,7 @@ package com.example.vertonowsky.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentHistoryDto {
@@ -11,7 +11,7 @@ public class PaymentHistoryDto {
     private String currency;
     private Integer id;
     private String courseName;
-    private Date proceedDate;
+    private OffsetDateTime proceedDate;
     private boolean success;
 
     public Double getAmount() {
@@ -51,11 +51,11 @@ public class PaymentHistoryDto {
         this.courseName = courseName;
     }
 
-    public Date getProceedDate() {
+    public OffsetDateTime getProceedDate() {
         return proceedDate;
     }
 
-    public void setProceedDate(Date proceedDate) {
+    public void setProceedDate(OffsetDateTime proceedDate) {
         this.proceedDate = proceedDate;
     }
 

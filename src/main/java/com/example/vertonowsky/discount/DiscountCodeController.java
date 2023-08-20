@@ -6,7 +6,7 @@ import com.example.vertonowsky.discount.repository.DiscountCodeRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @RestController
 public class DiscountCodeController {
@@ -26,7 +26,7 @@ public class DiscountCodeController {
      */
     @GetMapping("/add-discount-code")
     public String addDiscountCode() {
-        Date now = new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000 * 10);
+        OffsetDateTime now = OffsetDateTime.now().plusDays(10);
         DiscountCode discountCode = new DiscountCode("jesien30", "jesien30 | KOD RABATOWY -30%", DiscountType.PERCENTAGE, 30.0, now);
 
         discountCodeRepository.save(discountCode);

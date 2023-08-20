@@ -10,7 +10,6 @@ import javax.validation.constraints.Min;
 import java.util.Set;
 
 @Entity
-@Table(name = "chapters")
 public class Chapter {
 
     @Id
@@ -33,16 +32,6 @@ public class Chapter {
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "chapter")
     @OrderBy("index ASC, title ASC")
     private Set<Topic> topics;
-
-
-    public Chapter() {
-
-    }
-
-    public Chapter(Integer index, String title) {
-        this.index = index;
-        this.title = title;
-    }
 
 
     public Integer getId() {
@@ -80,6 +69,5 @@ public class Chapter {
     public void setTopics(Set<Topic> topics) {
         this.topics = topics;
     }
-
 
 }

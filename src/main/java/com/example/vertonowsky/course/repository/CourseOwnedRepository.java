@@ -8,13 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 public interface CourseOwnedRepository extends JpaRepository<CourseOwned, CourseKey> {
 
     Optional<CourseOwned> findById(CourseKey id);
@@ -25,7 +23,7 @@ public interface CourseOwnedRepository extends JpaRepository<CourseOwned, Course
 
     @Modifying
     @Query("UPDATE CourseOwned c SET c.buyDate = :buyDate, c.expiryDate = :expiryDate, c.status = com.example.vertonowsky.course.CourseStatus.RENEWED WHERE c.user = :user AND c.course = :course")
-    void updateExistingCourseExpiration(@Param("user") User user, @Param("course") Course course, @Param("buyDate") Date buyDate, @Param("expiryDate") Date expiryDate);
+    void updateExistingCourseExpiration(@Param("user") User user, @Param("course") Course course, @Param("buyDate") OffsetDateTime buyDate, @Param("expiryDate") OffsetDateTime expiryDate);
 
     List<CourseOwned> findAll();
 }

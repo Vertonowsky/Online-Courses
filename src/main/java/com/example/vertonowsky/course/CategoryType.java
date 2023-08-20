@@ -1,6 +1,6 @@
 package com.example.vertonowsky.course;
 
-public enum Category {
+public enum CategoryType {
 
     MATEMATYKA,
     INFORMATYKA,

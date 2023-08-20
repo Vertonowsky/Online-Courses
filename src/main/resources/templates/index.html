@@ -260,7 +260,7 @@
                     <div id="courses_list">
 
                         <div id="top_panel" th:fragment="top_panel">
-                            <h1 class="heading"><span class="bold" th:text="${topPanelPrefix}"></span> w kategorii <span class="category" th:text="${topPanelCategory}"></span></h1>
+                            <h1 class="heading"><span class="bold" th:text="${topPanelPrefix}"></span> w kategorii <span class="categoryType" th:text="${topPanelCategory}"></span></h1>
                             <div id="filtersToggle" onclick="openFilters()">Filtry <i class="fa fa-bars"></i></div>
                         </div>
 
@@ -272,14 +272,14 @@
                             <div class="course_container" th:if="${courses} != null" th:each="course : ${courses}">
                                 <div class="left">
                                     <div class="photo">
-                                        <img alt="Miniatura kursu" th:src="@{'/images/course_photo_' + ${course.id} +'.png'}" />
+                                        <img alt="Miniatura kursu" th:src="@{'/images/course_photo_' + ${course.courseId} +'.png'}" />
                                     </div>
 
                                     <div class="title_with_shadow_hidden">
                                         <span class="tit_text" th:inline="text"> [[${course.name}]] <div class="tit_bck"></div></span>
                                     </div>
 
-                                    <p class="category" th:text="${course.capitalizeCategory()}"></p>
+                                    <p class="categoryType" th:text="'[' + ${course.capitalizeCategory()} + ']'"></p>
                                 </div>
 
                                 <div class="right">
@@ -290,7 +290,7 @@
                                         </div>
 
                                         <p class="desc" th:text="${course.description}"></p>
-                                        <a class="button_gray" th:href="@{'/wyswietl/' + ${course.id}}">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>
+                                        <a class="button_gray" th:href="@{'/wyswietl/' + ${course.courseId}}">Sprawdź <i class="fas fa-arrow-circle-right"></i></a>
 
                                     </div>
                                 </div>

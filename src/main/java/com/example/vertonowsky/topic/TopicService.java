@@ -1,5 +1,6 @@
 package com.example.vertonowsky.topic;
 
+import com.example.vertonowsky.Collections;
 import com.example.vertonowsky.Regex;
 import com.example.vertonowsky.chapter.Chapter;
 import com.example.vertonowsky.chapter.ChapterRepository;
@@ -41,6 +42,10 @@ public class TopicService {
         this.userService = userService;
     }
 
+    public Topic get(Integer id) {
+        return topicRepository.findById(id).orElse(null);
+    }
+
     /**
      *
      * @param topicId id of the topic
@@ -64,7 +69,6 @@ public class TopicService {
 
         FinishedTopic foundTopic = finishedTopicRepository.findAllWithCondition(user, topic).orElse(null);
         if (foundTopic == null) {
-            //TODO IMPORTANT
             FinishedTopic ft = new FinishedTopic(user, topic, OffsetDateTime.now());
             finishedTopicRepository.save(ft);
             Map<String, Object> map = new HashMap<>();
@@ -200,5 +204,11 @@ public class TopicService {
 
     }
 
+    public Topic getTopicById(Course course, Integer id) {
+        if (Collections.isNullOrEmpty(course.getChapters()))
+            return null;
+
+        return course.getChapters().stream().flatMap(chapter -> chapter.getTopics().stream()).filter(topic -> topic.getId().equals(id)).findFirst().orElse(null);
+    }
 
 }

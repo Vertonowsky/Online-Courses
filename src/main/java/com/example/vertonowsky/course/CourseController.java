@@ -1,12 +1,9 @@
 package com.example.vertonowsky.course;
 
-import com.example.vertonowsky.chapter.ChapterService;
-import com.example.vertonowsky.chapter.CourseInfoDto;
-import com.example.vertonowsky.course.dto.CourseListDto;
 import com.example.vertonowsky.course.model.Course;
-import com.example.vertonowsky.exception.TopicNotFoundException;
 import com.example.vertonowsky.topic.TopicService;
 import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.UserQueryType;
 import com.example.vertonowsky.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,29 +14,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.*;
 
 @RestController
 public class CourseController {
 
     @Value("${course.videos.path}")
     private String courseVideoesPath;
-    private final ChapterService chapterService;
     private final CourseService courseService;
     private final TopicService topicService;
     private final UserService userService;
 
-    public CourseController(ChapterService chapterService, CourseService courseService, TopicService topicService, UserService userService) {
-        this.chapterService = chapterService;
+    public CourseController(CourseService courseService, TopicService topicService, UserService userService) {
         this.courseService = courseService;
         this.topicService = topicService;
         this.userService = userService;
     }
 
-/*
+    /*
     @PostMapping("/add2")
     public String addCourse() {
         Course course = new Course("Egzamin Ósmoklasisty",
@@ -106,7 +103,7 @@ public class CourseController {
      */
     @GetMapping("/lista-kursow")
     public ModelAndView courseListView(Model model) {
-        List<CourseListDto> courses = courseService.getCoursesWithCriteria(new ArrayList<>(), new ArrayList<>(), 0); // limit = 0, means  there is no limit for course count
+        List<CourseDto> courses = courseService.getCoursesWithCriteria(new LinkedList<>(), new LinkedList<>(), 0); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), null);
 
         model.addAttribute("subjects", courseService.listTypes());
@@ -132,7 +129,7 @@ public class CourseController {
     @GetMapping("/api/courses/list")
     public ModelAndView getCourseInfo(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        List<CourseListDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
+        List<CourseDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
 
         model.addAttribute("courses", courses);
         return new ModelAndView("index :: courses_data");
@@ -143,7 +140,7 @@ public class CourseController {
     @GetMapping("/api/courses/top-panel")
     public ModelAndView getCourseTopPanel(@RequestParam String typeFilters, @RequestParam String categoryFilters, @RequestParam int limit, Model model) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        List<CourseListDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
+        List<CourseDto> courses = courseService.getCourseWithFilters(mapper, typeFilters, categoryFilters, limit); // limit = 0, means  there is no limit for course count
         HashMap<String, String> topPanel = courseService.generateCoursesListHeading(courses.size(), courseService.convertCategoryParamList(mapper, categoryFilters));
 
         model.addAttribute("topPanelPrefix", topPanel.get("topPanelPrefix"));
@@ -171,11 +168,13 @@ public class CourseController {
 
         // Check if user is logged in
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.get(auth);
+        User user = userService.get(auth, UserQueryType.ALL);
+
+        CourseDto courseDto = CourseSerializer.serialize(course, BASE, ADVANTAGES, CHAPTERS, PRICE);
+        courseService.calculateAdvantages(courseDto);
 
         model.addAttribute("loggedIn", userService.isLoggedIn(user));
-        model.addAttribute("course", course);
-        model.addAttribute("topics", null);
+        model.addAttribute("course", courseDto);
         return new ModelAndView("wyswietl");
     }
 
@@ -191,46 +190,37 @@ public class CourseController {
      */
     @GetMapping("/kurs/{courseId}")
     public ModelAndView openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId,
-                                        @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) throws TopicNotFoundException {
+                                        @RequestParam(value = "s", required = false) Integer scrollPosition, Model model) {
         // Check if data is valid
         if (courseId < 1 || topicId != null && topicId < 1) return new ModelAndView("redirect:/");
 
-        Course course = courseService.get(courseId);
+        Course course = courseService.get(courseId, CourseQueryType.CHAPTERS);
         if (course == null) return new ModelAndView("redirect:/");
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.get(auth);
-
+        User user = userService.get(auth, UserQueryType.ALL);
 
         model.addAttribute("loggedIn", userService.isLoggedIn(user));
         model.addAttribute("videosPath", courseVideoesPath);
         model.addAttribute("courseId", courseId);
-        model.addAttribute("courseOwned", (user != null && user.isCourseOwnedAndValid(course)));
-        model.addAttribute("course", course);
-        //model.addAttribute("topic", selectedTopic);
-        //model.addAttribute("selectedTopicFinished", selectedTopicFinished);
-        model.addAttribute("data", chapterService.listAllChapters(user, course, topicId));
+        model.addAttribute("courseOwned", (user != null && userService.isCourseValid(user, course)));
+        model.addAttribute("data", courseService.getDetailedCourseInfo(user, course, topicId));
 
         return new ModelAndView("kurs");
     }
 
 
 
-    @GetMapping("/api/course/info/{courseId}")
-    public CourseInfoDto openCourseVideo(@PathVariable("courseId") Integer courseId, @RequestParam(value = "topicId", required = false) Integer topicId) throws TopicNotFoundException {
+    @GetMapping("/api/course/details/{courseId}")
+    public Course getDetails(@PathVariable("courseId") Integer courseId) {
         // Check if data is valid
-        if (courseId < 1 || topicId != null && topicId < 1) return null;
+        if (courseId < 1) return null;
 
         Course course = courseService.get(courseId);
         if (course == null) return null;
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.get(auth);
-
-        return chapterService.listAllChapters(user, course, topicId);
-
+        return course;
     }
-
 
     /**
      * Mark video as already watched / finished
@@ -240,7 +230,9 @@ public class CourseController {
     @PostMapping("/api/course/markAsFinished")
     public Map<String, Object> markAsFinished(@RequestParam(value = "topicId") Integer topicId) {
         try {
+
             return topicService.markAsFinished(topicId);
+
         } catch (Exception e) {
             Map<String, Object> map = new HashMap<>();
             map.put("success", false);
@@ -248,4 +240,5 @@ public class CourseController {
             return map;
         }
     }
+
 }

@@ -1,31 +1,48 @@
 package com.example.vertonowsky.course;
 
-import com.example.vertonowsky.course.dto.CourseListDto;
+import com.example.vertonowsky.Collections;
+import com.example.vertonowsky.advantage.AdvantageDto;
+import com.example.vertonowsky.advantage.AdvantageType;
+import com.example.vertonowsky.chapter.Chapter;
+import com.example.vertonowsky.chapter.ChapterDto;
+import com.example.vertonowsky.chapter.ChapterSerializer;
+import com.example.vertonowsky.chapter.CourseInfoDto;
 import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.course.repository.CourseRepository;
+import com.example.vertonowsky.topic.TopicDto;
+import com.example.vertonowsky.topic.TopicSerializer;
+import com.example.vertonowsky.topic.TopicService;
+import com.example.vertonowsky.topic.TopicStatus;
+import com.example.vertonowsky.topic.model.FinishedTopic;
+import com.example.vertonowsky.topic.model.Topic;
+import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
 
 @Service
 public class CourseService {
 
-
     private final CourseRepository courseRepository;
+    private final TopicService topicService;
+    private final UserService userService;
 
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, TopicService topicService, UserService userService) {
         this.courseRepository = courseRepository;
+        this.topicService = topicService;
+        this.userService = userService;
     }
-
-
-
-
 
     /**
      * Get List of Courses filtered by type and category
@@ -35,29 +52,20 @@ public class CourseService {
      * @param limit number of elements to return from the original list
      * @return List of courses sorted by given filters
      */
-    public List<CourseListDto> getCoursesWithCriteria(List<String> typeFilters, List<String> categoryFilters, int limit) {
+    public List<CourseDto> getCoursesWithCriteria(List<String> typeFilters, List<String> categoryFilters, int limit) {
         if (typeFilters.isEmpty() && categoryFilters.isEmpty()) {
-            List<CourseListDto> courses = courseRepository.findAllDtos(); //return all courses if no filters are applied
-            if (limit > 0) return limitNumberOfElements(courses, limit);
-            return courses;
+            List<Course> courses = courseRepository.findAll(); //return all courses if no filters are applied
+            if (limit > 0) courses = limitNumberOfElements(courses, limit);
+            return courses.stream().map(course -> CourseSerializer.serialize(course, BASE)).toList();
         }
-
 
         //change category filters from List<String> to List<Category> [Enum type]
-        List<Category> catFilters = new ArrayList<>();
-        for (String s : categoryFilters) {
-            try {
-                Category cat = Category.valueOf(s);
-                catFilters.add(cat);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+        List<CategoryType> catFilters = categoryFilters.stream().map(CategoryType::valueOf).toList();
 
-        List<CourseListDto> courses = courseRepository.findAllWithCondition(typeFilters, catFilters);
-        if (limit > 0) return limitNumberOfElements(courses, limit);
+        List<Course> courses = courseRepository.findAllWithCondition(typeFilters, catFilters);
+        if (limit > 0) courses = limitNumberOfElements(courses, limit);
 
-        return courses;
+        return courses.stream().map(course -> CourseSerializer.serialize(course, BASE)).toList();
     }
 
     /**
@@ -109,7 +117,7 @@ public class CourseService {
 
 
 
-    public List<CourseListDto> getCourseWithFilters(ObjectMapper mapper, String typeFilters, String categoryFilters, Integer limit) throws JsonProcessingException {
+    public List<CourseDto> getCourseWithFilters(ObjectMapper mapper, String typeFilters, String categoryFilters, Integer limit) throws JsonProcessingException {
         List<String> typeParamList = mapper.readValue(typeFilters, new TypeReference<>(){}); //Convert string in JSON format to List<String>
         List<String> categoryParamList = convertCategoryParamList(mapper, categoryFilters);
 
@@ -121,12 +129,143 @@ public class CourseService {
         return courseRepository.findById(id).orElse(null);
     }
 
+    public List<Course> listAll() {
+        return courseRepository.findAll();
+    }
+
     public List<String> listTypes() {
         return courseRepository.findAllTypes();
     }
 
     public List<String> listCategories() {
         return courseRepository.findAllCategories();
+    }
+
+
+    public Course get(Integer id, CourseQueryType courseQueryType) {
+        if (courseQueryType.equals(CourseQueryType.BASE))
+            return courseRepository.findById(id).orElse(null);
+
+        if (courseQueryType.equals(CourseQueryType.ADVANTAGES))
+            return courseRepository.findByIdWithAdvantages(id).orElse(null);
+
+        if (courseQueryType.equals(CourseQueryType.CHAPTERS))
+            return courseRepository.findByIdWithChapters(id).orElse(null);
+
+        if (courseQueryType.equals(CourseQueryType.PAYMENTS))
+            return courseRepository.findByIdWithPaymentHistories(id).orElse(null);
+
+        return courseRepository.findByIdAllData(id).orElse(null);
+    }
+
+    public Topic getFirstTopic(Course course) {
+        if (Collections.isNullOrEmpty(course.getChapters()))
+            return null;
+
+        return course.getChapters().stream().flatMap(chapter -> chapter.getTopics().stream()).findFirst().orElse(null);
+    }
+
+    public CourseInfoDto getDetailedCourseInfo(User user, Course course, Integer topicId) {
+        Topic selectedTopic = (topicId == null ? getFirstTopic(course) : topicService.getTopicById(course, topicId));
+        if (selectedTopic == null) return null;
+
+        if (course.getChapters() == null) return null;
+
+        Set<FinishedTopic> finishedTopics = user.getFinishedTopics();
+        List<Chapter> chapters = course.getChapters().stream().toList();
+        if (Collections.isNullOrEmpty(chapters)) return null;
+
+
+        List<ChapterDto> chaptersDto = new LinkedList<>();
+        int counter = 0;
+        boolean selectedTopicFinished = false; //mark if active topic has been finished
+        for (Chapter chapter : chapters) {
+            List<TopicDto> topics = new LinkedList<>();
+            for (Topic t : chapter.getTopics()) {
+
+                boolean blocked = false;  //refers to current topic status (is it blocked?)
+                if (user != null) {
+                    if (userService.isCourseValid(user, course)) {
+                        TopicStatus status = TopicStatus.AVAILABLE;
+                        if (userService.isTopicFinished(finishedTopics, t.getId()))
+                            status = TopicStatus.FINISHED;
+
+                        if (t.equals(selectedTopic)) {
+                            topics.add(TopicSerializer.serialize(t, status, true));  // true as last parameter means its active topic
+                            if (status == TopicStatus.FINISHED)
+                                selectedTopicFinished = true;
+                        } else
+                            topics.add(TopicSerializer.serialize(t, status, false)); // false means it's not currently active topic
+                    }
+                }
+
+                if (user == null || (!userService.isCourseValid(user, course))) {
+
+                    if (counter < 3) {
+                        if (t.equals(selectedTopic))
+                            topics.add(TopicSerializer.serialize(t, TopicStatus.AVAILABLE, true));
+                        else
+                            topics.add(TopicSerializer.serialize(t, TopicStatus.AVAILABLE, false));
+
+                    } else {
+                        topics.add(TopicSerializer.serialize(t, TopicStatus.BLOCKED, false, true));
+                        blocked = true;
+                    }
+
+                }
+                counter++;
+
+                //Check if user has permission to access specified topic
+                if (t.equals(selectedTopic)) {
+                    if (blocked) return null;
+                }
+            }
+            ChapterDto chapterDto = ChapterSerializer.serialize(chapter);
+            chapterDto.setTopics(topics);
+            chaptersDto.add(chapterDto);
+        }
+
+        return new CourseInfoDto(chaptersDto, TopicSerializer.serialize(selectedTopic), selectedTopicFinished);
+    }
+
+
+    public void calculateAdvantages(CourseDto courseDto) {
+        List<AdvantageDto> advantages = courseDto.getAdvantages();
+        for (AdvantageDto advantage : advantages) {
+            if (advantage.getAdvantageType().equals(AdvantageType.TOTAL_DURATION)) {
+                long totalDuration = getTotalDuration(courseDto);
+                String suffix = " godzina";
+                if (totalDuration > 1 && totalDuration < 5) suffix = " godziny";
+                if (totalDuration >= 5) suffix = " godzin";
+
+                String title = advantage.getTitle();
+                title = title.replace("%ss%", String.format("%d %s", totalDuration, suffix));
+                advantage.setTitle(title);
+            }
+
+            if (advantage.getAdvantageType().equals(AdvantageType.TASKS_COUNT)) {
+                int tasksCount = 100;
+                String suffix = " zadanie";
+                if (tasksCount > 1 && tasksCount < 5) suffix = " zadania";
+                if (tasksCount >= 5) suffix = " zadań";
+
+                String title = advantage.getTitle();
+                title = title.replace("%ss%", String.format("%d %s", tasksCount, suffix));
+                advantage.setTitle(title);
+            }
+        }
+    }
+
+
+    public long getTotalDuration(CourseDto courseDto) {
+        Set<TopicDto> topics = courseDto.getChapters().stream().flatMap(chapter -> {
+            if (chapter.getTopics() == null) return null;
+            return chapter.getTopics().stream();
+        }).collect(Collectors.toSet());
+
+        if (Collections.isNullOrEmpty(topics)) return 0;
+        long totalSeconds = topics.stream().mapToLong(topic -> topic.getDuration() == null ? 0 : topic.getDuration()).sum();
+        return totalSeconds / 3600;
     }
 
 }

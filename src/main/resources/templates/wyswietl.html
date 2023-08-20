@@ -55,7 +55,7 @@
 
                             </ul>
 
-                            <a class="button_gray" th:href="@{'/kurs/' + ${course.id}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
+                            <a class="button_gray" th:href="@{'/kurs/' + ${course.courseId}}"> Wybieram <i class="fas fa-arrow-circle-right"></i></a>
 
                         </div>
 
@@ -191,7 +191,7 @@
                             <div class="content">
                                 <table id="payment_table">
                                     <tr>
-                                        <td><p class="course_title" th:text="${course.name}"></p><p class="category">Kategoria: <span class="cat" th:text="'[' + ${course.getCategoryAsString()} + ']'"></span></p></td>
+                                        <td><p class="course_title" th:text="${course.name}"></p><p class="categoryType">Kategoria: <span class="cat" th:text="'[' + ${course.capitalizeCategory()} + ']'"></span></p></td>
 
                                         <td th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></td>
                                     </tr>
@@ -271,7 +271,7 @@
 
                         <div class="buttons">
                             <button class="button_gray" onclick="closeModal()">Zamknij <i class="fas fa-arrow-circle-right"></i></button>
-                            <a th:href="@{'/kurs/' + ${course.id}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
+                            <a th:href="@{'/kurs/' + ${course.courseId}}" class="button_gray">Przejdź do kursu <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
 
                     </div>
@@ -354,7 +354,7 @@
             $.ajax({
                 type:"POST",
                 dataType:"json",
-                data: { courseId: /*[[${course.id}]]*/ "", codeName: code_name},
+                data: { courseId: /*[[${course.courseId}]]*/ "", codeName: code_name},
                 url:"/purchase/verifyPayment",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token)
@@ -421,7 +421,7 @@
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                data: { courseId: /*[[${course.id}]]*/ "", codeName: code_name },
+                data: { courseId: /*[[${course.courseId}]]*/ "", codeName: code_name },
                 url: "/purchase/useDiscountCode",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token)

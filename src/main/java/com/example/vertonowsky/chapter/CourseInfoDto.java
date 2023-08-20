@@ -7,7 +7,6 @@ import java.util.List;
 
 public class CourseInfoDto {
 
-
     private List<ChapterDto> chapters;
     private TopicDto selectedTopic;
     private boolean selectedTopicFinished;

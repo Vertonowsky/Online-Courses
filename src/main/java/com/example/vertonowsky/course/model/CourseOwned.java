@@ -6,11 +6,11 @@ import com.example.vertonowsky.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "courses_owned")
+@Table(name = "course_owned")
 public class CourseOwned {
 
     @Id
@@ -28,14 +28,25 @@ public class CourseOwned {
     private Course course;
 
     @Column(name = "buy_date")
-    private Date buyDate;
+    private OffsetDateTime buyDate;
 
     @Column(name = "expiry_date")
-    private Date expiryDate;
+    private OffsetDateTime expiryDate;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
+
+
+    public CourseOwned() {
+
+    }
+
+    public CourseOwned(OffsetDateTime buyDate, OffsetDateTime expiryDate, CourseStatus status) {
+        this.buyDate = buyDate;
+        this.expiryDate = expiryDate;
+        this.status = status;
+    }
 
 
     public Integer getId() {
@@ -58,19 +69,19 @@ public class CourseOwned {
         this.course = course;
     }
 
-    public Date getBuyDate() {
+    public OffsetDateTime getBuyDate() {
         return buyDate;
     }
 
-    public void setBuyDate(Date buyDate) {
+    public void setBuyDate(OffsetDateTime buyDate) {
         this.buyDate = buyDate;
     }
 
-    public Date getExpiryDate() {
+    public OffsetDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(OffsetDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -80,17 +91,6 @@ public class CourseOwned {
 
     public void setStatus(CourseStatus status) {
         this.status = status;
-    }
-
-
-    public CourseOwned(Date buyDate, Date expiryDate, CourseStatus status) {
-        this.buyDate = buyDate;
-        this.expiryDate = expiryDate;
-        this.status = status;
-    }
-
-    public CourseOwned() {
-
     }
 
 

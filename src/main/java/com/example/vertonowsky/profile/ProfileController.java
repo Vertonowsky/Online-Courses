@@ -1,7 +1,8 @@
 package com.example.vertonowsky.profile;
 
+import com.example.vertonowsky.course.CourseDto;
 import com.example.vertonowsky.course.CourseSerializer;
-import com.example.vertonowsky.course.dto.CourseDto;
+import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserInfoDto;
 import com.example.vertonowsky.user.UserQueryType;
@@ -46,9 +47,10 @@ public class ProfileController {
         if (user == null) return new ModelAndView("redirect:/");
 
         UserInfoDto userDto = UserSerializer.serialize(user, AVATAR, UserSerializer.Task.PAYMENTS);
-        if (user.getCoursesOwned() != null) {
+        List<CourseOwned> courseOwnedList = userService.sortCoursesOwned(user);
+        if (courseOwnedList != null) {
             // Get every bought course progress
-            List<CourseDto> courseDtos = user.getCoursesOwned().stream().map(courseOwned -> CourseSerializer.serialize(courseOwned, BASE, PAYMENTS)).toList();
+            List<CourseDto> courseDtos = courseOwnedList.stream().map(courseOwned -> CourseSerializer.serialize(courseOwned, BASE, PAYMENTS)).toList();
             profileService.calculateCourseCompletion(courseDtos, user);
             userDto.setCourses(courseDtos);
         }

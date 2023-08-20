@@ -20,12 +20,12 @@ import java.util.Optional;
 @Service
 public class MyOidcUserService extends OidcUserService {
 
-    private final UserService userService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public MyOidcUserService(UserService userService, UserRepository userRepository) {
-        this.userService = userService;
+    public MyOidcUserService(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -33,7 +33,9 @@ public class MyOidcUserService extends OidcUserService {
         OidcUser oidcUser = super.loadUser(userRequest);
 
         try {
+
             return processOidcUser(userRequest, oidcUser);
+
         } catch (Exception e) {
             throw new InternalAuthenticationServiceException(e.getMessage(), e.getCause());
         }

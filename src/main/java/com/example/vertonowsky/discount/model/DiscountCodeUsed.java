@@ -5,11 +5,11 @@ import com.example.vertonowsky.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "discount_codes_used")
+@Table(name = "discount_code_used")
 public class DiscountCodeUsed {
 
     @Id
@@ -27,12 +27,12 @@ public class DiscountCodeUsed {
     private DiscountCode discountCode;
 
     @Column(name = "date")
-    private Date date;
+    private OffsetDateTime date;
 
 
 
 
-    public DiscountCodeUsed(Date date) {
+    public DiscountCodeUsed(OffsetDateTime date) {
         this.date = date;
     }
 
@@ -63,11 +63,11 @@ public class DiscountCodeUsed {
         this.discountCode = discountCode;
     }
 
-    public Date getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

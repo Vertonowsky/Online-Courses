@@ -1,7 +1,7 @@
 package com.example.vertonowsky.profile;
 
 import com.example.vertonowsky.chapter.Chapter;
-import com.example.vertonowsky.course.dto.CourseDto;
+import com.example.vertonowsky.course.CourseDto;
 import com.example.vertonowsky.course.model.Course;
 import com.example.vertonowsky.course.model.CourseOwned;
 import com.example.vertonowsky.topic.model.FinishedTopic;
@@ -69,7 +69,7 @@ public class ProfileService {
 
 
     public void calculateCourseCompletion(List<CourseDto> courseDtos, User user) {
-        List<CourseOwned> courseOwnedList = user.getCoursesOwned();
+        Set<CourseOwned> courseOwnedList = user.getCoursesOwned();
         Set<Integer> finishedTopicsIds = user.getFinishedTopics().stream().map((finishedTopic -> finishedTopic.getTopic().getId())).collect(Collectors.toSet());
 
         for (CourseOwned courseOwned : courseOwnedList) {

@@ -19,7 +19,10 @@ import com.example.vertonowsky.user.User;
 import com.example.vertonowsky.user.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -120,7 +123,7 @@ public class PaymentService {
      */
     public Map<String, Object> verifyData(String email, Integer courseId, String codeName, boolean usingDiscount) throws CourseNotFoundException, DiscountCodeNotFoundException, DiscountCodeExpiredException, UserNotFoundException {
         Map<String, Object> response = new HashMap<>();
-        Date now = new Date(System.currentTimeMillis());
+        OffsetDateTime now = OffsetDateTime.now();
 
         if (courseId < 1) throw new CourseNotFoundException("Błąd: Nie odnaleziono podanego kursu.");
         Optional<Course> course = courseRepository.findById(courseId);
@@ -135,7 +138,7 @@ public class PaymentService {
             Optional<DiscountCode> discountCode = discountCodeRepository.findByName(codeName);
             if (discountCode.isEmpty()) throw new DiscountCodeNotFoundException(String.format("Błąd: Kod o nazwie %s nie istnieje lub utracił ważność.", codeName));
 
-            if (now.compareTo(discountCode.get().getExpiryDate()) > 0) throw new DiscountCodeExpiredException("Błąd: Podany kod utracił ważność.");
+            if (now.isAfter(discountCode.get().getExpiryDate())) throw new DiscountCodeExpiredException("Błąd: Podany kod utracił ważność.");
 
             response.put("discountCode", discountCode.get());
         }
@@ -201,34 +204,28 @@ public class PaymentService {
         Map<String, Object> response = new HashMap<>();
         Optional<CourseOwned> courseOwned = courseOwnedRepository.findIfAlreadyBought(user, course);
 
-        Calendar calendar = new GregorianCalendar();
-        Date now = new Date(System.currentTimeMillis());
+        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime validTill = now;
 
         // User has bought this course before
         if (courseOwned.isPresent()) {
-            Date expiryDate = courseOwned.get().getExpiryDate();
+            OffsetDateTime expiryDate = courseOwned.get().getExpiryDate();
 
             // Check if course is still active (yes, it is)
-            if (now.compareTo(expiryDate) < 0)
-                calendar.setTime(expiryDate);
+            if (now.isBefore(expiryDate))
+                validTill = expiryDate;
 
-            // Otherways, when course isn't active anymore
-            else
-                calendar.setTime(now);
+            // Otherways, when course isn't active anymore don't do anything
 
-            calendar.add(Calendar.DATE, 90);
-            courseOwnedRepository.updateExistingCourseExpiration(user, course, now, calendar.getTime());
+            validTill = validTill.plusDays(90);
+            courseOwnedRepository.updateExistingCourseExpiration(user, course, now, validTill);
 
         } else {
-
-            calendar.setTime(now);
-            calendar.add(Calendar.DATE, 90);
-            Date expiryDate = calendar.getTime();
 
             CourseOwned courseOwn = new CourseOwned();
             courseOwn.setStatus(CourseStatus.NEW);
             courseOwn.setBuyDate(now);
-            courseOwn.setExpiryDate(expiryDate);
+            courseOwn.setExpiryDate(OffsetDateTime.now().plusDays(90));
             courseOwn.setCourse(course);
             courseOwn.setUser(user);
 

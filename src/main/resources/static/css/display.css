@@ -776,13 +776,13 @@
                     font-size: 15px;
                 }
 
-                #payment_container .category {
+                #payment_container .categoryType {
                     font-size: 14px;
                     margin: 0;
                     color: #999;
                 }
 
-                #payment_container .category .cat {
+                #payment_container .categoryType .cat {
                     color: var(--color-light-blue);
                 }
 
@@ -1263,7 +1263,7 @@
                 font-size: var(--font-size-smaller);
             }
 
-            #payment_container .category {
+            #payment_container .categoryType {
                 font-size: var(--font-size-phone);
             }
 

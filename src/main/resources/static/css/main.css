@@ -836,7 +836,7 @@
                 color: var(--color-default);
             }
 
-            #top_panel .category {
+            #top_panel .categoryType {
                 font-size: 18px;
                 font-weight: normal;
                 color: var(--color-light-blue);
@@ -1594,7 +1594,7 @@
                     font-size: 16px;
                 }
 
-                #top_panel .category {
+                #top_panel .categoryType {
                     font-size: 16px;
                 }
 
@@ -1851,7 +1851,7 @@
                 font-size: 14px;
             }
 
-            #top_panel .category {
+            #top_panel .categoryType {
                 font-size: 14px;
             }
 

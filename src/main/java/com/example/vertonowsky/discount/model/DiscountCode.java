@@ -5,12 +5,12 @@ import com.example.vertonowsky.discount.DiscountType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "discount_codes")
+@Table(name = "discount_code")
 public class DiscountCode {
 
     @Id
@@ -32,20 +32,17 @@ public class DiscountCode {
     private double value;
 
     @Column(name = "expiry_date", nullable = false)
-    private Date expiryDate;
-
-
+    private OffsetDateTime expiryDate;
 
     @OneToMany(mappedBy = "discountCode")
     @JsonIgnore
     private Set<DiscountCodeUsed> codes;
 
-
     public DiscountCode() {
 
     }
 
-    public DiscountCode(String name, String title, DiscountType type, double value, Date expiryDate) {
+    public DiscountCode(String name, String title, DiscountType type, double value, OffsetDateTime expiryDate) {
         this.name = name;
         this.title = title;
         this.type = type;
@@ -90,11 +87,11 @@ public class DiscountCode {
         this.value = value;
     }
 
-    public Date getExpiryDate() {
+    public OffsetDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(OffsetDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -105,8 +102,6 @@ public class DiscountCode {
     public void setCodes(Set<DiscountCodeUsed> codes) {
         this.codes = codes;
     }
-
-
 
 
     @Override
@@ -127,6 +122,5 @@ public class DiscountCode {
     public int hashCode() {
         return Objects.hash(id, name, title, type, value, expiryDate);
     }
-
 
 }

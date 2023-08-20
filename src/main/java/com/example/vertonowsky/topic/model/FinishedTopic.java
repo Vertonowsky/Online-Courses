@@ -5,11 +5,11 @@ import com.example.vertonowsky.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "finished_topics")
+@Table(name = "finished_topic")
 public class FinishedTopic {
 
     @Id
@@ -27,7 +27,7 @@ public class FinishedTopic {
     private Topic topic;
 
     @Column(name = "date", nullable = false)
-    private Date date;
+    private OffsetDateTime date;
 
 
 
@@ -35,7 +35,7 @@ public class FinishedTopic {
 
     public FinishedTopic() {}
 
-    public FinishedTopic(User user, Topic topic, Date date) {
+    public FinishedTopic(User user, Topic topic, OffsetDateTime date) {
         this.user = user;
         this.topic = topic;
         this.date = date;
@@ -61,11 +61,11 @@ public class FinishedTopic {
         this.topic = topic;
     }
 
-    public Date getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

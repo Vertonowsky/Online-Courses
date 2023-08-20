@@ -6,7 +6,7 @@ import com.example.vertonowsky.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
@@ -28,7 +28,7 @@ public class PaymentHistory {
     private Course course;
 
     @Column(name = "proceed_date", nullable = false)
-    private Date proceedDate;
+    private OffsetDateTime proceedDate;
 
     @Column(name = "amount", nullable = false)
     private Double amount;
@@ -40,17 +40,14 @@ public class PaymentHistory {
     private boolean success;
 
 
-
-
     public PaymentHistory() {}
 
-    public PaymentHistory(Date proceedDate, Double amount, String currency, boolean success) {
+    public PaymentHistory(OffsetDateTime proceedDate, Double amount, String currency, boolean success) {
         this.proceedDate = proceedDate;
         this.amount = amount;
         this.currency = currency;
         this.success = success;
     }
-
 
 
     public Integer getId() {
@@ -73,11 +70,11 @@ public class PaymentHistory {
         this.course = course;
     }
 
-    public Date getProceedDate() {
+    public OffsetDateTime getProceedDate() {
         return proceedDate;
     }
 
-    public void setProceedDate(Date proceedDate) {
+    public void setProceedDate(OffsetDateTime proceedDate) {
         this.proceedDate = proceedDate;
     }
 
