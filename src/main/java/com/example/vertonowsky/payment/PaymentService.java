@@ -147,7 +147,6 @@ public class PaymentService {
      * @param user user object
      * @param course course which is being bought
      * @param discountCode discount code used during the transcation
-     * @return map of objects: success, message, discount, newPrice
      */
     public void buyCourse(User user, Course course, DiscountCode discountCode, PaymentDto paymentDto) {
         CourseOwned courseOwned = courseOwnedRepository.findIfAlreadyBought(user, course).orElse(null);

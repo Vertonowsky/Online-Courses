@@ -151,6 +151,13 @@ public class CourseController {
 
 
 
+    @PostMapping("/api/discountCode/details")
+    public ModelAndView getDiscountCodeDetails(@RequestParam String title, @RequestParam Double discount, Model model) {
+        model.addAttribute("discountTitle", title);
+        model.addAttribute("discountValue", discount * -1);
+
+        return new ModelAndView("wyswietl :: discount_row");
+    }
 
 
     /**

@@ -574,12 +574,8 @@
 
 
     .modal .top {
-        padding-bottom: 60px;
+        padding: 15px 0 50px 0;
     }
-
-        .modal .top .title {
-            color: #999999;
-        }
 
         .step_progress_bar {
             position: relative;
@@ -746,58 +742,58 @@
         }
 
 
-                #payment_container table {
+                #payment_table {
                     width: 100%;
-                    border-collapse: collapse;
-                    border-right: 1px solid #7B8FA6;
+                    display: flex;
+                    flex-direction: column;
                 }
                 
-                #payment_container tr {
-                    border-bottom: 1px dashed #7B8FA6;
-                }
-
-                #payment_container td {
-                    text-align: left;
-                    font-size: 15px;
-                    padding: 15px 5px 15px 5px;
-                }
-
-                #payment_container td:nth-child(2n) {
-                    text-align: right;
-                    font-weight: bold;
-                    font-size: 16px;
-                    padding-right: 10px;
-                    color: var(--color-light-blue);
-                }
-
-                #payment_container .course_title {
-                    color: var(--color-title);
-                    margin: 0;
-                    font-size: 15px;
-                }
-
-                #payment_container .categoryType {
-                    font-size: 14px;
-                    margin: 0;
-                    color: #999;
-                }
-
-                #payment_container .categoryType .cat {
-                    color: var(--color-light-blue);
-                }
-
-                #final_price {
+                #payment_table .row {
                     position: relative;
-                    margin-top: 10px;
-                    padding-bottom: 5px;
-                    border-bottom: 2px solid #8092B3;
-                    font-size: 16px;
-                    font-weight: bold;
-                    text-align: center;
-                    width: 100px;
-                    float: right;
-                    color: var(--color-light-blue);
+                    box-sizing: border-box;
+                    display: flex;
+                    align-items: center;
+                    background: #FAFAFA;
+                    padding: 12px 25px;
+                    border-radius: 8px;
                 }
+
+                #payment_table .row:first-child {
+                    margin-bottom: 15px;
+                }
+
+                #discount_row.row {
+                    margin-bottom: 15px;
+                }
+
+                    #payment_table .course_title {
+                        color: var(--color-title);
+                        margin: 0;
+                        font-size: 15px;
+                    }
+
+                    #payment_table .categoryType {
+                        font-size: 14px;
+                        margin: 0;
+                        color: #999;
+                    }
+
+                    #payment_table .categoryType .cat {
+                        color: var(--color-light-blue);
+                    }
+
+                    #payment_table #final_price_title {
+                        text-transform: uppercase;
+                        font-weight: bold;
+                    }
+
+                    #payment_table .row_price {
+                        font-weight: bold;
+                        font-size: 16px;
+                        margin-left: auto;
+                        color: var(--color-light-blue);
+                    }
+
 
                 #payment_container .button_gray {
                     position: relative;
@@ -813,59 +809,59 @@
                     width: 280px;
                 }
 
-                        #payment_container #discount_code_input {
-                            background: transparent;
-                            border: 2px solid #849EBD;
-                            border-radius: 5px;
-                            font-size: 14px;
-                            padding: 14px 0 10px 12px;
+                    #payment_container #discount_code_input {
+                        background: transparent;
+                        border: 2px solid #849EBD;
+                        border-radius: 5px;
+                        font-size: 14px;
+                        padding: 14px 0 10px 12px;
+                    }
+
+                    #payment_container #discount_code_input.disabled {
+                        background: #CCE3FF;
+                        border: 2px solid #83A8C9;
+                        color: #29323D;
+                    }
+
+                        #discount_icon {
+                            position: absolute;
+                            font-size: 22px;
+                            right: 10px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            cursor: pointer;
+                            color: var(--color-light-blue);
+                            transition: all 0.3s;
                         }
 
-                        #payment_container #discount_code_input.disabled {
-                            background: #CCE3FF;
-                            border: 2px solid #83A8C9;
+
+                        #discount_icon:hover {
+                            color: #18BCF0;
+                        }
+
+                        #payment_container #discount_code_input.disabled ~ #discount_icon {
+                            cursor: not-allowed;
                             color: #29323D;
                         }
 
-                                #discount_icon {
-                                    position: absolute;
-                                    font-size: 22px;
-                                    right: 10px;
-                                    top: 50%;
-                                    transform: translateY(-50%);
-                                    cursor: pointer;
-                                    color: var(--color-light-blue);
-                                    transition: all 0.3s;
-                                }
-            
-            
-                                #discount_icon:hover {
-                                    color: #18BCF0;
-                                }
-                
-                                #payment_container #discount_code_input.disabled ~ #discount_icon {
-                                    cursor: not-allowed;
-                                    color: #29323D;
-                                }
 
-        
-                        #payment_container .input_group label {
-                            background: var(--color-white);
-                            border-color: #878A99;
-                        }
-        
-                        #payment_container #discount_code_input.disabled ~ label {
-                            display: none;
-                        }
+                    #payment_container .input_group label {
+                        background: var(--color-white);
+                        border-color: #878A99;
+                    }
+
+                    #payment_container #discount_code_input.disabled ~ label {
+                        display: none;
+                    }
 
 
-                        #payment_container .checkbox_body {
-                            width: 200px;
-                            left: 25px;
-                            right: 0;
-                            margin: 0 auto 30px auto;
-                            padding: 0;
-                        }
+                    #payment_container .checkbox_body {
+                        width: 200px;
+                        left: 25px;
+                        right: 0;
+                        margin: 0 auto 30px auto;
+                        padding: 0;
+                    }
 
                 
 
