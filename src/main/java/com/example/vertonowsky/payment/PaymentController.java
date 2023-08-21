@@ -46,6 +46,7 @@ public class PaymentController {
             Map<String, Object> map = new HashMap<>();
             map.put("success", true);
             map.put("message", String.format("Sukces: Użyto kodu rabatowego %s!", codeName));
+            map.put("discount", true);
             map.put("payment", paymentService.useDiscountCode(userService.getEmail(auth), courseId, codeName, true));
             return map;
 

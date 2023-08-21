@@ -157,9 +157,6 @@
             
                 <div class="top">
 
-                    <h2 th:if="${loggedIn}" th:id="main_title" class="title" th:text="'Sprawdź poprawność danych i dokonaj płatności'"></h2>
-                    <h2 th:if="${!loggedIn}" th:id="main_title" class="title" th:text="'Do korzystania z pełnej wersji kursu wymagane jest konto'"></h2>
-
                     <div class="step_progress_bar">
                         <ul class="progressbar">
 
@@ -189,16 +186,37 @@
 
                         <div id="payment_container">
                             <div class="content">
-                                <table id="payment_table">
-                                    <tr>
-                                        <td><p class="course_title" th:text="${course.name}"></p><p class="categoryType">Kategoria: <span class="cat" th:text="'[' + ${course.capitalizeCategory()} + ']'"></span></p></td>
+                                <div id="payment_table">
+                                    <div class="row">
+                                        <div class="left">
+                                            <p class="course_title" th:text="${course.name}"></p>
+                                            <p class="categoryType">Kategoria: <span class="cat" th:text="'[' + ${course.capitalizeCategory()} + ']'"></span></p>
+                                        </div>
 
-                                        <td th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></td>
-                                    </tr>
+                                        <p class="row_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></p>
+                                    </div>
 
-                                </table>
+                                    <div id="discount_row">
+                                        <th:block th:fragment="discount_row" th:if="${discountTitle != null}">
+                                            <div class="left" th:if="${discountTitle != null}">
+                                                <p class="course_title" th:text="${discountTitle}"></p>
+                                            </div>
 
-                                <div id="final_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></div>
+                                            <p class="row_price" th:if="${discountValue != null}" th:text="${discountValue} + ' zł'"></p>
+                                        </th:block>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="left">
+                                            <p class="course_title" id="final_price_title">Do zapłaty:</p>
+                                        </div>
+
+                                        <p class="row_price" id="final_price" th:text="${course.pricePromotion > 0} ? ${course.getPricePromotionAsString()} + ' zł' : ${course.getPriceAsString()} + ' zł'"></p>
+
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!--
@@ -376,8 +394,6 @@
 
                         tab_section[tab_section.length-1].classList.add("active");
 
-                        document.getElementById("main_title").innerHTML = "Przejdź do swojego profilu aby skorzystać z kursu";
-
                     }
                 },
 
@@ -429,14 +445,7 @@
 
                     if (data.success) {
 
-                        let text = '<tr>'+
-                                        '<td>' + data.payment.discountCode.title + '</td>' +
-                                        '<td>-' + (data.payment.discount.toFixed(2)).replaceAll(".", ",") + ' zł</td>' +
-                                    '</tr>';
-
-
-                        $("#payment_table").append(text);
-
+                        refreshDiscountView(data.payment.discountCode.title, data.payment.discount);
 
                         document.getElementById("discount_icon").className = "fas fa-times-circle";
                         discount_input.disabled = true;
@@ -445,6 +454,38 @@
                         document.getElementById('final_price').innerHTML = data.payment.newPrice.toFixed(2).replaceAll(".", ",") + " zł";
                     }
 
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.warn(xhr.responseText);
+                }
+            });
+        }
+    }
+
+
+
+    function refreshDiscountView(title, discount) {
+        if (!(document.getElementById('discount_icon').className === "fas fa-times-circle")) {
+
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type: "POST",
+                dataType: "text",
+                data: { title: title, discount: discount},
+                url: "/api/discountCode/details",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(data) {
+
+                    const discountRow = document.getElementById("discount_row");
+                    if (!discountRow.classList.contains("row"))
+                        discountRow.classList.add("row");
+                    discountRow.innerHTML = data;
 
                 },
                 error: function(xhr, status, error) {
