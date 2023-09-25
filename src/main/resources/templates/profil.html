@@ -69,7 +69,7 @@
 
                         <button class="legend_link active" data-id="1" onclick="openTab(this)"> <i class="fas fa-laptop"></i> <span class="legend_link_content"> Kursy </span></button>
                         <button class="legend_link" data-id="2" onclick="openTab(this)"> <i class="fas fa-history"></i> <span class="legend_link_content"> Historia transakcji </span></button>
-                        <button class="legend_link" data-id="4" onclick="openTab(this)"> <i class="fas fa-cog"></i> <span class="legend_link_content"> Ustawienia </span></button>
+                        <button class="legend_link" data-id="3" onclick="openTab(this)"> <i class="fas fa-cog"></i> <span class="legend_link_content"> Ustawienia </span></button>
 
                     </div>
 
@@ -93,6 +93,8 @@
             <div id="content_right">
 
                 <div id="courses_list" class="pageable active" th:fragment="course-list">
+
+                    <h2 class="mobile_heading">Moje kursy:</h2>
 
                     <!--
                         No Data Found container
@@ -144,6 +146,8 @@
 
                 <div id="payment_history" class="pageable" th:fragment="payment_history">
 
+                    <h2 class="mobile_heading">Historia transakcji:</h2>
+
                     <!--
                         No Data Found container
                     -->
@@ -169,6 +173,13 @@
                         </div>
 
                     </div>
+
+                </div>
+
+
+                <div id="settings" class="pageable" th:fragment="settings">
+
+                    <h2 class="mobile_heading">Ustawienia:</h2>
 
                 </div>
 
@@ -303,8 +314,6 @@
         }
 
 
-
-
         function changeAvatar(id) {
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
@@ -335,51 +344,6 @@
                 }
             });
         }
-
-
-
-        // /**
-        //  * Opens navigation menu on smaller devices
-        //  */
-        // const optionsToggle = document.getElementById("options_panel_button");
-        // const contentLeft = document.getElementById("content_left");
-        //
-        // function openNav2() {
-        //     void contentLeft.offsetWidth;
-        //     contentLeft.className = "";
-        //
-        //     if (!optionsToggle.classList.contains("active")) {
-        //         optionsToggle.classList.add("active");
-        //         shadow.classList.add('active');
-        //         contentLeft.classList.add('active');
-        //     } else {
-        //         optionsToggle.classList.remove("active");
-        //         shadow.classList.remove("active");
-        //         contentLeft.classList.remove('active');
-        //     }
-        //
-        // }
-        //
-        // window.addEventListener("click", function(event) {
-        //
-        //     // If user clicked on navPanelToggle button, then open minHeader.
-        //     if (optionsToggle.contains(event.target)) {
-        //         openNav2();
-        //         return;
-        //     }
-        //
-        //     // If user clicked outside minHeader and header
-        //     if (!contentLeft.contains(event.target) && !header.contains(event.target)){
-        //         // If minHeader is currently visible
-        //         if (optionsToggle.classList.contains("active")) {
-        //             optionsToggle.classList.remove("active");
-        //             shadow.classList.remove("active");
-        //             contentLeft.classList.remove('active');
-        //         }
-        //     }
-        // });
-
-
 
     </script>
 
