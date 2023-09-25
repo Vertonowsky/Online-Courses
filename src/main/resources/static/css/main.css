@@ -1684,9 +1684,7 @@
         @media screen and (max-width: 580px) {
 
             #banner .blob1 {
-                min-width: 400px;
-                top: 5%;
-                left: -15%;
+                display: none;
             }
 
             #banner .blob2 {
@@ -1694,9 +1692,12 @@
             }
 
             #banner .blob3 {
-                min-width: 420px;
-                top: 15%;
+                min-width: 0;
+                width: 100%;
+                top: 10%;
                 left: 0;
+                right: 0;
+                margin: 0 auto;
             }
 
             #banner .blob4 {
@@ -1720,7 +1721,7 @@
 
             #section_introduction {
                 width: 95%;
-                padding: 100px 0 80px 0;
+                padding: 80px 0 60px 0;
             }
 
                 #section_introduction .left {
@@ -1733,6 +1734,7 @@
                     }
 
                 #section_introduction .right {
+                    margin-top: 0;
                     width: 85%;
                 }
 
@@ -1758,7 +1760,7 @@
             }
 
             #section3 {
-                padding-top: 100px;
+                padding-top: 50px;
             }
 
 
