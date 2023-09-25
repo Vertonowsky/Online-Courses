@@ -53,8 +53,8 @@ body {
 
 #content_left {
     position: sticky;
+    align-self: start;
     padding: 30px 10px;
-    height: 80vh;
     width: 33%;
 }
 
@@ -193,7 +193,7 @@ body {
             display: block;
             box-sizing: border-box;
             cursor: pointer;
-            margin: 40px auto 0 auto;
+            margin: 60px auto 0 auto;
             width: 200px;
         }
 
@@ -304,6 +304,67 @@ body {
 
 
 
+/* Settings window */
+#settings {
+    position: relative;
+    box-sizing: border-box;
+    padding: 30px;
+}
+
+    #settings .input_group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    #settings .input_group:last-child {
+        margin-bottom: 0;
+    }
+
+#settings .input_group label {
+    position: relative;
+    margin: 0 0 7px 7px;
+    font-weight: bold;
+    font-size: 16px;
+    flex-basis: 100%;
+}
+
+    #settings .input_group .input {
+        border-radius: 7px;
+        font-size: 15px;
+        padding: 12px 8px;
+        width: 100%;
+        max-width: 500px;
+        flex-basis: 80%;
+    }
+
+    #settings .input_group .input.readonly {
+        background: #FAFAFA;
+        color: #ABABAB;
+    }
+
+    #settings .input_group .input.readonly:hover, #settings .input_group .input.readonly:focus {
+        border: 2px solid #DBDBDB;
+    }
+
+
+    #settings_password_edit {
+        flex-basis: calc(20% - 15px);
+        margin-left: 15px;
+        color: var(--color-blue);
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    #settings_description {
+        margin: 100px 0 0 0;
+        text-align: center;
+        font-size: 14px;
+        color: #999999;
+    }
+
+
 
 
 .modal_content {
@@ -411,10 +472,13 @@ body {
             text-align: center;
         }
 
+            #settings {
+                text-align: left;
+            }
+
             .pageable {
                 padding: 0;
             }
-
 
         .modal_content {
             width: 80%;
@@ -499,6 +563,7 @@ body {
             flex-wrap: wrap;
             min-height: 240px;
             max-height: 240px;
+            align-self: center;
             width: 95%;
             background: #FCFCFC;
             border: none;
@@ -624,6 +689,23 @@ body {
             font-size: var(--font-size-phone);
         }
 
+
+        #settings .input_group label {
+            font-size: var(--font-size-normal);
+        }
+
+        #settings .input_group .input {
+            font-size: var(--font-size-smaller);
+            padding: 10px 7px;
+            flex-basis: 75%;
+        }
+
+        #settings_password_edit {
+            flex-basis: calc(25% - 10px);
+            margin-left: 10px;
+            font-size: var(--font-size-smaller);
+        }
+
     }
 
 
@@ -637,6 +719,15 @@ body {
             .course_container .right {
                 padding-bottom: 40px;
             }
+
+        #settings {
+            padding: 30px 15px;
+        }
+
+        #settings_description {
+            margin-top: 60px;
+            font-size: var(--font-size-phone);
+        }
 
     }
 
@@ -703,6 +794,28 @@ body {
         }
 
         .progress_background {
+            font-size: var(--font-size-phone);
+        }
+
+
+        #settings {
+            padding: 25px 10px;
+        }
+
+        #settings .input_group label {
+            font-size: var(--font-size-smaller);
+        }
+
+        #settings .input_group .input {
+            font-size: var(--font-size-phone);
+            padding: 10px 7px;
+            flex-basis: 100%;
+        }
+
+        #settings_password_edit {
+            text-align: center;
+            flex-basis: 100%;
+            margin: 8px 0 0 0;
             font-size: var(--font-size-phone);
         }
 

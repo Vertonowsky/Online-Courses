@@ -177,9 +177,21 @@
                 </div>
 
 
-                <div id="settings" class="pageable" th:fragment="settings">
+                <div id="settings" class="window pageable" th:fragment="settings">
 
-                    <h2 class="mobile_heading">Ustawienia:</h2>
+                    <div class="input_group">
+                        <label for="settings_email">Adres email:</label>
+                        <input id="settings_email" type="text" class="input readonly" readonly th:value="${#authentication.getPrincipal().getEmail()}">
+                    </div>
+
+                    <div class="input_group">
+                        <label for="settings_password">Hasło:</label>
+                        <input id="settings_password" name="settings_password" type="password" class="input" readonly value="123.asd/12oiajds">
+
+                        <div id="settings_password_edit"> Zmień hasło </div>
+                    </div>
+
+                    <p id="settings_description"> Dziękujemy za korzystanie z naszego serwisu. W razie wątpliwości z chęcią udzielimy odpowiedzi na wszelkie pytania. </p>
 
                 </div>
 
