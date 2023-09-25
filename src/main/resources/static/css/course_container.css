@@ -246,7 +246,7 @@
                     vertical-align: middle;
                     font-size: 16px;
                     color: #fff;
-                    width: 30px;
+                    width: 25px;
                     font-weight: bold;
                 }
 
@@ -266,7 +266,7 @@
                     vertical-align: middle;
                     text-align: left;
                     font-size: 14px;
-                    width: calc(75% - 60px);
+                    width: calc(75% - 40px);
                     color: #fff;
                 }
 
@@ -445,7 +445,9 @@
 
 
                 #course_left #all_topics .chapter_header .th_title {
-                    width: calc(100% - 50px);
+                    box-sizing: border-box;
+                    width: calc(100% - 30px);
+                    margin-left: 5px;
                 }
 
 
@@ -571,6 +573,10 @@
                 font-size: var(--font-size-phone);
             }
 
+            .chapter_header .th_title {
+                width: calc(75% - 60px);
+            }
+
             .chapter_header .th_type,
             .topic_header .td_type {
                 font-size: 18px;
@@ -628,6 +634,11 @@
 
 
     @media screen and (max-width:  480px) {
+
+
+        #course_left #all_topics .chapter_header .th_title {
+            width: calc(100% - 50px);
+        }
 
         .course_container .desc {
             font-size: var(--font-size-phone);
@@ -789,7 +800,7 @@
         }
 
         #course_left #all_topics .chapter_header .th_title {
-            padding-left: 7px;
+            margin-left: 7px;
             width: 100%;
         }
 
