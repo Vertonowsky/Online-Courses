@@ -768,8 +768,8 @@
 
                     #payment_table .course_title {
                         color: var(--color-title);
+                        font-size: var(--font-size-normal);
                         margin: 0;
-                        font-size: 15px;
                     }
 
                     #payment_table .categoryType {
@@ -791,6 +791,7 @@
                         font-weight: bold;
                         font-size: 16px;
                         margin-left: auto;
+                        min-width: 65px;
                         color: var(--color-light-blue);
                     }
 
@@ -1099,6 +1100,14 @@
                 width: 100%;
             }
 
+            #payment_table .course_title {
+                font-size: var(--font-size-smaller);
+            }
+
+            #payment_table .row_price {
+                font-size: var(--font-size-normal);
+            }
+
             #payment_container .input_group {
                 width: 240px;
             }
@@ -1244,27 +1253,16 @@
 
 
 
+        #payment_table .row {
+            padding: 10px 12px;
+        }
 
-            #payment_container td {
-                width: calc(100% - 70px);
+            #payment_table .row_price {
                 font-size: var(--font-size-smaller);
             }
 
-            #payment_container td:nth-child(2n) {
-                width: 70px;
-                font-size: var(--font-size-normal);
-            }
-
-            #payment_container .course_title {
-                font-size: var(--font-size-smaller);
-            }
-
-            #payment_container .categoryType {
+            #payment_table .categoryType {
                 font-size: var(--font-size-phone);
-            }
-
-            #final_price {
-                font-size: var(--font-size-normal);
             }
 
 
@@ -1350,8 +1348,20 @@
             padding: 20px;
         }
 
+            #payment_table .course_title {
+                font-size: var(--font-size-phone);
+            }
+
+            #payment_table .row_price {
+                font-size: var(--font-size-phone);
+            }
+
             .modal .bottom .button_gray:last-child {
                 margin: 0 auto;
+            }
+
+            #payment_container .button_gray {
+                font-size: var(--font-size-phone);
             }
 
 
@@ -1479,7 +1489,7 @@
 
             .modal .bottom .button_gray {
                 width: 90%;
-                font-size: var(--font-size-phone);
+                font-size: 12px;
             }
 
 

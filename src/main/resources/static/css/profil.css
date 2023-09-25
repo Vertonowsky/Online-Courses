@@ -7,8 +7,8 @@ body {
 #profile_content {
     position: relative;
     box-sizing: border-box;
+    display: flex;
     padding-top: 100px;
-    padding-bottom: 80px;
     width: 1350px;
     min-height: 100vh;
     font-size: 0;
@@ -20,9 +20,7 @@ body {
 #content_right {
     position: relative;
     box-sizing: border-box;
-    display: inline-block;
-    vertical-align: top; 
-    width: 72%;
+    width: 100%;
     margin-left: 3%;
 }
 
@@ -45,39 +43,25 @@ body {
 
 
 
-/* Right container */
 #content_left {
     position: sticky;
-    top: 100px;
-    display: inline-block;
-    vertical-align: top; 
-    width: 25%;
+    padding: 30px 10px;
+    height: 80vh;
+    width: 33%;
 }
 
 
 /* Statistics window */
 #statistics {
     display: block;
-    padding: 20px 8px;
+    padding: 20px 0;
     text-align: center;
 }
 
-        #statistics .section {
-            position: relative;
-            display: block;
+        #statistics .progress_background {
             width: 100%;
-            height: auto;
-        }
-
-
-        .progress_background {
-            position: relative;
-            box-sizing: border-box;
-            width: 95%;
             height: 35px;
-            border-radius: 10px;
             background: #A3DEFF;
-            font-size: var(--font-size-normal);
             color: #1C5473;
             margin: 0 auto 4px auto;
         }
@@ -91,10 +75,10 @@ body {
             box-sizing: border-box;
             width: 0;
             height: 100%;
-            transition: width 1.25s;
             border-radius: 10px;
             background: #5CC5FF;
             margin: auto;
+            transition: width 1.25s;
         }
 
         .progresss_info {
@@ -136,33 +120,42 @@ body {
                 height: 90%;
             }
 
+            #content_left #basic_info {
+                margin-bottom: 40px;
+            }
 
-        #statistics #credentials {
+        #basic_info #credentials {
             position: relative;
             box-sizing: border-box;
             width: 100%;
             color: var(--color-default);
             font-size: 16px;
-            margin: 10px auto 40px auto;
+            margin: 10px 0 0 0;
             background: #F5F5F5;
             padding: 5px;
             border-radius: 8px;
+            text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        #statistics .legend {
+        #content_left .legend {
             position: relative;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
             padding: 5px;
             width: 100%;
             margin-top: 40px;
         }
 
-        #statistics .legend .legend_link {
+        #content_left .legend .legend_link {
             width: 100%;
             background: transparent;
             font-size: var(--font-size-normal);
             text-align: left;
-            margin-top: 10px;
             border-radius: 10px;
             color: var(--color-default);
             cursor: pointer;
@@ -172,16 +165,16 @@ body {
         }
 
 
-            #statistics .legend .legend_link i {
+            #content_left .legend .legend_link i {
                 margin-right: 5px;
             }
 
 
-            #statistics .legend .legend_link.active {
+            #content_left .legend .legend_link.active {
                 cursor: default;
             }
 
-            #statistics .legend .legend_link.active, #statistics .legend .legend_link:hover {
+            #content_left .legend .legend_link.active, #content_left .legend .legend_link:hover {
                 background: var(--color-blue);
                 color: #fff;
             }
@@ -200,6 +193,9 @@ body {
             font-size: var(--font-size-smaller);
             width: 17px;
         }
+
+
+
 
 
 
@@ -269,6 +265,7 @@ body {
 
                     .activity_section .lp {
                         width: 10%;
+                        min-width: 65px;
                     }
 
                     .activity_section .activity .lp span {
@@ -279,16 +276,21 @@ body {
                     }
                 
                     .activity_section .date {
+                        min-width: 120px;
                         width: 20%;
                     }
 
                     .activity_section .title {
-                        width: 65%;
+                        width: 60%;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
                         text-align: left;
                     }
 
                     .activity_section .price {
                         width: 10%;
+                        min-width: 65px;
                         color: #60768F;
                     }
 
@@ -350,6 +352,29 @@ body {
 
 
 
+        #mobile_left_panel {
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            width: 50px;
+            height: 100%;
+            border-right: 1px solid black;
+            background: #fff;
+            padding-top: 70px;
+            left: 0;
+            top: 0;
+        }
+
+
+        #mobile_left_panel #options_panel_button {
+            font-size: 24px;
+            color: #000;
+            cursor: pointer;
+        }
+
+
+
+
 
 
 
@@ -360,13 +385,9 @@ body {
             width: 1200px;
         }
 
-        #content_right {
-            width: 69%;
-            text-align: center;
-        }
-
         #content_left {
             width: 28%;
+            min-width: 270px;
         }
     }
 
@@ -379,14 +400,13 @@ body {
         }
 
         #content_right {
-            display: inline-block;
             text-align: center;
-            margin-right: 0;
         }
 
             .pageable {
                 padding: 0;
             }
+
 
         .modal_content {
             width: 80%;
@@ -409,127 +429,302 @@ body {
     }
 
 
-    @media screen and (max-width: 1200px) {
+    @media screen and (max-width: 1024px) {
 
-
-        #statistics {
-            width: 57%;
+        #profile_content {
+            width: 95%;
         }
 
-        #payment_history {
-            width: 40%;
+        #content_left {
+            width: 25%;
+            min-width: 240px;
+        }
+
+            #avatar_selection {
+                width: 110px;
+                height: 110px;
+            }
+
+            #basic_info #credentials {
+                font-size: var(--font-size-smaller);
+            }
+
+            .progress_background {
+                font-size: var(--font-size-phone);
+            }
+
+            #content_left .legend .legend_link {
+                font-size: var(--font-size-smaller);
+                padding: 12px 15px;
+                margin-top: 7px;
+            }
+
+            .button_gray {
+                font-size: var(--font-size-smaller);
+            }
+
+
+        .activity_section .detail {
+            font-size: var(--font-size-phone);
         }
 
     }
 
 
-    @media screen and (max-width: 1000px) {    
+    @media screen and (max-width: 850px) {
 
-        #statistics {
-            width: 49%;
+
+        #profile_content {
+            width: 100%;
+            padding-top: 70px;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #content_left {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 240px;
+            max-height: 240px;
+            width: 95%;
+            background: #FCFCFC;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 4px 2px #E6E6E6;
+            padding: 15px 10px;
+            margin-bottom: 40px;
+            flex: 1;
+        }
+
+            #content_left #basic_info {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: left;
+                text-align: left;
+                width: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+                #avatar_selection {
+                    width: 60px;
+                    height: 60px;
+                    margin: 0 7px 0 0;
+                }
+
+                #basic_info #credentials {
+                    width: auto;
+                    min-width: 200px;
+                    max-width: 260px;
+                    text-align: left;
+                    padding: 5px 15px;
+                    margin: 0;
+                }
+
+
+            #content_left #navigation {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 10px 0 auto;
+                height: 100%;
+            }
+
+            #content_left .legend {
+                padding: 0;
+                margin: 0;
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            #content_left .legend .legend_link {
+                text-align: center;
+                margin: 0;
+                padding: 20px 20px;
+            }
+
+            #content_left .legend .legend_link i {
+                margin: 0;
+            }
+
+            .legend_link_content {
+                display: none;
+            }
+
+
+            #content_left #statistics {
+                display: block;
+                box-sizing: border-box;
+                order: 3;
+                width: 70%;
+                padding: 10px 10px 0 10px;
+            }
+
+            #content_left #logout_section {
+                display: none;
+            }
+
+
+
+
+        #content_right {
+            width: 100%;
+            padding: 0 25px 50px 25px;
+            margin: 0 auto;
+            overflow-x: auto;
         }
 
         #payment_history {
-            width: 49%;
-            margin-left: 2%;
+            min-width: 650px;
         }
 
     }
+
 
 
     @media screen and (max-width: 768px) {
-
-        #profile_content {
-            width: 88%;
-            padding-top: 50px;
-        }
-
-
-
-        #statistics {
-            display: block;
-            width: 100%;
-            min-height: 200px;
-            max-height: 250px;
-            height: auto;
-        }
-        
-            .progress_background {
-                font-size: var(--font-size-smaller);
-            }
-
-        #payment_history {
-            display: block;
-            width: 100%;
-            margin-left: 0;
-            margin-top: 30px;
-        }
-
-
-            .activity .data {
-                font-size: var(--font-size-smaller);
-            }
-
 
         .modal_content {
             padding: 15px 10px;
         }
 
-        .modal .top .title {
-            font-size: var(--font-size-normal);
-        }
+            .modal .top .title {
+                font-size: var(--font-size-normal);
+            }
 
         .avatar_container .avatar {
             height: 82px;
             width: 82px;
         }
 
+        #content_left .legend .legend_link {
+            font-size: var(--font-size-phone);
+        }
+
+        .button_gray {
+            font-size: var(--font-size-phone);
+        }
 
     }
 
-    @media screen and (max-width: 480px) {
+
+    @media screen and (max-width: 580px) {
+
+        #basic_info #credentials {
+            min-width: 170px;
+            max-width: 210px;
+        }
+
+            .course_container .right {
+                padding-bottom: 40px;
+            }
+
+    }
+
+
+    @media screen and (max-width: 550px) {
+
+        #basic_info #credentials {
+            max-width: 195px;
+        }
+
+    }
+
+
+    @media screen and (max-width: 520px) {
+
+        #content_left {
+            flex-direction: column;
+            max-height: 285px;
+            min-height: 285px;
+            padding: 0 10px;
+        }
+
+        #content_left #basic_info {
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+            #basic_info #credentials {
+                margin-right: 5px;
+                min-width: calc(100% - 80px);
+                max-width: calc(100% - 80px);
+            }
+
+
+        #content_left #navigation {
+            width: 100%;
+            margin: 0;
+            order: 3;
+            padding: 15px 0 0 0;
+        }
+
+            #content_left .legend {
+                justify-content: center;
+                gap: 5px;
+            }
+
+                #content_left .legend .legend_link {
+                    width: auto;
+                    flex: 1 0;
+                    box-sizing: border-box;
+                    padding: 13px 0;
+                    font-size: 16px;
+                }
+
+
+        #content_left #statistics {
+            width: 95%;
+            padding: 15px 0 10px 0;
+            order: 2;
+        }
+
+        .course_container .right {
+            padding: 0 0 25px 0;
+        }
 
         .progress_background {
             font-size: var(--font-size-phone);
         }
 
-        .activity .circular {
-            font-size: var(--font-size-phone);
+    }
+
+    @media screen and (max-width: 300px) {
+
+        #content_left {
+            max-height: 330px;
+            padding: 10px 5px;
+            min-width: 0;
+        }
+
+        #content_left #basic_info {
+            flex-direction: column;
+        }
+
+        #basic_info #credentials {
+            min-width: 100%;
+            max-width: 100%;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #avatar_selection {
+            margin-right: 0;
         }
 
     }
-    
-    @media screen and (max-width: 380px) {
 
 
-        #profile_content {
-            width: 92%;
-        }
+    /*@media screen and (max-width: 280px) {*/
 
-        .linear_buttons .button_gray {
-            width: 40%;
-            min-width: 1px;
-        }
-
-    }
-
-    @media screen and (max-width: 280px) {
-
-        .progresss_target {
-            display: none;
-        }
-    }
-
-    @media screen and (max-width: 210px) {
-
-        .activity .date {
-            display: block;
-            margin: 0;
-        }
-
-        .activity .price {
-            display: block;
-            width: auto;
-            margin: 5px 0 0 0;
-        }
-    }
+    /*    .progresss_target {*/
+    /*        display: none;*/
+    /*    }*/
+    /*}*/

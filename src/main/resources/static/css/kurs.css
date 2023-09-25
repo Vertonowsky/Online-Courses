@@ -65,8 +65,10 @@
     align-items: center;
     flex-direction: row;
     width: 100%;
+    top: 0;
     height: calc(100vh - 70px);
-    margin: 70px auto 0 auto;
+    margin: 0 auto;
+    padding-top: 70px;
     background: var(--color-white);
     text-align: center;
 }
@@ -803,7 +805,7 @@
     @media screen and (max-width: 850px) {
 
         #content_course {
-            margin-top: 50px;
+            padding-top: 50px;
         }
 
         #course_left {
@@ -1081,7 +1083,7 @@
 
 
 
-@media screen and (max-width: 270px) {
+@media screen and (max-width: 283px) {
 
     #button_completed {
         width: 90%;

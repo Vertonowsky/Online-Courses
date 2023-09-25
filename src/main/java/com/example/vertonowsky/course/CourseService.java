@@ -27,10 +27,7 @@ import org.thymeleaf.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.vertonowsky.course.CourseSerializer.Task.BASE;
@@ -95,7 +92,7 @@ public class CourseService {
      */
     public HashMap<String, String> generateCoursesListHeading(int size, List<String> categoryFilters) {
         String prefix = " kurs";
-        if (size > 0 && size <= 4) prefix = " kursy";
+        if (size > 1 && size <= 4) prefix = " kursy";
         if (size >= 5) prefix = " kursów";
 
         StringBuilder category = new StringBuilder();
@@ -177,7 +174,7 @@ public class CourseService {
 
         if (course.getChapters() == null) return null;
 
-        Set<FinishedTopic> finishedTopics = user.getFinishedTopics();
+        Set<FinishedTopic> finishedTopics = Optional.ofNullable(user).map(User::getFinishedTopics).orElse(null);
         List<Chapter> chapters = course.getChapters().stream().toList();
         if (Collections.isNullOrEmpty(chapters)) return null;
 

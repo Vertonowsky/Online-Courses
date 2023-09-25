@@ -26,53 +26,56 @@
 
         <div id="profile_content">
 
-
-            <div id="content_left">
-                <div id="statistics" class="window">
-                    <div class="section">
-
-                        <div id="avatar_selection">
-                            <div id="avatar" th:fragment="avatar_detail">
-                                <img th:alt="${user.avatar.name}" th:src="${user.avatar.url}" onclick="listAvatars()"/>
-                                <div class="shadow" onclick="listAvatars()">
-                                    <i class="fas fa-pencil-alt icon_add"></i>
-                                </div>
+            <div id="content_left" class="window">
+                <div id="basic_info">
+                    <div id="avatar_selection">
+                        <div id="avatar" th:fragment="avatar_detail">
+                            <img th:alt="${user.avatar.name}" th:src="${user.avatar.url}" onclick="listAvatars()"/>
+                            <div class="shadow" onclick="listAvatars()">
+                                <i class="fas fa-pencil-alt icon_add"></i>
                             </div>
-                        </div>
-
-                        <p id="credentials"> [[${#authentication.getPrincipal().getEmail()}]] </p>
-
-
-                        <div class="progress_background" th:with="progressInfo = ${recentProgress[0]}">
-                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through the same day. -->
-                            <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${progressInfo.count} + ']'"></span>
-                            <span class="progresss_target">1 kurs</span>
-                        </div>
-
-
-                        <div class="progress_background" th:with="progressInfo = ${recentProgress[1]}">
-                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole week. -->
-                            <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${progressInfo.count} + ']'"></span>
-                            <span class="progresss_target">7 kursów</span>
-                        </div>
-
-
-                        <div class="progress_background" th:with="progressInfo = ${recentProgress[2]}">
-                            <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole month. -->
-                            <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${progressInfo.count} + ']'"></span>
-                            <span class="progresss_target">30 kursów</span>
                         </div>
                     </div>
 
+                    <p id="credentials"> [[${#authentication.getPrincipal().getEmail()}]] </p>
+                </div>
+
+                <div id="statistics">
+
+                    <div class="progress_background" th:with="progressInfo = ${recentProgress[0]}">
+                        <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through the same day. -->
+                        <span class="progresss_info" th:text="'Dzisiejszy cel [' + ${progressInfo.count} + ']'"></span>
+                        <span class="progresss_target">1 kurs</span>
+                    </div>
+
+
+                    <div class="progress_background" th:with="progressInfo = ${recentProgress[1]}">
+                        <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole week. -->
+                        <span class="progresss_info" th:text="'Ostatnie 7 dni [' + ${progressInfo.count} + ']'"></span>
+                        <span class="progresss_target">7 kursów</span>
+                    </div>
+
+
+                    <div class="progress_background" th:with="progressInfo = ${recentProgress[2]}">
+                        <div class="progress_fill" th:attr="data-done=${progressInfo.percentage}"></div>  <!-- Percentage progress through whole month. -->
+                        <span class="progresss_info" th:text="'Ostatnie 30 dni [' + ${progressInfo.count} + ']'"></span>
+                        <span class="progresss_target">30 kursów</span>
+                    </div>
+                </div>
+
+                <div id="navigation">
 
                     <div class="legend">
 
-                        <button class="legend_link active" data-id="1" onclick="openTab(this)"> <i class="fas fa-laptop"></i> Kursy </button>
-                        <button class="legend_link" data-id="2" onclick="openTab(this)"> <i class="fas fa-history"></i> Historia transakcji </button>
-                        <button class="legend_link" data-id="3" onclick="openTab(this)"> <i class="fas fa-user-circle"></i> Moje dane </button>
-                        <button class="legend_link" data-id="4" onclick="openTab(this)"> <i class="fas fa-cog"></i> Ustawienia </button>
+                        <button class="legend_link active" data-id="1" onclick="openTab(this)"> <i class="fas fa-laptop"></i> <span class="legend_link_content"> Kursy </span></button>
+                        <button class="legend_link" data-id="2" onclick="openTab(this)"> <i class="fas fa-history"></i> <span class="legend_link_content"> Historia transakcji </span></button>
+                        <button class="legend_link" data-id="4" onclick="openTab(this)"> <i class="fas fa-cog"></i> <span class="legend_link_content"> Ustawienia </span></button>
 
                     </div>
+
+                </div>
+
+                <div id="logout_section">
 
                     <form th:action="@{/logout}" method="POST" modelAttribute="_csrf">
                         <button id="logout_button" class="button_gray" type="submit"><i class="far fa-arrow-alt-circle-left"></i> Wyloguj się</button>
@@ -116,24 +119,22 @@
                         </div>
 
                         <div class="right">
-                            <div class="description">
-                                <div class="title_with_shadow" >
-                                    <span class="tit_text" th:inline="text"> [[${ownedCourseDto.name}]] <div class="tit_bck"></div></span>
-                                </div>
-
-                                <div class="linear_buttons">
-                                    <div class="progress_background">
-                                        <div class="progress_fill" th:attr="data-done=${ownedCourseDto.percentage}"></div>
-                                        <span class="progresss_info" th:text="'Ukończono ' + ${ownedCourseDto.percentage} + '%'"></span>
-                                    </div>
-                                    <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourseDto.courseId}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
+                            <div class="title_with_shadow" >
+                                <span class="tit_text" th:inline="text"> [[${ownedCourseDto.name}]] <div class="tit_bck"></div></span>
                             </div>
+
+                            <div class="linear_buttons">
+                                <div class="progress_background">
+                                    <div class="progress_fill" th:attr="data-done=${ownedCourseDto.percentage}"></div>
+                                    <span class="progresss_info" th:text="'Ukończono ' + ${ownedCourseDto.percentage} + '%'"></span>
+                                </div>
+                                <a class="button_gray" th:href="@{'/kurs/' + ${ownedCourseDto.courseId}}">Kontynuuj <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+
+                            <div class="expires" th:if="${ownedCourseDto.expiryDate.isAfter(T(java.time.OffsetDateTime).now())}" th:text="'Ważny do: ' + ${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
+                            <div class="expires expired" th:if="${ownedCourseDto.expiryDate.isBefore(T(java.time.OffsetDateTime).now())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Wygasł [[${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')}]]r</div>
+
                         </div>
-
-                        <div class="expires" th:if="${ownedCourseDto.expiryDate.isAfter(T(java.time.OffsetDateTime).now())}" th:text="'Ważny do: ' + ${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')} + 'r'"></div>
-                        <div class="expires expired" th:if="${ownedCourseDto.expiryDate.isBefore(T(java.time.OffsetDateTime).now())}"> <i class="expired_icon fas fa-exclamation-triangle"></i> Kurs utracił ważność dnia: [[${#temporals.format(ownedCourseDto.expiryDate, 'dd.MM.yyyy')}]]r</div>
-
                     </div>
                 </div>
 
@@ -335,6 +336,48 @@
             });
         }
 
+
+
+        // /**
+        //  * Opens navigation menu on smaller devices
+        //  */
+        // const optionsToggle = document.getElementById("options_panel_button");
+        // const contentLeft = document.getElementById("content_left");
+        //
+        // function openNav2() {
+        //     void contentLeft.offsetWidth;
+        //     contentLeft.className = "";
+        //
+        //     if (!optionsToggle.classList.contains("active")) {
+        //         optionsToggle.classList.add("active");
+        //         shadow.classList.add('active');
+        //         contentLeft.classList.add('active');
+        //     } else {
+        //         optionsToggle.classList.remove("active");
+        //         shadow.classList.remove("active");
+        //         contentLeft.classList.remove('active');
+        //     }
+        //
+        // }
+        //
+        // window.addEventListener("click", function(event) {
+        //
+        //     // If user clicked on navPanelToggle button, then open minHeader.
+        //     if (optionsToggle.contains(event.target)) {
+        //         openNav2();
+        //         return;
+        //     }
+        //
+        //     // If user clicked outside minHeader and header
+        //     if (!contentLeft.contains(event.target) && !header.contains(event.target)){
+        //         // If minHeader is currently visible
+        //         if (optionsToggle.classList.contains("active")) {
+        //             optionsToggle.classList.remove("active");
+        //             shadow.classList.remove("active");
+        //             contentLeft.classList.remove('active');
+        //         }
+        //     }
+        // });
 
 
 
