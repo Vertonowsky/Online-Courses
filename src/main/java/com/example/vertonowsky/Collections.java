@@ -8,4 +8,8 @@ public class Collections {
         return (collection == null || collection.isEmpty());
     }
 
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
 }

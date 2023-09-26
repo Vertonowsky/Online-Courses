@@ -2,6 +2,7 @@ package com.example.vertonowsky.security.controller;
 
 
 import com.example.vertonowsky.Regex;
+import com.example.vertonowsky.ResponseDto;
 import com.example.vertonowsky.token.VerificationType;
 import com.example.vertonowsky.token.service.VerificationTokenService;
 import com.example.vertonowsky.user.UserQueryType;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.HashMap;
 
 @Controller
 @RestController
@@ -32,7 +31,7 @@ public class VerificationController {
         this.userService = userService;
     }
 
-    @GetMapping("/auth/verify")
+    @GetMapping("/auth/account/verify")
     public ModelAndView verifyUserAccount(Model model, @RequestParam(value = "token") String tokenUuid) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userService.get(auth, UserQueryType.ALL) != null) return new ModelAndView( "redirect:/");
@@ -51,26 +50,21 @@ public class VerificationController {
     }
 
 
-
-    @PostMapping("/auth/resendVerificationEmail")
-    public HashMap<String, Object> resendEmail(@RequestParam(value = "email") String email) {
-        HashMap<String, Object> map = new HashMap<>();
+    @PostMapping("/auth/account/resend/email")
+    public ResponseDto resendEmail(@RequestParam(value = "email") String email) {
         try {
 
             verificationTokenService.resendEmail(email);
-            map.put("success", true);
-            map.put("message", "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
-            map.put("tokenCooldown", 120);
+            ResponseDto dto = new ResponseDto(true, "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
+            dto.setTokenCooldown(120L);
+            return dto;
 
         } catch (Exception e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
-            map.put("tokenCooldown", verificationTokenService.getLastValidTokenCooldown(email));
+            ResponseDto dto = new ResponseDto(false, e.getMessage());
+            dto.setTokenCooldown(verificationTokenService.getLastValidTokenCooldown(email));
+            return dto;
         }
-
-        return map;
     }
-
 
 
     @GetMapping("/weryfikacja")
@@ -84,11 +78,10 @@ public class VerificationController {
         model.addAttribute("verificationType", verificationType);
 
         if (verificationType == VerificationType.EMAIL_VERIFICATION_NEW.getIndex() || verificationType == VerificationType.EMAIL_VERIFICATION_LOGIN_ATTEMPT.getIndex())
-            model.addAttribute("resendUrl", "/auth/resendVerificationEmail");
+            model.addAttribute("resendUrl", "/auth/account/resend/email");
         else if (verificationType == VerificationType.PASSWORD_RECOVER_NEW.getIndex())
-            model.addAttribute("resendUrl", "/auth/resendPasswordRecoveryEmail");
+            model.addAttribute("resendUrl", "/auth/password/recovery/resend/email");
         return new ModelAndView( "weryfikacja");
     }
-
 
 }

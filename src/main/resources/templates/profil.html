@@ -152,7 +152,7 @@
                         No Data Found container
                     -->
                     <div th:if="${#lists.isEmpty(user.paymentHistories)}" id="no_payment_history_found" class="window no_data_found">
-                        <th:block th:insert="dependencies :: noDataFound('fas fa-hourglass-half', null, 'Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!')"></th:block>
+                        <th:block th:insert="dependencies :: noDataFound('fas fa-hourglass-half', 'Nie dokonano żadnej transakcji.', 'Tutaj pojawi się historia Twoich zakupów po nabyciu pierwszego kursu!')"></th:block>
                     </div>
 
 
@@ -177,9 +177,23 @@
                 </div>
 
 
-                <div id="settings" class="pageable" th:fragment="settings">
+                <div id="settings" class="window pageable" th:fragment="settings">
 
-                    <h2 class="mobile_heading">Ustawienia:</h2>
+                    <div class="input_group">
+                        <label for="settings_email">Adres email:</label>
+                        <input id="settings_email" type="text" class="input readonly" readonly th:value="${#authentication.getPrincipal().getEmail()}">
+                    </div>
+
+
+                    <div class="input_group" th:if="${#authentication.getPrincipal().getClass().getName() == 'com.example.vertonowsky.security.model.CustomUserDetails'}">
+                        <label for="settings_password">Hasło:</label>
+                        <input id="settings_password" type="password" class="input" readonly value="123.asd/12oiajds">
+
+                        <button type="submit" id="settings_password_edit" onclick="changePassword()"> Zmień hasło </button>
+                    </div>
+
+
+                    <p id="settings_description"> Dziękujemy za korzystanie z naszego serwisu. W razie wątpliwości z chęcią udzielimy odpowiedzi na wszelkie pytania. </p>
 
                 </div>
 
@@ -229,6 +243,7 @@
 
         <script src="/js/jquery-1.11.3.js"></script>
         <script src="/js/header.js"></script>
+        <script src="/js/popup.js"></script>
 
 
 
@@ -344,6 +359,38 @@
                 }
             });
         }
+
+
+
+
+        function changePassword() {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                type:"POST",
+                dataType:"json",
+                url:"/auth/password/change/authorized/start",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(data) {
+
+                    if (data.success == 0) {
+                        showPopup(data.message, data.success);
+                        return;
+                    }
+
+                    location.href = '/auth/password/change/authorized/proceed?token=' + data.message;
+
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                    console.log(error);
+                }
+            });
+        }
+
 
     </script>
 
