@@ -345,7 +345,7 @@
                     }
 
 
-                #button_go_back {
+                #button_go_next {
                     position: absolute;
                     top: 20px;
                     right: 20px;
@@ -357,7 +357,7 @@
                 }
 
 
-                #button_go_next {
+                #button_go_back {
                     position: absolute;
                     top: 20px;
                     left: 20px;
@@ -474,7 +474,7 @@
                         transform: translateY(0%);
                     }
 
-                        #button_go_next {
+                        #button_go_back {
                             display: block;
                         }
 
@@ -530,13 +530,13 @@
                 }
 
 
-            #button_go_back {
+            #button_go_next {
                 top: 10px;
                 right: 10px;
                 font-size: var(--font-size-smaller);
             }
 
-            #button_go_next {
+            #button_go_back {
                 top: 10px;
                 left: 10px;
                 font-size: var(--font-size-smaller);
@@ -654,7 +654,7 @@
                 }
 
 
-            #button_go_back {
+            #button_go_next {
                 top: 10px;
                 right: 10px;
                 font-size: var(--font-size-phone);
