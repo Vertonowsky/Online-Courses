@@ -1,7 +1,15 @@
 package com.example.vertonowsky.token;
 
+import com.example.vertonowsky.Collections;
+import com.example.vertonowsky.ErrorCode;
+import com.example.vertonowsky.Regex;
+import com.example.vertonowsky.ResponseDto;
 import com.example.vertonowsky.exception.*;
+import com.example.vertonowsky.security.RegistrationMethod;
+import com.example.vertonowsky.token.model.PasswordRecoveryToken;
 import com.example.vertonowsky.token.service.PasswordRecoveryTokenService;
+import com.example.vertonowsky.user.User;
+import com.example.vertonowsky.user.UserQueryType;
 import com.example.vertonowsky.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
+import java.util.UUID;
 
 @RestController
 public class PasswordRecoveryController {
@@ -36,8 +44,8 @@ public class PasswordRecoveryController {
 
 
 
-    @PostMapping("/auth/startPasswordRecoveryProcess")
-    public ModelAndView startRecoveryProcess(@RequestParam(value = "email") String email, Model model) {
+    @PostMapping("/auth/password/recovery/start")
+    public Object startRecoveryProcess(@RequestParam(value = "email") String email, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
 
@@ -59,10 +67,11 @@ public class PasswordRecoveryController {
     }
 
 
-    @GetMapping("/auth/recoverPassword")
-    public ModelAndView verifyPasswordToken(Model model, @RequestParam(value = "token") String tokenUuid) {
+    @GetMapping("/auth/password/recovery/recover")
+    public Object verifyPasswordToken(Model model, @RequestParam(value = "token") String tokenUuid) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
+        User user = userService.get(auth, UserQueryType.BASE);
+        if (userService.isLoggedIn(user)) return new ModelAndView( "redirect:/");
 
         try {
 
@@ -79,43 +88,33 @@ public class PasswordRecoveryController {
         return new ModelAndView("przywracanie-hasla");
     }
 
-
-
-
-    @PostMapping("/auth/resendPasswordRecoveryEmail")
-    public HashMap<String, Object> resendPasswordRecoveryEmail(@RequestParam(value = "email") String email) {
+    @PostMapping("/auth/password/recovery/resend/email")
+    public ResponseDto resendPasswordRecoveryEmail(@RequestParam(value = "email") String email) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userService.isLoggedIn(auth)) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("success", false);
-            map.put("message", "Błąd: Strona niedostępna dla zalogowanych użytkowników.");
-            map.put("tokenCooldown", 120);
-            return map;
+            ResponseDto dto = new ResponseDto(false, "Błąd: Strona niedostępna dla zalogowanych użytkowników.");
+            dto.setTokenCooldown(120L);
+            return dto;
         }
-        HashMap<String, Object> map = new HashMap<>();
+
         try {
 
             passwordRecoveryTokenService.resendEmail(email);
-            map.put("success", true);
-            map.put("message", "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
-            map.put("tokenCooldown", 120);
+            ResponseDto dto = new ResponseDto(true, "Wysłano nowy email weryfikacyjny. Sprawdź pocztę e-mail.");
+            dto.setTokenCooldown(120L);
+            return dto;
 
         } catch (Exception e) {
-            map.put("success", false);
-            map.put("message", e.getMessage());
-            map.put("tokenCooldown", passwordRecoveryTokenService.getLastValidTokenCooldown(email));
+            ResponseDto dto = new ResponseDto(false, e.getMessage());
+            dto.setTokenCooldown(passwordRecoveryTokenService.getLastValidTokenCooldown(email));
+            return dto;
         }
-
-        return map;
     }
 
 
 
-    @PostMapping("/auth/confirmPasswordChange")
+    @PostMapping("/auth/password/recovery/confirm")
     public ModelAndView confirmPasswordChange(Model model, @ModelAttribute("passwordDto") PasswordRecoverDto passwordRecoverDto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (userService.isLoggedIn(auth)) return new ModelAndView( "redirect:/");
-
         try {
 
             passwordRecoveryTokenService.changeUserPassword(passwordRecoverDto);
@@ -123,14 +122,56 @@ public class PasswordRecoveryController {
 
         } catch (InvalidPasswordFormatException | PasswordsNotEqualException | InvalidUUIDFormatException |
                  TokenExpiredException | TokenNotFoundException | UserNotFoundException | UserVerificationException e) {
-
-            model.addAttribute("error", e.getMessage());
-
+            model.addAttribute("criticalError", e.getMessage());
         }
-
 
         return new ModelAndView("przywracanie-hasla");
     }
 
+
+
+    @PostMapping("/auth/password/change/authorized/start")
+    public ResponseDto startAuthorizedPasswordChangeProcess() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.get(auth, UserQueryType.BASE);
+        if (user == null || !userService.isLoggedIn(user))
+            return new ResponseDto(false, ErrorCode.LOGIN_REQUIRED.getMessage());
+
+        if (!RegistrationMethod.DEFAULT.equals(user.getRegistrationMethod()))
+            return new ResponseDto(false, ErrorCode.REGISTRATION_METHOD_INVALID.getMessage());
+
+        PasswordRecoveryToken passwordRecoveryToken = passwordRecoveryTokenService.createAuthorizedToken(user);
+        return new ResponseDto(true, passwordRecoveryToken.getToken().toString());
+    }
+
+
+    @GetMapping("/auth/password/change/authorized/proceed")
+    public Object authorizedPasswordChange(@RequestParam(value = "token") String tokenUuid, Model model) {
+        if (Collections.isNullOrEmpty(tokenUuid) || !Regex.UUID_PATTERN.matches(tokenUuid))
+            return new ResponseDto(ErrorCode.TOKEN_INVALID.getMessage());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.get(auth, UserQueryType.BASE);
+        if (user == null  || !userService.isLoggedIn(user))
+            return new ResponseDto(ErrorCode.LOGIN_REQUIRED.getMessage());
+
+        if (!RegistrationMethod.DEFAULT.equals(user.getRegistrationMethod()))
+            return new ResponseDto(false, ErrorCode.REGISTRATION_METHOD_INVALID.getMessage());
+
+        try {
+
+            passwordRecoveryTokenService.updateRecoverPasswordStage(tokenUuid, RecoverPasswordStage.NEW_PASSWORD_CREATION_AUTHORIZED);
+            model.addAttribute("progress", RecoverPasswordStage.NEW_PASSWORD_CREATION_AUTHORIZED);
+
+            PasswordRecoverDto passwordDto = new PasswordRecoverDto();
+            passwordDto.setToken(UUID.fromString(tokenUuid));
+            model.addAttribute("passwordDto", passwordDto);
+
+        } catch (Exception e) {
+            model.addAttribute("criticalError", e.getMessage());
+        }
+
+        return new ModelAndView("przywracanie-hasla");
+    }
 
 }

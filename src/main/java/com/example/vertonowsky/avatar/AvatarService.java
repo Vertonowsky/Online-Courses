@@ -31,7 +31,7 @@ public class AvatarService {
     }
 
     public void change(Authentication auth, String email, Integer avatarId) throws UserNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND_EXCEPTION.getMessage()));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND.getMessage()));
         Avatar avatar = avatarRepository.findById(avatarId).orElseThrow();
 
         user.setAvatar(avatar);

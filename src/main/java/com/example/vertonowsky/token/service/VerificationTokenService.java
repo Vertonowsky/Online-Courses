@@ -29,7 +29,7 @@ public class VerificationTokenService extends TokenService<VerificationToken, Ve
         // Send verification email
         HashMap<String, Object> variables = new HashMap<>();
         variables.put("to", user.getEmail());
-        variables.put("url", websiteUrl + "/auth/verify?token=" + token.getToken().toString());
+        variables.put("url", websiteUrl + "/auth/account/verify?token=" + token.getToken().toString());
 
         emailService.sendHtmlEmail(user.getEmail(), "Potwierdź swoją rejestrację - Kursowo.pl", variables, "templates/template-email-verification.html");
     }

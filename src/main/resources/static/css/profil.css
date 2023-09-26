@@ -336,7 +336,7 @@ body {
         padding: 12px 8px;
         width: 100%;
         max-width: 500px;
-        flex-basis: 80%;
+        flex-basis: 85%;
     }
 
     #settings .input_group .input.readonly {
@@ -350,11 +350,16 @@ body {
 
 
     #settings_password_edit {
-        flex-basis: calc(20% - 15px);
+        flex-basis: calc(15% - 15px);
         margin-left: 15px;
         color: var(--color-blue);
         font-size: 14px;
+        text-align: left;
         cursor: pointer;
+        outline: none;
+        border: none;
+        padding: 0;
+        background: transparent;
     }
 
     #settings_description {
@@ -497,6 +502,14 @@ body {
                 width: 95px;
                 height: 96px;
             }
+
+        #settings .input_group .input {
+            flex-basis: 78%;
+        }
+
+        #settings_password_edit {
+            flex-basis: calc(22% - 15px);
+        }
 
     }
 
@@ -695,15 +708,11 @@ body {
         }
 
         #settings .input_group .input {
-            font-size: var(--font-size-smaller);
-            padding: 10px 7px;
             flex-basis: 75%;
         }
 
         #settings_password_edit {
             flex-basis: calc(25% - 10px);
-            margin-left: 10px;
-            font-size: var(--font-size-smaller);
         }
 
     }
