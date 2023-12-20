@@ -185,7 +185,7 @@
                     </div>
 
 
-                    <div class="input_group" th:if="${#authentication.getPrincipal().getClass().getName() == 'com.example.vertonowsky.security.model.CustomUserDetails'}">
+                    <div class="input_group" th:if="${#authentication.getPrincipal() == T(com.example.vertonowsky.security.model.CustomUserDetails)}">
                         <label for="settings_password">Hasło:</label>
                         <input id="settings_password" type="password" class="input" readonly value="123.asd/12oiajds">
 

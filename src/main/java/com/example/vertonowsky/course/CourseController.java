@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -154,7 +155,7 @@ public class CourseController {
     @PostMapping("/api/discountCode/details")
     public ModelAndView getDiscountCodeDetails(@RequestParam String title, @RequestParam Double discount, Model model) {
         model.addAttribute("discountTitle", title);
-        model.addAttribute("discountValue", discount * -1);
+        model.addAttribute("discountValue", new DecimalFormat("#0.00").format(discount * -1));
 
         return new ModelAndView("wyswietl :: discount_row");
     }
